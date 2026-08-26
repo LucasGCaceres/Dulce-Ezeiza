@@ -34,3 +34,15 @@ CREATE TABLE Usuarios (
     fecha DATETIME DEFAULT GETDATE()
 );
 GO
+
+-- ------------------------------------------------------------
+--  Tabla: Categorias (rubros del catalogo)
+-- ------------------------------------------------------------
+CREATE TABLE Categorias (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    nombre NVARCHAR(100) NOT NULL UNIQUE,      -- no se permiten nombres repetidos
+    descripcion NVARCHAR(500),                 -- opcional
+    activa BIT NOT NULL DEFAULT 1,             -- 1 = activa, 0 = inactiva
+    fecha DATETIME DEFAULT GETDATE()
+);
+GO
