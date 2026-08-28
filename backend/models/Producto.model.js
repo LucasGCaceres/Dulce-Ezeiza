@@ -45,6 +45,13 @@ const Producto = sequelize.define(
             defaultValue: false
         },
 
+        // 1 = apto sin TACC, 0 = tiene gluten. Por defecto false (tiene gluten).
+        sinGluten: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+            defaultValue: false
+        },
+
         // Clave foranea: guarda el id de la categoria a la que pertenece.
         // La relacion en si se define en associations.js (ver abajo).
         categoriaId: {

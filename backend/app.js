@@ -9,6 +9,9 @@ const cors = require('cors');
 // 3. Importar la conexion a la base (ya usa las variables del .env cargadas arriba)
 const sequelize = require('./databases/database');
 
+// Cargar las asociaciones entre models (relaciones entre tablas)
+require('./models/Associations');
+
 // Importar el router principal de la API
 const apiRouter = require('./routes/api');
 
