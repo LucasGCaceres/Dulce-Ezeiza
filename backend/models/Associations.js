@@ -3,12 +3,16 @@
 
 const Categoria = require('./Categoria.model');
 const Producto = require('./Producto.model');
+const Consulta = require('./Consulta.model');
 
 // --- Relacion Categoria 1..N Producto ---
-// Una categoria tiene muchos productos.
 Categoria.hasMany(Producto, { foreignKey: 'categoriaId' });
-// Cada producto pertenece a una categoria.
 Producto.belongsTo(Categoria, { foreignKey: 'categoriaId' });
 
-// Exportamos los models ya relacionados por si hacen falta juntos.
-module.exports = { Categoria, Producto };
+// --- Relacion Producto 1..N Consulta (OPCIONAL) ---
+// Un producto puede tener muchas consultas; una consulta puede pertenecer
+// a un producto o a ninguno (productoId null = consulta general).
+Producto.hasMany(Consulta, { foreignKey: 'productoId' });
+Consulta.belongsTo(Producto, { foreignKey: 'productoId' });
+
+module.exports = { Categoria, Producto, Consulta };

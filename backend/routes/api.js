@@ -5,10 +5,12 @@ const router = express.Router();
 
 const usuarioRoutes = require('./api/Usuario.routes');
 const categoriaRoutes = require('./api/Categoria.routes');
-const productoRoutes = require('./api/producto.routes');
+const productoRoutes = require('./api/Producto.routes');
+const consultaRoutes = require('./api/Consulta.routes');
 
 router.use('/usuarios', usuarioRoutes);
 router.use('/categorias', categoriaRoutes);
 router.use('/productos', productoRoutes);
+router.use('/consultas', consultaRoutes);
 
 module.exports = router;
