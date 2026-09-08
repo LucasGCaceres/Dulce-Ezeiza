@@ -45,36 +45,33 @@ exports.registrar = async function (datos) {
 //  LOGIN: verificar email + contraseña, devolver token
 // ------------------------------------------------------------
 exports.login = async function (datos) {
+    let usuario;
+
     try {
-        // Buscamos el usuario por su email. findOne devuelve uno o null.
-        const usuario = await Usuario.findOne({
-            where: { email: datos.email }
-        });
-
-        // Si no existe ningun usuario con ese email, error.
-        if (!usuario) {
-            throw new Error('Email o contraseña inválidos');
-        }
-
-        // Comparamos la contraseña que mandaron contra el hash guardado.
-        // bcrypt sabe comparar el texto plano con el hash sin "des-hashear".
-        const passwordValida = bcrypt.compareSync(datos.password, usuario.password);
-
-        if (!passwordValida) {
-            throw new Error('Email o contraseña inválidos');
-        }
-
-        // Si todo esta bien, firmamos y devolvemos un token nuevo.
-        const token = jwt.sign(
-            { id: usuario.id },
-            process.env.SECRET,
-            { expiresIn: 86400 }
-        );
-
-        return { token: token, usuario: usuario };
-
+        usuario = await Usuario.findOne({ where: { email: datos.email } });
     } catch (e) {
         console.log(e);
-        throw new Error(e.message);
+        throw new Error('Error al iniciar sesión');
     }
+
+    if (!usuario) {
+        throw new Error('Email o contraseña inválidos');
+    }
+
+    const passwordValida = bcrypt.compareSync(datos.password, usuario.password);
+
+    if (!passwordValida) {
+        throw new Error('Email o contraseña inválidos');
+    }
+
+    const token = jwt.sign(
+        { id: usuario.id },
+        process.env.SECRET,
+        { expiresIn: 86400 }
+    );
+
+    const usuarioSeguro = usuario.toJSON();
+    delete usuarioSeguro.password;
+
+    return { token: token, usuario: usuarioSeguro };
 };

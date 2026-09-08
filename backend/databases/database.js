@@ -10,7 +10,11 @@ const sequelize = new Sequelize(
     {
         host: process.env.DB_HOST,        // localhost
         dialect: process.env.DB_DIALECT,  // mssql -> Sequelize escribe SQL de SQL Server
-        logging: console.log,             // muestra en consola el SQL que genera (util para aprender)
+
+        // En desarrollo mostramos el SQL generado (util para aprender/debuggear).
+        // En produccion se apaga: no tiene sentido loguear cada query en un
+        // servidor real, y evita que datos sensibles terminen en los logs.
+        logging: process.env.NODE_ENV === 'production' ? false : console.log,
 
         dialectOptions: {
             options: {
