@@ -1,0 +1,35 @@
+$kind: http-request
+description: Necesita que ya exista {{categoriaId}} (corre primero '1. Crear Categoria (admin, OK)' en la carpeta Categoria).
+url: "{{baseUrl}}/productos"
+method: POST
+headers:
+  Content-Type: application/json
+  x-access-token: "{{tokenAdmin}}"
+body:
+  type: json
+  content: |-
+    {
+        "nombre": "{{productoNombre}}",
+        "descripcion": "Producto de prueba generado por Postman",
+        "precio": 4500.5,
+        "categoriaId": "{{categoriaId}}",
+        "disponible": true,
+        "activo": true,
+        "destacado": false,
+        "sinGluten": false
+    }
+scripts:
+  - type: beforeRequest
+    code: pm.collectionVariables.set('productoNombre', 'Producto Prueba ' + Date.now());
+    language: text/javascript
+  - type: afterResponse
+    code: |-
+      pm.test('Status 201', function () {
+          pm.response.to.have.status(201);
+      });
+      const jsonData = pm.response.json();
+      if (jsonData.producto && jsonData.producto.id) {
+          pm.collectionVariables.set('productoId', jsonData.producto.id);
+      }
+    language: text/javascript
+order: 1000

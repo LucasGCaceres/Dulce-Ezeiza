@@ -1,0 +1,35 @@
+$kind: http-request
+description: Corre esto DESPUES de '1. Registro Cliente (OK)'. El test 'Solo vienen id, nombre y email' es el que confirma que password (y por ahora tambien rol) nunca salen en la respuesta.
+url: "{{baseUrl}}/usuarios/login"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+        "email": "{{clienteEmail}}",
+        "password": "{{clientePassword}}"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status 200', function () {
+          pm.response.to.have.status(200);
+      });
+
+      const jsonData = pm.response.json();
+
+      pm.test('No se filtra el password', function () {
+          pm.expect(jsonData.usuario.password).to.be.undefined;
+      });
+
+      pm.test('Solo vienen id, nombre y email (nada mas)', function () {
+          pm.expect(Object.keys(jsonData.usuario).sort()).to.eql(['email', 'id', 'nombre']);
+      });
+
+      if (jsonData.token) {
+          pm.collectionVariables.set('tokenCliente', jsonData.token);
+      }
+    language: text/javascript
+order: 5000

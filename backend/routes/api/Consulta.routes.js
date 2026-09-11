@@ -7,6 +7,11 @@ const verificarToken = require('../../middlewares/Autorizacion.middlewares');
 // POST /api/consultas -> crear consulta (requiere estar logueado)
 router.post('/', verificarToken, consultaController.crear);
 
+// GET  /api/consultas/mis-consultas -> historial del usuario logueado
+// OJO: tiene que ir ANTES de '/:id', si no Express interpreta
+// "mis-consultas" como si fuera un id.
+router.get('/mis-consultas', verificarToken, consultaController.obtenerMisConsultas);
+
 // GET  /api/consultas?estado=...  -> listar todas (admin)
 router.get('/', verificarToken, consultaController.obtenerTodas);
 

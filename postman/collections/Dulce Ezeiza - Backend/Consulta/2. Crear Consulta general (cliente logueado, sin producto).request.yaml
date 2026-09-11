@@ -1,0 +1,28 @@
+$kind: http-request
+url: "{{baseUrl}}/consultas"
+method: POST
+headers:
+  Content-Type: application/json
+  x-access-token: "{{tokenCliente}}"
+body:
+  type: json
+  content: |-
+    {
+        "nombre": "Cliente De Prueba",
+        "email": "{{clienteEmail}}",
+        "telefono": "1122334455",
+        "asunto": "Horarios de atencion",
+        "mensaje": "Hola, queria saber el horario del local los domingos."
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status 201', function () {
+          pm.response.to.have.status(201);
+      });
+      const jsonData = pm.response.json();
+      if (jsonData.consulta && jsonData.consulta.id) {
+          pm.collectionVariables.set('consultaId', jsonData.consulta.id);
+      }
+    language: text/javascript
+order: 2000

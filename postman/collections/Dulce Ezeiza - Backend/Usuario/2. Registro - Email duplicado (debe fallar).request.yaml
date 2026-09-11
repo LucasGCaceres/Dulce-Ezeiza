@@ -1,0 +1,29 @@
+$kind: http-request
+description: Corre esto DESPUES de '1. Registro Cliente (OK)', para que {{clienteEmail}} ya este usado. Verifica que el error de email duplicado nunca muestre el mensaje crudo de Sequelize/SQL Server.
+url: "{{baseUrl}}/usuarios/registro"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+        "nombre": "Otro",
+        "apellido": "Usuario",
+        "email": "{{clienteEmail}}",
+        "telefono": "1100000000",
+        "password": "{{clientePassword}}"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status 400 - email repetido', function () {
+          pm.response.to.have.status(400);
+      });
+
+      pm.test('El mensaje es generico, no expone detalle de SQL', function () {
+          const jsonData = pm.response.json();
+          pm.expect(jsonData.mensaje).to.eql('No se pudo registrar el usuario');
+      });
+    language: text/javascript
+order: 2000

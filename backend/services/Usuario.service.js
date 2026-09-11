@@ -83,3 +83,52 @@ exports.login = async function (datos) {
 
     return { token: token, usuario: usuarioSeguro };
 };
+
+// ------------------------------------------------------------
+//  EDITAR PERFIL: el usuario edita sus propios datos
+// ------------------------------------------------------------
+exports.editarPerfil = async function (usuarioId, datos) {
+    try {
+        const usuario = await Usuario.findByPk(usuarioId);
+
+        if (!usuario) {
+            throw new Error('El usuario no existe');
+        }
+
+        usuario.nombre = datos.nombre ?? usuario.nombre;
+        usuario.apellido = datos.apellido ?? usuario.apellido;
+        usuario.telefono = datos.telefono ?? usuario.telefono;
+        usuario.email = datos.email ?? usuario.email;
+        // password y rol no se tocan aca a proposito.
+
+        await usuario.save();
+
+        const usuarioSeguro = usuario.toJSON();
+        delete usuarioSeguro.password;
+
+        return usuarioSeguro;
+    } catch (e) {
+        console.log(e);
+        throw new Error('Error al actualizar el perfil');
+    }
+};
+
+// ------------------------------------------------------------
+//  BUSCAR un usuario por id (para ver el propio perfil)
+// ------------------------------------------------------------
+exports.obtenerPorId = async function (usuarioId) {
+    try {
+        const usuario = await Usuario.findByPk(usuarioId);
+
+        if (!usuario) {
+            return null;
+        }
+
+        const usuarioSeguro = usuario.toJSON();
+        delete usuarioSeguro.password;
+        return usuarioSeguro;
+    } catch (e) {
+        console.log(e);
+        throw new Error('Error al obtener el usuario');
+    }
+};

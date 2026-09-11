@@ -1,0 +1,30 @@
+$kind: http-request
+description: "Mandamos 'rol: admin' a mano en el body para probar que el registro publico lo ignora. La API va a responder 201 igual (el registro es exitoso), pero la prueba de verdad es entrar a SSMS y mirar la columna rol de esa fila: tiene que decir 'cliente'."
+url: "{{baseUrl}}/usuarios/registro"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+        "nombre": "Hacker",
+        "apellido": "DeMentira",
+        "email": "{{clienteEmailHacker}}",
+        "password": "{{clientePassword}}",
+        "rol": "admin"
+    }
+scripts:
+  - type: beforeRequest
+    code: |-
+      const email = 'hacker_' + Date.now() + '@test.com';
+      pm.collectionVariables.set('clienteEmailHacker', email);
+    language: text/javascript
+  - type: afterResponse
+    code: |-
+      pm.test('Status 201 (se crea igual, pero como cliente)', function () {
+          pm.response.to.have.status(201);
+      });
+      console.log('CHEQUEO MANUAL: entra a SSMS y confirma que el usuario con este email quedo con rol = cliente, NO admin, aunque el body haya mandado rol: admin.');
+    language: text/javascript
+order: 4000

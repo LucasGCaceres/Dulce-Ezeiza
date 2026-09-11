@@ -1,0 +1,29 @@
+$kind: http-request
+url: "{{baseUrl}}/categorias"
+method: POST
+headers:
+  Content-Type: application/json
+  x-access-token: "{{tokenAdmin}}"
+body:
+  type: json
+  content: |-
+    {
+        "nombre": "{{categoriaNombre}}",
+        "descripcion": "Categoria creada por la coleccion de pruebas",
+        "activa": true
+    }
+scripts:
+  - type: beforeRequest
+    code: pm.collectionVariables.set('categoriaNombre', 'Categoria Prueba ' + Date.now());
+    language: text/javascript
+  - type: afterResponse
+    code: |-
+      pm.test('Status 201', function () {
+          pm.response.to.have.status(201);
+      });
+      const jsonData = pm.response.json();
+      if (jsonData.categoria && jsonData.categoria.id) {
+          pm.collectionVariables.set('categoriaId', jsonData.categoria.id);
+      }
+    language: text/javascript
+order: 1000

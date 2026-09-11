@@ -1,0 +1,25 @@
+$kind: http-request
+url: "{{baseUrl}}/usuarios/registro"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+        "nombre": "Incompleto",
+        "apellido": "SinPassword",
+        "email": "no-importa@test.com"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status 400', function () {
+          pm.response.to.have.status(400);
+      });
+      pm.test('Avisa que falta password', function () {
+          const jsonData = pm.response.json();
+          pm.expect(jsonData.mensaje).to.include('password');
+      });
+    language: text/javascript
+order: 3000

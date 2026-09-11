@@ -25,6 +25,23 @@ exports.crear = async function (datos) {
 };
 
 // ------------------------------------------------------------
+//  LISTAR las consultas de UN usuario (para su propio historial)
+// ------------------------------------------------------------
+exports.obtenerPorUsuario = async function (usuarioId) {
+    try {
+        const consultas = await Consulta.findAll({
+            where: { usuarioId: usuarioId },
+            include: [{ model: Producto }],
+            order: [['fecha', 'DESC']]
+        });
+        return consultas;
+    } catch (e) {
+        console.log(e);
+        throw new Error('Error al obtener tus consultas');
+    }
+};
+
+// ------------------------------------------------------------
 //  LISTAR todas las consultas (para el admin)
 // ------------------------------------------------------------
 // Opcionalmente filtra por estado: { estado: 'pendiente' }

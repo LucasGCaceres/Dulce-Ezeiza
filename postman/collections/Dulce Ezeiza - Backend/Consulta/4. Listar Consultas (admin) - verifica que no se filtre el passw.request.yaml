@@ -1,0 +1,25 @@
+$kind: http-request
+name: 4. Listar Consultas (admin) - verifica que no se filtre el password
+description: "Este test confirma que el 'attributes: { exclude: [password] }' que agregamos en Consulta.service.js funciona: el admin puede ver quien mando cada consulta, pero nunca el hash de la contraseña."
+url: "{{baseUrl}}/consultas"
+method: GET
+headers:
+  x-access-token: "{{tokenAdmin}}"
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status 200', function () {
+          pm.response.to.have.status(200);
+      });
+
+      const consultas = pm.response.json();
+
+      pm.test('Cada consulta trae su Usuario, y ese Usuario NO trae password', function () {
+          pm.expect(consultas).to.be.an('array');
+          consultas.forEach(function (c) {
+              pm.expect(c.Usuario).to.not.be.undefined;
+              pm.expect(c.Usuario.password).to.be.undefined;
+          });
+      });
+    language: text/javascript
+order: 4000

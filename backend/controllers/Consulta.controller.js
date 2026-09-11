@@ -37,6 +37,19 @@ exports.crear = async function (req, res) {
 };
 
 // ------------------------------------------------------------
+//  MIS CONSULTAS: GET /api/consultas/mis-consultas  (cliente logueado)
+// ------------------------------------------------------------
+exports.obtenerMisConsultas = async function (req, res) {
+    try {
+        const consultas = await consultaService.obtenerPorUsuario(req.usuarioId);
+        return res.status(200).json(consultas);
+    } catch (e) {
+        console.log(e);
+        return res.status(400).json({ mensaje: 'No se pudieron obtener tus consultas' });
+    }
+};
+
+// ------------------------------------------------------------
 //  LISTAR: GET /api/consultas?estado=pendiente  (admin)
 // ------------------------------------------------------------
 exports.obtenerTodas = async function (req, res) {
