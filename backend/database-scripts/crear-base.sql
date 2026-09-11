@@ -31,7 +31,8 @@ CREATE TABLE Usuarios (
     email NVARCHAR(150) NOT NULL UNIQUE,   -- no se permiten emails duplicados
     telefono NVARCHAR(50),                 -- opcional
     password NVARCHAR(255) NOT NULL,       -- se guarda el hash de bcrypt
-    fecha DATETIME DEFAULT GETDATE()
+    fecha DATETIME DEFAULT GETDATE(),
+    rol NVARCHAR(20) NOT NULL DEFAULT 'cliente'
 );
 GO
 
