@@ -33,8 +33,8 @@ exports.registrar = async function (req, res) {
             mensaje: 'Usuario registrado correctamente'
         });
     } catch (e) {
-        // 400 = error del lado del cliente (ej: email repetido).
-        return res.status(400).json({ mensaje: e.message });
+        console.log(e); // el detalle completo queda en el server, nunca va al cliente
+        return res.status(400).json({ mensaje: 'No se pudo registrar el usuario' });
     }
 };
 
@@ -68,7 +68,7 @@ exports.login = async function (req, res) {
             mensaje: 'Login exitoso'
         });
     } catch (e) {
-        // 401 = "Unauthorized". Credenciales invalidas.
-        return res.status(401).json({ mensaje: e.message });
+        console.log(e);
+        return res.status(401).json({ mensaje: 'Email o contraseña inválidos' });
     }
 };

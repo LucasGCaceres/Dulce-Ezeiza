@@ -1,6 +1,7 @@
 // Define las relaciones entre los models de Sequelize.
 // Se importa UNA vez al arrancar la app (desde app.js), despues de la conexion.
 
+const Usuario = require('./Usuario.model');
 const Categoria = require('./Categoria.model');
 const Producto = require('./Producto.model');
 const Consulta = require('./Consulta.model');
@@ -10,9 +11,12 @@ Categoria.hasMany(Producto, { foreignKey: 'categoriaId' });
 Producto.belongsTo(Categoria, { foreignKey: 'categoriaId' });
 
 // --- Relacion Producto 1..N Consulta (OPCIONAL) ---
-// Un producto puede tener muchas consultas; una consulta puede pertenecer
-// a un producto o a ninguno (productoId null = consulta general).
 Producto.hasMany(Consulta, { foreignKey: 'productoId' });
 Consulta.belongsTo(Producto, { foreignKey: 'productoId' });
 
-module.exports = { Categoria, Producto, Consulta };
+// --- Relacion Usuario 1..N Consulta ---
+// Toda consulta pertenece a un usuario logueado.
+Usuario.hasMany(Consulta, { foreignKey: 'usuarioId' });
+Consulta.belongsTo(Usuario, { foreignKey: 'usuarioId' });
+
+module.exports = { Categoria, Producto, Consulta, Usuario };

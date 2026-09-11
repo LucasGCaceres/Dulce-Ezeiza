@@ -4,8 +4,8 @@ const router = express.Router();
 const consultaController = require('../../controllers/Consulta.controller');
 const verificarToken = require('../../middlewares/Autorizacion.middlewares');
 
-// POST /api/consultas             -> crear consulta (publico, del visitante)
-router.post('/', consultaController.crear);
+// POST /api/consultas -> crear consulta (requiere estar logueado)
+router.post('/', verificarToken, consultaController.crear);
 
 // GET  /api/consultas?estado=...  -> listar todas (admin)
 router.get('/', verificarToken, consultaController.obtenerTodas);

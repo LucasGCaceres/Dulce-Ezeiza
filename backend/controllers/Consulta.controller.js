@@ -3,6 +3,9 @@ const consultaService = require('../services/Consulta.service');
 // ------------------------------------------------------------
 //  CREAR: POST /api/consultas  (publico, lo usa el visitante)
 // ------------------------------------------------------------
+// ------------------------------------------------------------
+//  CREAR: POST /api/consultas  (requiere estar logueado, Escenario B)
+// ------------------------------------------------------------
 exports.crear = async function (req, res) {
     const datos = {
         nombre: req.body.nombre,
@@ -10,7 +13,8 @@ exports.crear = async function (req, res) {
         telefono: req.body.telefono,
         asunto: req.body.asunto,
         mensaje: req.body.mensaje,
-        productoId: req.body.productoId
+        productoId: req.body.productoId,
+        usuarioId: req.usuarioId   // viene del token verificado, NUNCA del body
     };
 
     // Validacion: nombre, email, asunto y mensaje son obligatorios.
@@ -27,7 +31,8 @@ exports.crear = async function (req, res) {
             mensaje: 'Consulta enviada correctamente'
         });
     } catch (e) {
-        return res.status(400).json({ mensaje: e.message });
+        console.log(e);
+        return res.status(400).json({ mensaje: 'No se pudo enviar la consulta' });
     }
 };
 

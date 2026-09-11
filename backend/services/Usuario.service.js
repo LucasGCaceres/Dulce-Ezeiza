@@ -22,7 +22,8 @@ exports.registrar = async function (datos) {
             apellido: datos.apellido,
             email: datos.email,
             telefono: datos.telefono,
-            password: passwordHasheada  // guardamos el hash, no el original
+            password: passwordHasheada,  // guardamos el hash, no el original
+            rol: 'cliente'
         });
 
         // Firmamos un token con el id del usuario recien creado.
@@ -58,17 +59,24 @@ exports.login = async function (datos) {
         throw new Error('Email o contraseña inválidos');
     }
 
-    const passwordValida = bcrypt.compareSync(datos.password, usuario.password);
+    let token;
 
-    if (!passwordValida) {
+    try {
+        const passwordValida = bcrypt.compareSync(datos.password, usuario.password);
+
+        if (!passwordValida) {
+            throw new Error('Email o contraseña inválidos');
+        }
+
+        token = jwt.sign(
+            { id: usuario.id },
+            process.env.SECRET,
+            { expiresIn: 86400 }
+        );
+    } catch (e) {
+        console.log(e);
         throw new Error('Email o contraseña inválidos');
     }
-
-    const token = jwt.sign(
-        { id: usuario.id },
-        process.env.SECRET,
-        { expiresIn: 86400 }
-    );
 
     const usuarioSeguro = usuario.toJSON();
     delete usuarioSeguro.password;

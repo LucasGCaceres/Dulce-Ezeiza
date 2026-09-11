@@ -1,5 +1,6 @@
 const Consulta = require('../models/Consulta.model');
 const Producto = require('../models/Producto.model');
+const Usuario = require('../models/Usuario.model');
 
 // ------------------------------------------------------------
 //  CREAR una consulta (la manda un visitante desde el formulario)
@@ -12,7 +13,8 @@ exports.crear = async function (datos) {
             telefono: datos.telefono,
             asunto: datos.asunto,
             mensaje: datos.mensaje,
-            productoId: datos.productoId   // puede venir o no (opcional)
+            productoId: datos.productoId,
+            usuarioId: datos.usuarioId
             // estado no se manda: la base lo pone en 'pendiente' por default
         });
         return nuevaConsulta;
@@ -36,9 +38,11 @@ exports.obtenerTodas = async function (filtros = {}) {
 
         const consultas = await Consulta.findAll({
             where: where,
-            // Incluye el producto relacionado (si la consulta tiene uno).
-            include: [{ model: Producto }],
-            order: [['fecha', 'DESC']]   // las mas nuevas primero
+            include: [
+                { model: Producto },
+                { model: Usuario, attributes: { exclude: ['password'] } }
+            ],
+            order: [['fecha', 'DESC']]
         });
         return consultas;
     } catch (e) {
@@ -53,7 +57,10 @@ exports.obtenerTodas = async function (filtros = {}) {
 exports.obtenerPorId = async function (id) {
     try {
         const consulta = await Consulta.findByPk(id, {
-            include: [{ model: Producto }]
+            include: [
+                { model: Producto },
+                { model: Usuario, attributes: { exclude: ['password'] } }
+            ]
         });
         return consulta;
     } catch (e) {

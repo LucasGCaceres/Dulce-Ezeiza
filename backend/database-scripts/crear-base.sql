@@ -78,8 +78,11 @@ CREATE TABLE Consultas (
     asunto NVARCHAR(200) NOT NULL,
     mensaje NVARCHAR(2000) NOT NULL,
     estado NVARCHAR(20) NOT NULL DEFAULT 'pendiente',
+    usuarioId INT NOT NULL,
     productoId INT NULL,
     fecha DATETIME DEFAULT GETDATE(),
+    CONSTRAINT FK_Consultas_Usuarios FOREIGN KEY (usuarioId)
+        REFERENCES Usuarios(id),
     CONSTRAINT FK_Consultas_Productos FOREIGN KEY (productoId)
         REFERENCES Productos(id)
 );
