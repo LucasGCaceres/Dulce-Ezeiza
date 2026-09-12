@@ -1,5 +1,6 @@
 // Importamos el model para hablar con la tabla Categorias.
 const Categoria = require('../models/Categoria.model');
+const Producto = require('../models/Producto.model');
 
 // ------------------------------------------------------------
 //  CREAR una categoria (CREATE)
@@ -51,45 +52,69 @@ exports.obtenerPorId = async function (id) {
 //  EDITAR una categoria (UPDATE)
 // ------------------------------------------------------------
 exports.editar = async function (id, datos) {
+    let categoria;
+
     try {
-        // Primero buscamos la categoria que se quiere editar.
-        const categoria = await Categoria.findByPk(id);
-
-        // Si no existe, avisamos.
-        if (!categoria) {
-            throw new Error('La categoria no existe');
-        }
-
-        // Actualizamos solo los campos que llegaron (si no llega uno, deja el que ya tenia).
-        categoria.nombre = datos.nombre ?? categoria.nombre;
-        categoria.descripcion = datos.descripcion ?? categoria.descripcion;
-        categoria.activa = datos.activa ?? categoria.activa;
-
-        // save() guarda los cambios en la base (genera un UPDATE).
-        await categoria.save();
-        return categoria;
+        categoria = await Categoria.findByPk(id);
     } catch (e) {
         console.log(e);
-        throw new Error(e.message);
+        throw new Error('Error al buscar la categoria');
     }
+
+    if (!categoria) {
+        throw new Error('La categoria no existe');
+    }
+
+    categoria.nombre = datos.nombre ?? categoria.nombre;
+    categoria.descripcion = datos.descripcion ?? categoria.descripcion;
+    categoria.activa = datos.activa ?? categoria.activa;
+
+    try {
+        await categoria.save();
+    } catch (e) {
+        console.log(e);
+        throw new Error('No se pudo actualizar la categoria');
+    }
+
+    return categoria;
 };
 
 // ------------------------------------------------------------
 //  BORRAR una categoria (DELETE)
 // ------------------------------------------------------------
 exports.eliminar = async function (id) {
+    let categoria;
+
     try {
-        const categoria = await Categoria.findByPk(id);
-
-        if (!categoria) {
-            throw new Error('La categoria no existe');
-        }
-
-        // destroy() borra la fila de la base (genera un DELETE).
-        await categoria.destroy();
-        return true;
+        categoria = await Categoria.findByPk(id);
     } catch (e) {
         console.log(e);
-        throw new Error(e.message);
+        throw new Error('Error al buscar la categoria');
     }
+
+    if (!categoria) {
+        throw new Error('La categoria no existe');
+    }
+
+    let cantidadDeProductos;
+
+    try {
+        cantidadDeProductos = await Producto.count({ where: { categoriaId: id } });
+    } catch (e) {
+        console.log(e);
+        throw new Error('Error al verificar los productos de la categoria');
+    }
+
+    if (cantidadDeProductos > 0) {
+        throw new Error('No se puede eliminar la categoria: tiene productos asociados');
+    }
+
+    try {
+        await categoria.destroy();
+    } catch (e) {
+        console.log(e);
+        throw new Error('No se pudo eliminar la categoria');
+    }
+
+    return true;
 };

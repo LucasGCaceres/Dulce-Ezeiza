@@ -90,40 +90,60 @@ exports.obtenerPorId = async function (id) {
 //  CAMBIAR EL ESTADO de una consulta (pendiente/leida/respondida)
 // ------------------------------------------------------------
 exports.cambiarEstado = async function (id, nuevoEstado) {
+    // Validacion pura, sin tocar la base: no necesita try/catch.
+    const estadosValidos = ['pendiente', 'leida', 'respondida'];
+    if (!estadosValidos.includes(nuevoEstado)) {
+        throw new Error('Estado invalido. Debe ser: pendiente, leida o respondida');
+    }
+
+    let consulta;
+
     try {
-        // Validamos que el estado sea uno de los permitidos.
-        const estadosValidos = ['pendiente', 'leida', 'respondida'];
-        if (!estadosValidos.includes(nuevoEstado)) {
-            throw new Error('Estado invalido. Debe ser: pendiente, leida o respondida');
-        }
-
-        const consulta = await Consulta.findByPk(id);
-        if (!consulta) {
-            throw new Error('La consulta no existe');
-        }
-
-        consulta.estado = nuevoEstado;
-        await consulta.save();
-        return consulta;
+        consulta = await Consulta.findByPk(id);
     } catch (e) {
         console.log(e);
-        throw new Error(e.message);
+        throw new Error('Error al buscar la consulta');
     }
+
+    if (!consulta) {
+        throw new Error('La consulta no existe');
+    }
+
+    consulta.estado = nuevoEstado;
+
+    try {
+        await consulta.save();
+    } catch (e) {
+        console.log(e);
+        throw new Error('No se pudo actualizar el estado de la consulta');
+    }
+
+    return consulta;
 };
 
 // ------------------------------------------------------------
 //  ELIMINAR una consulta
 // ------------------------------------------------------------
 exports.eliminar = async function (id) {
+    let consulta;
+
     try {
-        const consulta = await Consulta.findByPk(id);
-        if (!consulta) {
-            throw new Error('La consulta no existe');
-        }
-        await consulta.destroy();
-        return true;
+        consulta = await Consulta.findByPk(id);
     } catch (e) {
         console.log(e);
-        throw new Error(e.message);
+        throw new Error('Error al buscar la consulta');
     }
+
+    if (!consulta) {
+        throw new Error('La consulta no existe');
+    }
+
+    try {
+        await consulta.destroy();
+    } catch (e) {
+        console.log(e);
+        throw new Error('No se pudo eliminar la consulta');
+    }
+
+    return true;
 };

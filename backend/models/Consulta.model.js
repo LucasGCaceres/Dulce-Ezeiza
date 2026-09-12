@@ -52,7 +52,20 @@ const Consulta = sequelize.define(
 
         fecha: {
             type: DataTypes.DATE
-        }
+        },
+
+        // Quien manda la consulta. OBLIGATORIO (Escenario B: hay que estar logueado).
+        usuarioId: {
+            type: DataTypes.INTEGER,
+            allowNull: false
+        },
+
+        // FK OPCIONAL a Producto (allowNull: true).
+        // Si la consulta es general, queda en null.
+        productoId: {
+            type: DataTypes.INTEGER,
+            allowNull: true
+        },
     },
     {
         tableName: 'Consultas',
