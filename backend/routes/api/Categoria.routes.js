@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const categoriaController = require('../../controllers/Categoria.controller');
-const verificarToken = require('../../middlewares/Autorizacion.middlewares');
+const { verificarToken, verificarAdmin } = require('../../middlewares/Autorizacion.middlewares');
 
 // Cada linea conecta un VERBO + RUTA con una funcion del controller.
 
@@ -14,12 +14,12 @@ router.get('/', categoriaController.obtenerTodas);
 router.get('/:id', categoriaController.obtenerPorId);
 
 // POST /api/categorias        -> crea una categoria nueva
-router.post('/', verificarToken, categoriaController.crear);
+router.post('/', verificarToken, verificarAdmin, categoriaController.crear);
 
 // PUT  /api/categorias/:id    -> edita la categoria con ese id
-router.put('/:id', verificarToken, categoriaController.editar);
+router.put('/:id', verificarToken, verificarAdmin, categoriaController.editar);
 
 // DELETE /api/categorias/:id  -> borra la categoria con ese id
-router.delete('/:id', verificarToken, categoriaController.eliminar);
+router.delete('/:id', verificarToken, verificarAdmin, categoriaController.eliminar);
 
 module.exports = router;

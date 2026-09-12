@@ -62,7 +62,8 @@ exports.login = async function (req, res) {
             usuario: {
                 id: usuario.id,
                 nombre: usuario.nombre,
-                email: usuario.email
+                email: usuario.email,
+                rol: usuario.rol
             },
             mensaje: 'Login exitoso'
         });

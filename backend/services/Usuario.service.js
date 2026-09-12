@@ -29,7 +29,7 @@ exports.registrar = async function (datos) {
         // Firmamos un token con el id del usuario recien creado.
         // El token es la "credencial" que despues prueba quien es.
         const token = jwt.sign(
-            { id: nuevoUsuario.id },
+            { id: nuevoUsuario.id , rol: nuevoUsuario.rol},
             process.env.SECRET,
             { expiresIn: 86400 }          // dura 86400 segundos = 24 horas
         );
@@ -69,7 +69,7 @@ exports.login = async function (datos) {
         }
 
         token = jwt.sign(
-            { id: usuario.id },
+            { id: usuario.id, rol: usuario.rol },
             process.env.SECRET,
             { expiresIn: 86400 }
         );

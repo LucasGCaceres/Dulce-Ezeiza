@@ -1,10 +1,7 @@
 // Middleware de autorizacion: valida el JWT antes de dejar pasar la
 // request a una ruta privada. Si no hay token o es invalido, corta
 // la cadena aca mismo con 401 (nunca llega al controller).
-//
-// Version corregida segun el apunte: cada respuesta de error lleva
-// un "return" antes, y el status es 401 (no 500) porque el problema
-// es que el CLIENTE no se identifico bien, no que el servidor fallo.
+
 const jwt = require('jsonwebtoken');
 
 const verificarToken = function (req, res, next) {
@@ -20,8 +17,22 @@ const verificarToken = function (req, res, next) {
         }
 
         req.usuarioId = decoded.id;
+        req.rol = decoded.rol;
         next();
     });
 };
 
-module.exports = verificarToken;
+// Se usa DESPUES de verificarToken. No es que no sepamos quien es
+// (eso ya lo resolvio verificarToken) -- es que su rol no le alcanza
+// para esta accion puntual. Por eso 403, no 401.
+const verificarAdmin = function (req, res, next) {
+    if (req.rol !== 'admin') {
+        return res.status(403).json({ mensaje: 'Se requiere rol de administrador.' });
+    }
+    next();
+};
+
+module.exports = {
+    verificarToken: verificarToken,
+    verificarAdmin: verificarAdmin
+};

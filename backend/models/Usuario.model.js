@@ -41,7 +41,13 @@ const Usuario = sequelize.define(
 
         fecha: {
             type: DataTypes.DATE
-        }
+        },
+
+        rol: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            defaultValue: 'cliente'
+        },
     },
     {
         tableName: 'Usuarios',   // fija el nombre exacto de la tabla
