@@ -1,6 +1,6 @@
 // El controller traduce HTTP: lee req, llama al service, responde con res.
 // NO tiene logica de negocio (esa vive en el service) ni SQL.
-const usuarioService = require('../services/usuario.service');
+const usuarioService = require('../services/Usuario.service');
 
 // ------------------------------------------------------------
 //  REGISTRAR: POST /api/usuarios/registro
@@ -131,5 +131,46 @@ exports.obtenerPerfil = async function (req, res) {
     } catch (e) {
         console.log(e);
         return res.status(400).json({ mensaje: 'No se pudo obtener el perfil' });
+    }
+};
+
+// ------------------------------------------------------------
+//  SOLICITAR RECUPERACION: POST /api/usuarios/recuperar-password
+// ------------------------------------------------------------
+exports.solicitarRecuperacion = async function (req, res) {
+    const { email } = req.body;
+
+    if (!email) {
+        return res.status(400).json({ mensaje: 'El email es obligatorio' });
+    }
+
+    try {
+        await usuarioService.solicitarRecuperacion(email);
+    } catch (e) {
+        console.log(e);
+        // No cambiamos la respuesta aunque esto falle: ver el porque en el service.
+    }
+
+    return res.status(200).json({
+        mensaje: 'Si el email está registrado, te enviamos instrucciones para recuperar tu contraseña'
+    });
+};
+
+// ------------------------------------------------------------
+//  RESETEAR PASSWORD: PUT /api/usuarios/resetear-password
+// ------------------------------------------------------------
+exports.resetearPassword = async function (req, res) {
+    const { token, passwordNueva } = req.body;
+
+    if (!token || !passwordNueva) {
+        return res.status(400).json({ mensaje: 'Faltan datos obligatorios' });
+    }
+
+    try {
+        await usuarioService.resetearPassword(token, passwordNueva);
+        return res.status(200).json({ mensaje: 'Contraseña actualizada correctamente' });
+    } catch (e) {
+        console.log(e);
+        return res.status(400).json({ mensaje: e.message });
     }
 };

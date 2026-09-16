@@ -48,6 +48,16 @@ const Usuario = sequelize.define(
             allowNull: false,
             defaultValue: 'cliente'
         },
+
+        resetPasswordToken: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+
+        resetPasswordExpira: {
+            type: DataTypes.DATE,
+            allowNull: true
+        },
     },
     {
         tableName: 'Usuarios',   // fija el nombre exacto de la tabla
