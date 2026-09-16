@@ -16,7 +16,6 @@ exports.registrar = async function (req, res) {
     };
 
     // Validacion minima en el backend: campos obligatorios presentes.
-    // (La consigna exige validar en front Y en back.)
     if (!datos.nombre || !datos.apellido || !datos.email || !datos.password) {
         return res.status(400).json({
             mensaje: 'Faltan datos obligatorios: nombre, apellido, email y password'
@@ -33,8 +32,8 @@ exports.registrar = async function (req, res) {
             mensaje: 'Usuario registrado correctamente'
         });
     } catch (e) {
-        // 400 = error del lado del cliente (ej: email repetido).
-        return res.status(400).json({ mensaje: e.message });
+        console.log(e); // el detalle completo queda en el server, nunca va al cliente
+        return res.status(400).json({ mensaje: 'No se pudo registrar el usuario' });
     }
 };
 
@@ -63,12 +62,54 @@ exports.login = async function (req, res) {
             usuario: {
                 id: usuario.id,
                 nombre: usuario.nombre,
-                email: usuario.email
+                email: usuario.email,
+                rol: usuario.rol
             },
             mensaje: 'Login exitoso'
         });
     } catch (e) {
-        // 401 = "Unauthorized". Credenciales invalidas.
-        return res.status(401).json({ mensaje: e.message });
+        console.log(e);
+        return res.status(401).json({ mensaje: 'Email o contraseña inválidos' });
+    }
+};
+
+// ------------------------------------------------------------
+//  EDITAR PERFIL: PUT /api/usuarios/perfil  (usuario logueado)
+// ------------------------------------------------------------
+exports.editarPerfil = async function (req, res) {
+    const datos = {
+        nombre: req.body.nombre,
+        apellido: req.body.apellido,
+        telefono: req.body.telefono,
+        email: req.body.email
+        // password y rol NUNCA se leen aca: password tiene su propio flujo
+        // y el rol no lo edita el propio usuario.
+    };
+
+    try {
+        const usuarioEditado = await usuarioService.editarPerfil(req.usuarioId, datos);
+        return res.status(200).json({
+            usuario: usuarioEditado,
+            mensaje: 'Perfil actualizado correctamente'
+        });
+    } catch (e) {
+        console.log(e);
+        return res.status(400).json({ mensaje: 'No se pudo actualizar el perfil' });
+    }
+};
+
+// ------------------------------------------------------------
+//  VER PERFIL: GET /api/usuarios/perfil  (usuario logueado)
+// ------------------------------------------------------------
+exports.obtenerPerfil = async function (req, res) {
+    try {
+        const usuario = await usuarioService.obtenerPorId(req.usuarioId);
+        if (!usuario) {
+            return res.status(404).json({ mensaje: 'Usuario no encontrado' });
+        }
+        return res.status(200).json(usuario);
+    } catch (e) {
+        console.log(e);
+        return res.status(400).json({ mensaje: 'No se pudo obtener el perfil' });
     }
 };

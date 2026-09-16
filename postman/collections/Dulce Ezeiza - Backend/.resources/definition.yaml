@@ -1,0 +1,17 @@
+$kind: collection
+description: "Coleccion de pruebas para el backend de Dulce Ezeiza. Corre las carpetas en orden: Usuario -> Categoria -> Producto -> Consulta. Antes de arrancar, completa las variables de coleccion adminEmail y adminPassword con el admin que creaste a mano en SSMS."
+variables:
+  baseUrl: http://localhost:8080/api
+  adminEmail: ""
+  adminPassword: ""
+  tokenAdmin: ""
+  tokenCliente: ""
+  clienteEmail: ""
+  clienteEmailHacker: ""
+  clientePassword: Cliente123!
+  categoriaId: ""
+  categoriaNombre: ""
+  categoriaNombreCliente: ""
+  productoId: ""
+  productoNombre: ""
+  consultaId: ""

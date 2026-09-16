@@ -1,0 +1,13 @@
+$kind: http-request
+url: "{{baseUrl}}/consultas/{{consultaId}}"
+method: DELETE
+headers:
+  x-access-token: "{{tokenAdmin}}"
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status 200', function () {
+          pm.response.to.have.status(200);
+      });
+    language: text/javascript
+order: 9000

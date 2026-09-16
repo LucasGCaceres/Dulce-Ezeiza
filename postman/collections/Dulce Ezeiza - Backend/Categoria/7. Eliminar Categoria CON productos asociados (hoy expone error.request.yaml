@@ -1,0 +1,16 @@
+$kind: http-request
+name: 7. Eliminar Categoria CON productos asociados (hoy expone error crudo)
+description: Corre esto DESPUES de crear un Producto en la carpeta Producto que use {{categoriaId}}. Hoy no existe la regla de negocio del punto 7 ('no borrar categoria con productos'), asi que lo que la frena es directamente la foreign key de SQL Server -- y el mensaje de error todavia se manda crudo al cliente porque Categoria.service.js hace throw new Error(e.message) en el catch de eliminar/editar, el mismo patron que ya corregimos en Usuario. Buen candidato para resolver junto con el punto 7.
+url: "{{baseUrl}}/categorias/{{categoriaId}}"
+method: DELETE
+headers:
+  x-access-token: "{{tokenAdmin}}"
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Hoy falla (FK), pero el mensaje no esta sanitizado todavia', function () {
+          pm.expect(pm.response.code).to.be.oneOf([400, 500]);
+      });
+      console.log('Mira el body de esta respuesta: probablemente muestre el texto crudo del error de SQL Server (violacion de FK). Es el mismo problema de e.message que ya arreglamos en Usuario y Consulta, pero todavia no en Categoria/Producto. Anotado para el punto 7 de tu lista.');
+    language: text/javascript
+order: 7000

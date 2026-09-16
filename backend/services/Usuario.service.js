@@ -22,13 +22,14 @@ exports.registrar = async function (datos) {
             apellido: datos.apellido,
             email: datos.email,
             telefono: datos.telefono,
-            password: passwordHasheada  // guardamos el hash, no el original
+            password: passwordHasheada,  // guardamos el hash, no el original
+            rol: 'cliente'
         });
 
         // Firmamos un token con el id del usuario recien creado.
         // El token es la "credencial" que despues prueba quien es.
         const token = jwt.sign(
-            { id: nuevoUsuario.id },
+            { id: nuevoUsuario.id , rol: nuevoUsuario.rol},
             process.env.SECRET,
             { expiresIn: 86400 }          // dura 86400 segundos = 24 horas
         );
@@ -45,36 +46,89 @@ exports.registrar = async function (datos) {
 //  LOGIN: verificar email + contraseña, devolver token
 // ------------------------------------------------------------
 exports.login = async function (datos) {
+    let usuario;
+
     try {
-        // Buscamos el usuario por su email. findOne devuelve uno o null.
-        const usuario = await Usuario.findOne({
-            where: { email: datos.email }
-        });
+        usuario = await Usuario.findOne({ where: { email: datos.email } });
+    } catch (e) {
+        console.log(e);
+        throw new Error('Error al iniciar sesión');
+    }
 
-        // Si no existe ningun usuario con ese email, error.
-        if (!usuario) {
-            throw new Error('Email o contraseña inválidos');
-        }
+    if (!usuario) {
+        throw new Error('Email o contraseña inválidos');
+    }
 
-        // Comparamos la contraseña que mandaron contra el hash guardado.
-        // bcrypt sabe comparar el texto plano con el hash sin "des-hashear".
+    let token;
+
+    try {
         const passwordValida = bcrypt.compareSync(datos.password, usuario.password);
 
         if (!passwordValida) {
             throw new Error('Email o contraseña inválidos');
         }
 
-        // Si todo esta bien, firmamos y devolvemos un token nuevo.
-        const token = jwt.sign(
-            { id: usuario.id },
+        token = jwt.sign(
+            { id: usuario.id, rol: usuario.rol },
             process.env.SECRET,
             { expiresIn: 86400 }
         );
-
-        return { token: token, usuario: usuario };
-
     } catch (e) {
         console.log(e);
-        throw new Error(e.message);
+        throw new Error('Email o contraseña inválidos');
+    }
+
+    const usuarioSeguro = usuario.toJSON();
+    delete usuarioSeguro.password;
+
+    return { token: token, usuario: usuarioSeguro };
+};
+
+// ------------------------------------------------------------
+//  EDITAR PERFIL: el usuario edita sus propios datos
+// ------------------------------------------------------------
+exports.editarPerfil = async function (usuarioId, datos) {
+    try {
+        const usuario = await Usuario.findByPk(usuarioId);
+
+        if (!usuario) {
+            throw new Error('El usuario no existe');
+        }
+
+        usuario.nombre = datos.nombre ?? usuario.nombre;
+        usuario.apellido = datos.apellido ?? usuario.apellido;
+        usuario.telefono = datos.telefono ?? usuario.telefono;
+        usuario.email = datos.email ?? usuario.email;
+        // password y rol no se tocan aca a proposito.
+
+        await usuario.save();
+
+        const usuarioSeguro = usuario.toJSON();
+        delete usuarioSeguro.password;
+
+        return usuarioSeguro;
+    } catch (e) {
+        console.log(e);
+        throw new Error('Error al actualizar el perfil');
+    }
+};
+
+// ------------------------------------------------------------
+//  BUSCAR un usuario por id (para ver el propio perfil)
+// ------------------------------------------------------------
+exports.obtenerPorId = async function (usuarioId) {
+    try {
+        const usuario = await Usuario.findByPk(usuarioId);
+
+        if (!usuario) {
+            return null;
+        }
+
+        const usuarioSeguro = usuario.toJSON();
+        delete usuarioSeguro.password;
+        return usuarioSeguro;
+    } catch (e) {
+        console.log(e);
+        throw new Error('Error al obtener el usuario');
     }
 };

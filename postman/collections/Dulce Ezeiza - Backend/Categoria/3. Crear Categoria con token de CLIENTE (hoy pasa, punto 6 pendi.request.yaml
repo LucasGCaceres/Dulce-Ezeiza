@@ -1,0 +1,27 @@
+$kind: http-request
+name: 3. Crear Categoria con token de CLIENTE (hoy pasa, punto 6 pendiente)
+description: "OJO: este test hoy PASA con 201, y esta bien que asi sea, porque el middleware actual (verificarToken) solo chequea 'hay un token valido', no el rol. Cuando hagamos el punto 6 (middleware con roles), esta misma request va a tener que empezar a devolver 403, y en ese momento vas a tener que actualizar este test."
+url: "{{baseUrl}}/categorias"
+method: POST
+headers:
+  Content-Type: application/json
+  x-access-token: "{{tokenCliente}}"
+body:
+  type: json
+  content: |-
+    {
+        "nombre": "{{categoriaNombreCliente}}",
+        "descripcion": "Creada con token de cliente",
+        "activa": true
+    }
+scripts:
+  - type: beforeRequest
+    code: pm.collectionVariables.set('categoriaNombreCliente', 'Categoria Cliente ' + Date.now());
+    language: text/javascript
+  - type: afterResponse
+    code: |-
+      pm.test('Hoy responde 201 (todavia no hay chequeo de rol)', function () {
+          pm.response.to.have.status(201);
+      });
+    language: text/javascript
+order: 3000

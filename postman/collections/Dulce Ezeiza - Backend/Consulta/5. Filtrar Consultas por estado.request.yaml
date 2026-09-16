@@ -1,0 +1,15 @@
+$kind: http-request
+url: "{{baseUrl}}/consultas?estado=pendiente"
+method: GET
+headers:
+  x-access-token: "{{tokenAdmin}}"
+queryParams:
+  estado: pendiente
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status 200', function () {
+          pm.response.to.have.status(200);
+      });
+    language: text/javascript
+order: 5000

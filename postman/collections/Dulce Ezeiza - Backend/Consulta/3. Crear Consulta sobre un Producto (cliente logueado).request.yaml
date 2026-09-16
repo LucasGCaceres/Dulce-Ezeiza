@@ -1,0 +1,25 @@
+$kind: http-request
+description: Necesita {{productoId}} ya creado (carpeta Producto, request 1).
+url: "{{baseUrl}}/consultas"
+method: POST
+headers:
+  Content-Type: application/json
+  x-access-token: "{{tokenCliente}}"
+body:
+  type: json
+  content: |-
+    {
+        "nombre": "Cliente De Prueba",
+        "email": "{{clienteEmail}}",
+        "asunto": "Pregunta sobre un producto",
+        "mensaje": "Este producto tiene gluten de verdad?",
+        "productoId": "{{productoId}}"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status 201', function () {
+          pm.response.to.have.status(201);
+      });
+    language: text/javascript
+order: 3000

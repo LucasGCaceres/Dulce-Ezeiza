@@ -1,0 +1,25 @@
+$kind: http-request
+description: "IMPORTANTE: antes de correr esto, completa las variables de coleccion adminEmail y adminPassword con las credenciales del admin que creaste a mano en SSMS."
+url: "{{baseUrl}}/usuarios/login"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+        "email": "{{adminEmail}}",
+        "password": "{{adminPassword}}"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status 200', function () {
+          pm.response.to.have.status(200);
+      });
+      const jsonData = pm.response.json();
+      if (jsonData.token) {
+          pm.collectionVariables.set('tokenAdmin', jsonData.token);
+      }
+    language: text/javascript
+order: 7000

@@ -1,0 +1,46 @@
+$kind: http-request
+description: Registra un cliente nuevo. Guarda el email generado en {{clienteEmail}} y el token en {{tokenCliente}} para usarlos en el resto de las requests.
+url: "{{baseUrl}}/usuarios/registro"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+        "nombre": "Cliente",
+        "apellido": "De Prueba",
+        "email": "{{clienteEmail}}",
+        "telefono": "1122334455",
+        "password": "{{clientePassword}}"
+    }
+scripts:
+  - type: beforeRequest
+    code: |-
+      // Generamos un email unico cada vez que se corre esta request,
+      // porque el email es UNIQUE en la base y si repetis el mismo
+      // vas a chocar con el test de 'email duplicado' antes de tiempo.
+      const email = 'cliente_' + Date.now() + '@test.com';
+      pm.collectionVariables.set('clienteEmail', email);
+    language: text/javascript
+  - type: afterResponse
+    code: |-
+      pm.test('Status 201 - Created', function () {
+          pm.response.to.have.status(201);
+      });
+
+      const jsonData = pm.response.json();
+
+      pm.test('La respuesta trae un token', function () {
+          pm.expect(jsonData.token).to.be.a('string');
+      });
+
+      pm.test('La respuesta NO incluye datos del usuario (ni password)', function () {
+          pm.expect(jsonData.usuario).to.be.undefined;
+      });
+
+      if (jsonData.token) {
+          pm.collectionVariables.set('tokenCliente', jsonData.token);
+      }
+    language: text/javascript
+order: 1000
