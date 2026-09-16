@@ -7,6 +7,7 @@ const router = express.Router();
 
 const usuarioRoutes = require('./api/Usuario.routes');
 const categoriaRoutes = require('./api/Categoria.routes');
+const productoRoutes = require('./api/Producto.routes');
 
 // Todo lo que empiece con /usuarios lo maneja usuarioRoutes.
 // Combinado con el prefijo /api de app.js, queda /api/usuarios/...
@@ -14,5 +15,8 @@ router.use('/usuarios', usuarioRoutes);
 
 // Todo lo que empiece con /categorias lo maneja categoriaRoutes.
 router.use('/categorias', categoriaRoutes);
+
+// Todo lo que empiece con /productos lo maneja productoRoutes.
+router.use('/productos', productoRoutes);
 
 module.exports = router;
