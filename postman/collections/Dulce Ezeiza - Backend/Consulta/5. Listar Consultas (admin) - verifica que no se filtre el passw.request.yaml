@@ -1,6 +1,7 @@
 $kind: http-request
 name: 4. Listar Consultas (admin) - verifica que no se filtre el password
-description: "Este test confirma que el 'attributes: { exclude: [password] }' que agregamos en Consulta.service.js funciona: el admin puede ver quien mando cada consulta, pero nunca el hash de la contraseña."
+description: "Este test confirma que el 'attributes: { exclude: [password] }' que agregamos en Consulta.service.js funciona: el admin puede ver quien mando 
+  cada consulta, pero nunca el hash de la contraseña."
 url: "{{baseUrl}}/consultas"
 method: GET
 headers:
@@ -22,4 +23,4 @@ scripts:
           });
       });
     language: text/javascript
-order: 4000
+order: 5000

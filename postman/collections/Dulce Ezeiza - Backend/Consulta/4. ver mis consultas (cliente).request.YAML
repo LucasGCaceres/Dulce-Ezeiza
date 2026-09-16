@@ -1,0 +1,19 @@
+$kind: http-request
+description: "Corre esto DESPUES de las dos requests anteriores (crear consulta general y sobre un producto)."
+url: "{{baseUrl}}/consultas/mis-consultas"
+method: GET
+headers:
+  x-access-token: "{{tokenCliente}}"
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status 200', function () {
+          pm.response.to.have.status(200);
+      });
+      const consultas = pm.response.json();
+      pm.test('Devuelve un array con al menos las 2 consultas creadas arriba', function () {
+          pm.expect(consultas).to.be.an('array');
+          pm.expect(consultas.length).to.be.at.least(2);
+      });
+    language: text/javascript
+order: 4000

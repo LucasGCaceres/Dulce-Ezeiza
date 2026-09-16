@@ -1,6 +1,7 @@
 $kind: http-request
-name: 3. Crear Categoria con token de CLIENTE (hoy pasa, punto 6 pendiente)
-description: "OJO: este test hoy PASA con 201, y esta bien que asi sea, porque el middleware actual (verificarToken) solo chequea 'hay un token valido', no el rol. Cuando hagamos el punto 6 (middleware con roles), esta misma request va a tener que empezar a devolver 403, y en ese momento vas a tener que actualizar este test."
+description: "Desde que armamos el punto 6 (verificarAdmin), un token de cliente valido ya no alcanza para crear una categoria: la autenticacion es correcta 
+  (sabemos quien es), pero la autorizacion falla (no tiene el rol). Si esto te sigue dando 201, revisa que hayas vuelto a hacer login DESPUES de agregar rol 
+  al payload del JWT -- un token viejo no tiene rol adentro."
 url: "{{baseUrl}}/categorias"
 method: POST
 headers:
@@ -20,8 +21,8 @@ scripts:
     language: text/javascript
   - type: afterResponse
     code: |-
-      pm.test('Hoy responde 201 (todavia no hay chequeo de rol)', function () {
-          pm.response.to.have.status(201);
+      pm.test('Status 403 - rol insuficiente', function () {
+          pm.response.to.have.status(403);
       });
     language: text/javascript
 order: 3000

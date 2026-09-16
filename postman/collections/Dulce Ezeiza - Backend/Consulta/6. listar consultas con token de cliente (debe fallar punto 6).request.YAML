@@ -1,0 +1,14 @@
+$kind: http-request
+description: "Listar TODAS las consultas es admin-only. Un cliente logueado tiene que poder ver su propio historial (mis-consultas), pero no el de todos."
+url: "{{baseUrl}}/consultas"
+method: GET
+headers:
+  x-access-token: "{{tokenCliente}}"
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status 403 - rol insuficiente', function () {
+          pm.response.to.have.status(403);
+      });
+    language: text/javascript
+order: 6000

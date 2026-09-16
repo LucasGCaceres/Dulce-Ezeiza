@@ -1,0 +1,28 @@
+$kind: http-request
+description: "Prueba que editar el perfil solo toca los campos permitidos (nombre, apellido, telefono, email) y nunca password ni rol."
+url: "{{baseUrl}}/usuarios/perfil"
+method: PUT
+headers:
+  Content-Type: application/json
+  x-access-token: "{{tokenCliente}}"
+body:
+  type: json
+  content: |-
+    {
+        "telefono": "3399999999"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status 200', function () {
+          pm.response.to.have.status(200);
+      });
+      const jsonData = pm.response.json();
+      pm.test('El telefono se actualizo', function () {
+          pm.expect(jsonData.usuario.telefono).to.eql('3399999999');
+      });
+      pm.test('El rol no cambio aunque no lo mandamos', function () {
+          pm.expect(jsonData.usuario.rol).to.eql('cliente');
+      });
+    language: text/javascript
+order: 9000

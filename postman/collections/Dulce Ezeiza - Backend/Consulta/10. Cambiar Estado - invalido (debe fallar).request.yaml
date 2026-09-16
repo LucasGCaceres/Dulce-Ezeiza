@@ -21,4 +21,4 @@ scripts:
           pm.expect(jsonData.mensaje).to.include('Estado invalido');
       });
     language: text/javascript
-order: 8000
+order: 10000

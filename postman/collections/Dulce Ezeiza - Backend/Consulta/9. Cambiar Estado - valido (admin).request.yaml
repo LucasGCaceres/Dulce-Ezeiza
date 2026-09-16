@@ -1,8 +1,15 @@
 $kind: http-request
-url: "{{baseUrl}}/consultas/{{consultaId}}"
-method: DELETE
+url: "{{baseUrl}}/consultas/{{consultaId}}/estado"
+method: PATCH
 headers:
+  Content-Type: application/json
   x-access-token: "{{tokenAdmin}}"
+body:
+  type: json
+  content: |-
+    {
+        "estado": "leida"
+    }
 scripts:
   - type: afterResponse
     code: |-
