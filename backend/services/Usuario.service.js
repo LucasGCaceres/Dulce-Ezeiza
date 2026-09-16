@@ -114,6 +114,41 @@ exports.editarPerfil = async function (usuarioId, datos) {
 };
 
 // ------------------------------------------------------------
+//  CAMBIAR PASSWORD: requiere conocer la actual
+// ------------------------------------------------------------
+exports.cambiarPassword = async function (usuarioId, passwordActual, passwordNueva) {
+    let usuario;
+
+    try {
+        usuario = await Usuario.findByPk(usuarioId);
+    } catch (e) {
+        console.log(e);
+        throw new Error('Error al buscar el usuario');
+    }
+
+    if (!usuario) {
+        throw new Error('El usuario no existe');
+    }
+
+    const passwordValida = bcrypt.compareSync(passwordActual, usuario.password);
+
+    if (!passwordValida) {
+        throw new Error('La contraseña actual es incorrecta');
+    }
+
+    usuario.password = bcrypt.hashSync(passwordNueva, 8);
+
+    try {
+        await usuario.save();
+    } catch (e) {
+        console.log(e);
+        throw new Error('No se pudo actualizar la contraseña');
+    }
+
+    return true;
+};
+
+// ------------------------------------------------------------
 //  BUSCAR un usuario por id (para ver el propio perfil)
 // ------------------------------------------------------------
 exports.obtenerPorId = async function (usuarioId) {

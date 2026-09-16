@@ -17,5 +17,7 @@ router.get('/perfil', verificarToken, usuarioController.obtenerPerfil);
 // PUT  /api/usuarios/perfil    -> el usuario logueado edita su propio perfil
 router.put('/perfil', verificarToken, usuarioController.editarPerfil);
 
+router.put('/cambiar-password', verificarToken, usuarioController.cambiarPassword);
+
 // Exportamos el router para que api.js lo pueda montar.
 module.exports = router;

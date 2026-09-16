@@ -99,6 +99,26 @@ exports.editarPerfil = async function (req, res) {
 };
 
 // ------------------------------------------------------------
+//  CAMBIAR PASSWORD: PUT /api/usuarios/cambiar-password  (usuario logueado)
+// ------------------------------------------------------------
+exports.cambiarPassword = async function (req, res) {
+    const passwordActual = req.body.passwordActual;
+    const passwordNueva = req.body.passwordNueva;
+
+    if (!passwordActual || !passwordNueva) {
+        return res.status(400).json({ mensaje: 'Faltan la contraseña actual y la nueva' });
+    }
+
+    try {
+        await usuarioService.cambiarPassword(req.usuarioId, passwordActual, passwordNueva);
+        return res.status(200).json({ mensaje: 'Contraseña actualizada correctamente' });
+    } catch (e) {
+        console.log(e);
+        return res.status(400).json({ mensaje: e.message });
+    }
+};
+
+// ------------------------------------------------------------
 //  VER PERFIL: GET /api/usuarios/perfil  (usuario logueado)
 // ------------------------------------------------------------
 exports.obtenerPerfil = async function (req, res) {

@@ -13,9 +13,10 @@ exports.crear = async function (datos) {
             descripcion: datos.descripcion,
             precio: datos.precio,
             categoriaId: datos.categoriaId,
-            disponible: datos.disponible,
-            destacado: datos.destacado,
-            sinGluten: datos.sinGluten
+            disponible: datos.disponible ?? true,
+            activo: datos.activo ?? true,
+            destacado: datos.destacado ?? false,
+            sinGluten: datos.sinGluten ?? false
         });
         return nuevoProducto;
     } catch (e) {
@@ -48,7 +49,6 @@ exports.obtenerTodos = async function (filtros = {}) {
             where.activo = true;
         }
 
-        // Filtro por aptos sin TACC.
         if (filtros.sinGluten) {
             where.sinGluten = true;
         }
@@ -85,76 +85,42 @@ exports.obtenerPorId = async function (id) {
 //  EDITAR un producto
 // ------------------------------------------------------------
 exports.editar = async function (id, datos) {
-    let producto;
-
     try {
-        producto = await Producto.findByPk(id);
-    } catch (e) {
-        console.log(e);
-        throw new Error('Error al buscar el producto');
-    }
+        const producto = await Producto.findByPk(id);
+        if (!producto) {
+            throw new Error('El producto no existe');
+        }
 
-    if (!producto) {
-        throw new Error('El producto no existe');
-    }
+        producto.nombre = datos.nombre ?? producto.nombre;
+        producto.descripcion = datos.descripcion ?? producto.descripcion;
+        producto.precio = datos.precio ?? producto.precio;
+        producto.categoriaId = datos.categoriaId ?? producto.categoriaId;
+        producto.disponible = datos.disponible ?? producto.disponible;
+        producto.activo = datos.activo ?? producto.activo;
+        producto.destacado = datos.destacado ?? producto.destacado;
+        producto.sinGluten = datos.sinGluten ?? producto.sinGluten;
 
-    producto.nombre = datos.nombre ?? producto.nombre;
-    producto.descripcion = datos.descripcion ?? producto.descripcion;
-    producto.precio = datos.precio ?? producto.precio;
-    producto.categoriaId = datos.categoriaId ?? producto.categoriaId;
-    producto.disponible = datos.disponible ?? producto.disponible;
-    producto.activo = datos.activo ?? producto.activo;
-    producto.destacado = datos.destacado ?? producto.destacado;
-    producto.sinGluten = datos.sinGluten ?? producto.sinGluten;
-
-    try {
         await producto.save();
+        return producto;
     } catch (e) {
         console.log(e);
-        throw new Error('No se pudo actualizar el producto');
+        throw new Error(e.message);
     }
-
-    return producto;
 };
 
 // ------------------------------------------------------------
 //  ELIMINAR un producto
 // ------------------------------------------------------------
 exports.eliminar = async function (id) {
-    let producto;
-
     try {
-        producto = await Producto.findByPk(id);
-    } catch (e) {
-        console.log(e);
-        throw new Error('Error al buscar el producto');
-    }
-
-    if (!producto) {
-        throw new Error('El producto no existe');
-    }
-
-    // Regla de negocio, misma idea que en Categoria: no se puede borrar
-    // un producto que ya tiene consultas asociadas.
-    let cantidadDeConsultas;
-
-    try {
-        cantidadDeConsultas = await Consulta.count({ where: { productoId: id } });
-    } catch (e) {
-        console.log(e);
-        throw new Error('Error al verificar las consultas del producto');
-    }
-
-    if (cantidadDeConsultas > 0) {
-        throw new Error('No se puede eliminar el producto: tiene consultas asociadas');
-    }
-
-    try {
+        const producto = await Producto.findByPk(id);
+        if (!producto) {
+            throw new Error('El producto no existe');
+        }
         await producto.destroy();
+        return true;
     } catch (e) {
         console.log(e);
-        throw new Error('No se pudo eliminar el producto');
+        throw new Error(e.message);
     }
-
-    return true;
 };
