@@ -1,0 +1,38 @@
+$kind: http-request
+description: Agrega 3 imagenes de una con "urls". El producto ya tenia 1 imagen del punto anterior, asi que ahora deberia tener 4 en total. Guarda los ids en {{imagenId2}}, {{imagenId3}} y {{imagenId4}}.
+url: "{{baseUrl}}/productos/{{productoId}}/imagenes"
+method: POST
+headers:
+  Content-Type: application/json
+  x-access-token: "{{tokenAdmin}}"
+body:
+  type: json
+  content: |-
+    {
+        "urls": [
+            "https://ejemplo.com/fotos/torta-chocolate-2.jpg",
+            "https://ejemplo.com/fotos/torta-chocolate-3.jpg",
+            "https://ejemplo.com/fotos/torta-chocolate-4.jpg"
+        ]
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status 201', function () {
+          pm.response.to.have.status(201);
+      });
+      const jsonData = pm.response.json();
+      pm.test('El producto ahora tiene 4 imagenes en total', function () {
+          pm.expect(jsonData.imagenes).to.be.an('array').with.lengthOf(4);
+      });
+      pm.test('El orden respeta el orden de insercion', function () {
+          const ordenes = jsonData.imagenes.map(function (img) { return img.orden; });
+          pm.expect(ordenes).to.eql([0, 1, 2, 3]);
+      });
+      if (jsonData.imagenes && jsonData.imagenes.length === 4) {
+          pm.collectionVariables.set('imagenId2', jsonData.imagenes[1].id);
+          pm.collectionVariables.set('imagenId3', jsonData.imagenes[2].id);
+          pm.collectionVariables.set('imagenId4', jsonData.imagenes[3].id);
+      }
+    language: text/javascript
+order: 9000

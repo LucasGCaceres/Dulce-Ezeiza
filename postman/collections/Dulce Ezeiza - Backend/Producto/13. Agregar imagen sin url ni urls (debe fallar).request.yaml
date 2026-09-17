@@ -1,0 +1,22 @@
+$kind: http-request
+url: "{{baseUrl}}/productos/{{productoId}}/imagenes"
+method: POST
+headers:
+  Content-Type: application/json
+  x-access-token: "{{tokenAdmin}}"
+body:
+  type: json
+  content: |-
+    {}
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status 400', function () {
+          pm.response.to.have.status(400);
+      });
+      pm.test('Mensaje claro', function () {
+          const jsonData = pm.response.json();
+          pm.expect(jsonData.mensaje).to.eql('Falta la url (o urls) de la imagen');
+      });
+    language: text/javascript
+order: 13000

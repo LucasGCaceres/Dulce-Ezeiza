@@ -1,0 +1,28 @@
+$kind: http-request
+description: Agrega una sola imagen al producto creado en el punto 1. Guarda el id devuelto en {{imagenId1}}.
+url: "{{baseUrl}}/productos/{{productoId}}/imagenes"
+method: POST
+headers:
+  Content-Type: application/json
+  x-access-token: "{{tokenAdmin}}"
+body:
+  type: json
+  content: |-
+    {
+        "url": "https://ejemplo.com/fotos/torta-chocolate-1.jpg"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status 201', function () {
+          pm.response.to.have.status(201);
+      });
+      const jsonData = pm.response.json();
+      pm.test('Devuelve un array de imagenes con 1 elemento', function () {
+          pm.expect(jsonData.imagenes).to.be.an('array').with.lengthOf(1);
+      });
+      if (jsonData.imagenes && jsonData.imagenes[0]) {
+          pm.collectionVariables.set('imagenId1', jsonData.imagenes[0].id);
+      }
+    language: text/javascript
+order: 8000

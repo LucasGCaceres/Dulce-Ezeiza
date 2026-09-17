@@ -17,3 +17,7 @@ variables:
   consultaId: ""
   codigoRecuperacion: ""
   clientePasswordRecuperada: Recuperada789!
+  imagenId1: ""
+  imagenId2: ""
+  imagenId3: ""
+  imagenId4: ""

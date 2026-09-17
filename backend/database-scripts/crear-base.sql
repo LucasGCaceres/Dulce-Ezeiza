@@ -36,7 +36,7 @@ CREATE TABLE Usuarios (
     resetPasswordToken NVARCHAR(255),      -- token temporal para recuperar la contraseña
     resetPasswordExpira DATETIME2           -- vencimiento del token (15 min despues de generarlo)
 );
-);
+
 GO
 
 -- ------------------------------------------------------------
@@ -121,5 +121,20 @@ VALUES (
     NULL,
     NULL,
     'Completar horarios de atencion'
+);
+GO
+
+GO
+
+-- ------------------------------------------------------------
+--  Tabla: ImagenesProducto (fotos de cada producto, en el orden que se muestran)
+-- ------------------------------------------------------------
+CREATE TABLE ImagenesProducto (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    productoId INT NOT NULL,
+    url NVARCHAR(500) NOT NULL,
+    orden INT NOT NULL DEFAULT 0,
+    CONSTRAINT FK_ImagenesProducto_Productos FOREIGN KEY (productoId)
+        REFERENCES Productos(id)
 );
 GO

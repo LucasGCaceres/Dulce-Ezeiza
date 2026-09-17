@@ -1,0 +1,25 @@
+$kind: http-request
+description: Manda un id que no pertenece a este producto (999999) en vez de {{imagenId1}}. Tiene que rechazar el pedido entero, no reordenar a medias.
+url: "{{baseUrl}}/productos/{{productoId}}/imagenes/orden"
+method: PUT
+headers:
+  Content-Type: application/json
+  x-access-token: "{{tokenAdmin}}"
+body:
+  type: json
+  content: |-
+    {
+        "orden": [{{imagenId4}}, {{imagenId3}}, {{imagenId2}}, 999999]
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status 400', function () {
+          pm.response.to.have.status(400);
+      });
+      pm.test('Mensaje claro de regla de negocio', function () {
+          const jsonData = pm.response.json();
+          pm.expect(jsonData.mensaje).to.eql('La lista de orden no coincide con las imagenes del producto');
+      });
+    language: text/javascript
+order: 12000

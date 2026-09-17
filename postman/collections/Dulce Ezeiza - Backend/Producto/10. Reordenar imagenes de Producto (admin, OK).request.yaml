@@ -1,0 +1,21 @@
+$kind: http-request
+description: "Invierte el orden: pone la ultima imagen primero. orden = [imagenId4, imagenId3, imagenId2, imagenId1]."
+url: "{{baseUrl}}/productos/{{productoId}}/imagenes/orden"
+method: PUT
+headers:
+  Content-Type: application/json
+  x-access-token: "{{tokenAdmin}}"
+body:
+  type: json
+  content: |-
+    {
+        "orden": [{{imagenId4}}, {{imagenId3}}, {{imagenId2}}, {{imagenId1}}]
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status 200', function () {
+          pm.response.to.have.status(200);
+      });
+    language: text/javascript
+order: 10000

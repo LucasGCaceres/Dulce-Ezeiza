@@ -12,7 +12,8 @@ exports.crear = async function (req, res) {
         disponible: req.body.disponible,
         activo: req.body.activo,
         destacado: req.body.destacado,
-        sinGluten: req.body.sinGluten
+        sinGluten: req.body.sinGluten,
+        imagenes: req.body.imagenes // opcional: array de URLs para la carga inicial
     };
 
     // Validaciones: nombre, precio y categoria son obligatorios.
@@ -106,6 +107,76 @@ exports.eliminar = async function (req, res) {
     try {
         await productoService.eliminar(id);
         return res.status(200).json({ mensaje: 'Producto eliminado correctamente' });
+    } catch (e) {
+        return res.status(400).json({ mensaje: e.message });
+    }
+};
+
+// ------------------------------------------------------------
+//  AGREGAR IMAGEN(ES): POST /api/productos/:productoId/imagenes
+//  body: { "url": "https://..." }               -> una sola
+//  body: { "urls": ["https://...", "https://..."] } -> varias de una,
+// ------------------------------------------------------------
+exports.agregarImagen = async function (req, res) {
+    const productoId = req.params.productoId;
+
+    let urls = req.body.urls;
+    if (!Array.isArray(urls)) {
+        urls = req.body.url ? [req.body.url] : [];
+    }
+
+    if (urls.length === 0) {
+        return res.status(400).json({ mensaje: 'Falta la url (o urls) de la imagen' });
+    }
+
+    try {
+        const imagenes = await productoService.agregarImagenes(productoId, urls);
+        return res.status(201).json({ imagenes: imagenes, mensaje: 'Imagen(es) agregada(s) correctamente' });
+    } catch (e) {
+        return res.status(400).json({ mensaje: e.message });
+    }
+};
+
+// ------------------------------------------------------------
+//  ELIMINAR IMAGEN(ES): DELETE /api/productos/:productoId/imagenes
+//  body: { "imagenId": 5 }                 -> una sola
+//  body: { "imagenesIds": [5, 6, 7] }      -> varias de una
+// ------------------------------------------------------------
+exports.eliminarImagen = async function (req, res) {
+    const productoId = req.params.productoId;
+ 
+    let imagenesIds = req.body.imagenesIds;
+    if (!Array.isArray(imagenesIds)) {
+        imagenesIds = req.body.imagenId ? [req.body.imagenId] : [];
+    }
+ 
+    if (imagenesIds.length === 0) {
+        return res.status(400).json({ mensaje: 'Falta el id (o ids) de la imagen a eliminar' });
+    }
+ 
+    try {
+        await productoService.eliminarImagenes(productoId, imagenesIds);
+        return res.status(200).json({ mensaje: 'Imagen(es) eliminada(s) correctamente' });
+    } catch (e) {
+        return res.status(400).json({ mensaje: e.message });
+    }
+};
+
+// ------------------------------------------------------------
+//  REORDENAR IMAGENES: PUT /api/productos/:productoId/imagenes/orden
+//  body: { "orden": [7, 5, 6] }  -> ids de TODAS las imagenes, en el orden deseado
+// ------------------------------------------------------------
+exports.reordenarImagenes = async function (req, res) {
+    const productoId = req.params.productoId;
+    const orden = req.body.orden;
+
+    if (!Array.isArray(orden)) {
+        return res.status(400).json({ mensaje: 'Falta el array de orden (ids de las imagenes)' });
+    }
+
+    try {
+        await productoService.reordenarImagenes(productoId, orden);
+        return res.status(200).json({ mensaje: 'Orden actualizado correctamente' });
     } catch (e) {
         return res.status(400).json({ mensaje: e.message });
     }

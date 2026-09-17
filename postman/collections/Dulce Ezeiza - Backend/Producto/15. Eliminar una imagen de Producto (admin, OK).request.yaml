@@ -1,0 +1,21 @@
+$kind: http-request
+description: Borra {{imagenId2}} (una de las del medio) sin tocar las demas. Despues de esto quedan 3 imagenes.
+url: "{{baseUrl}}/productos/{{productoId}}/imagenes"
+method: DELETE
+headers:
+  Content-Type: application/json
+  x-access-token: "{{tokenAdmin}}"
+body:
+  type: json
+  content: |-
+    {
+        "imagenId": {{imagenId2}}
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status 200', function () {
+          pm.response.to.have.status(200);
+      });
+    language: text/javascript
+order: 15000

@@ -1,0 +1,22 @@
+$kind: http-request
+description: Confirma que el GET del producto devuelve las imagenes en el nuevo orden (la que antes era la ultima ahora es la primera).
+url: "{{baseUrl}}/productos/{{productoId}}"
+method: GET
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status 200', function () {
+          pm.response.to.have.status(200);
+      });
+      const jsonData = pm.response.json();
+      pm.test('Las imagenes quedaron en el orden esperado', function () {
+          const idsEnOrden = jsonData.imagenes.map(function (img) { return String(img.id); });
+          pm.expect(idsEnOrden).to.eql([
+              pm.collectionVariables.get('imagenId4'),
+              pm.collectionVariables.get('imagenId3'),
+              pm.collectionVariables.get('imagenId2'),
+              pm.collectionVariables.get('imagenId1')
+          ]);
+      });
+    language: text/javascript
+order: 11000

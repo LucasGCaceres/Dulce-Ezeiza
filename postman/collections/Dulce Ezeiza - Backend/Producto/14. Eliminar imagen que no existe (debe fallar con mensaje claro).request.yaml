@@ -1,0 +1,24 @@
+$kind: http-request
+url: "{{baseUrl}}/productos/{{productoId}}/imagenes"
+method: DELETE
+headers:
+  Content-Type: application/json
+  x-access-token: "{{tokenAdmin}}"
+body:
+  type: json
+  content: |-
+    {
+        "imagenId": 999999
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status 400', function () {
+          pm.response.to.have.status(400);
+      });
+      pm.test('Mensaje claro', function () {
+          const jsonData = pm.response.json();
+          pm.expect(jsonData.mensaje).to.eql('Alguna de las imagenes no existe para este producto');
+      });
+    language: text/javascript
+order: 14000
