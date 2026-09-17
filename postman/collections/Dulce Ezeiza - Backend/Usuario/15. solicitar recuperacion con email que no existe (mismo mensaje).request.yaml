@@ -1,0 +1,27 @@
+$kind: http-request
+description: "Prueba clave de seguridad: si el email NO esta registrado, la respuesta tiene 
+  que ser identica a cuando SI lo esta (mismo status, mismo mensaje). Si fuera distinto, cualquiera 
+  podria usar este endpoint para averiguar que emails tienen cuenta -- el mismo motivo por el que el 
+  login no distingue 'email inexistente' de 'password incorrecta'."
+url: "{{baseUrl}}/usuarios/recuperar-password"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+        "email": "esteEmailNoExiste@test.com"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status 200 (igual que con un email real)', function () {
+          pm.response.to.have.status(200);
+      });
+      pm.test('Mismo mensaje generico, no delata que el email no existe', function () {
+          const jsonData = pm.response.json();
+          pm.expect(jsonData.mensaje).to.eql('Si el email está registrado, te enviamos instrucciones para recuperar tu contraseña');
+      });
+    language: text/javascript
+order: 15000

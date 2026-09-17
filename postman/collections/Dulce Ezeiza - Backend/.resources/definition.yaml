@@ -9,10 +9,11 @@ variables:
   clienteEmail: ""
   clienteEmailHacker: ""
   clientePassword: Cliente123!
-  clientePasswordNueva: ClienteNueva456!
   categoriaId: ""
   categoriaNombre: ""
   categoriaNombreCliente: ""
   productoId: ""
   productoNombre: ""
   consultaId: ""
+  codigoRecuperacion: ""
+  clientePasswordRecuperada: Recuperada789!

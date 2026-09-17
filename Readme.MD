@@ -90,6 +90,15 @@ El token incluye el `id` del usuario y su `rol`. Dos middlewares se encargan de 
 
 El registro público (`POST /api/usuarios/registro`) siempre crea usuarios con `rol: 'cliente'`, sin importar qué se mande en el body — es una protección explícita contra mass assignment (que alguien intente registrarse como admin mandando `rol: "admin"` en el request). El usuario administrador se crea a mano directamente en la base de datos.
 
+## Recuperar contraseña
+
+Un usuario que se olvidó la contraseña (y por lo tanto no puede loguearse) puede recuperarla en dos pasos, sin necesitar ningún token:
+
+1. **`POST /api/usuarios/recuperar-password`** con `{ "email": "..." }`. Si ese email existe, se genera un código numérico de 6 dígitos con **15 minutos** de vencimiento y se manda por mail. La respuesta es siempre la misma (200, mensaje genérico) exista o no el email — si dijera explícitamente "ese email no existe", cualquiera podría usar este endpoint para averiguar qué emails están registrados, el mismo motivo por el que el login tampoco distingue "usuario inexistente" de "contraseña incorrecta".
+2. **`PUT /api/usuarios/resetear-password`** con `{ "token": "123456", "passwordNueva": "..." }`. Si el código es válido y no venció, actualiza la contraseña; si no, devuelve un 400 con un mensaje claro.
+
+**Sobre el envío del mail:** la consigna pide la funcionalidad de "recuperar contraseña", pero el envío de correos reales solo figura como puntaje extra asociado al formulario de contacto — no exige que este flujo mande un mail real. Por eso, y para no depender de una cuenta de correo externa (con los riesgos de que la bloqueen por uso automatizado), el envío usa [Ethereal](https://ethereal.email/), un servicio de mails de prueba: el mail nunca llega a ningún lado, pero se puede "abrir" y ver tal cual quedó armado. Después de pedir la recuperación, la consola del servidor imprime un link a la vista previa del mail (código incluido). Si en algún momento se quiere mandar a una casilla real, alcanza con cambiar la configuración de `backend/services/Mail.service.js` (variables `MAIL_HOST`, `MAIL_USER`, `MAIL_PASS` en `.env`) — el resto del flujo no cambia.
+
 ## Documentación de la API
 
 Todas las rutas cuelgan de `/api`. La columna "Acceso" indica qué hace falta para llamar a esa ruta.
@@ -103,6 +112,8 @@ Todas las rutas cuelgan de `/api`. La columna "Acceso" indica qué hace falta pa
 | GET | `/perfil` | Logueado | Devuelve los datos del propio perfil |
 | PUT | `/perfil` | Logueado | Edita nombre, apellido, teléfono y/o email propios |
 | PUT | `/cambiar-password` | Logueado | Cambia la contraseña (pide la actual + la nueva) |
+| POST | `/recuperar-password` | Público | Genera un código de recuperación y lo manda por mail |
+| PUT | `/resetear-password` | Público | Cambia la contraseña usando el código recibido por mail |
 
 ### Categoría (`/api/categorias`)
 
@@ -140,6 +151,7 @@ Todas las rutas cuelgan de `/api`. La columna "Acceso" indica qué hace falta pa
 - `??` para ediciones parciales: un campo que no llega en el body deja el valor que ya tenía.
 - Los `catch` nunca reenvían el error técnico crudo (`e.message` de Sequelize/SQL Server) al cliente: se loguea el detalle completo con `console.log(e)` del lado del servidor, y al cliente solo le llega un mensaje pensado para mostrarse.
 - El logging de las queries de Sequelize está condicionado a `NODE_ENV`: se ve en `development`, se apaga en `production`.
+- Cuando una respuesta podría revelar si un dato existe o no en la base (login, recuperar contraseña), se devuelve siempre el mismo mensaje genérico, para no dar pistas que sirvan para enumerar usuarios o emails registrados.
 
 ## Cómo probar la API
 
@@ -148,6 +160,8 @@ Hay una colección de Postman con casos de prueba (positivos y negativos) para l
 1. Importarla en Postman.
 2. En las variables de la colección, completar `adminEmail` y `adminPassword` con las credenciales del admin creado a mano en la base.
 3. Correr las carpetas en orden: Usuario → Categoría → Producto → Consulta. Las requests de registro/login guardan automáticamente los tokens e ids que necesitan las siguientes.
+
+Dentro de Usuario, las pruebas de recuperar contraseña son la excepción: como el código llega por mail y no en la respuesta de la API, dos de esas requests son manuales (hay que copiar el código de la vista previa de Ethereal y pegarlo en la variable de colección `codigoRecuperacion` antes de correrlas). Cada request tiene su descripción con el paso a paso.
 
 ## Otros documentos
 
@@ -163,6 +177,7 @@ Hay una colección de Postman con casos de prueba (positivos y negativos) para l
 - Búsqueda y filtros en el catálogo (por texto, categoría, sin TACC, solo activos).
 - Sistema de consultas/contacto con gestión de estado (crear, listar, cambiar estado).
 - Sitio público de solo lectura + panel de administración protegido por login.
+- Recuperar contraseña (código temporal enviado por mail).
 - Validación de datos obligatorios tanto en el front como en el back.
 - Seed de productos de ejemplo.
 - Documentación completa del proyecto.
@@ -178,7 +193,7 @@ Hay una colección de Postman con casos de prueba (positivos y negativos) para l
 
 ### Pendiente
 
-- Recuperar contraseña (vía email) y logout.
+- Logout (no requiere endpoint propio: sin lista negra de tokens, alcanza con que el frontend borre el token guardado).
 - Entidad Comercio (información institucional).
 - Dashboard de métricas para el panel de administración.
 - Extras opcionales: envío de respuestas por email, imágenes múltiples por producto, buscador avanzado, promociones.
