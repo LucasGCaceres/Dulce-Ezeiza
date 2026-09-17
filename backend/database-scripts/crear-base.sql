@@ -32,7 +32,10 @@ CREATE TABLE Usuarios (
     telefono NVARCHAR(50),                 -- opcional
     password NVARCHAR(255) NOT NULL,       -- se guarda el hash de bcrypt
     fecha DATETIME DEFAULT GETDATE(),
-    rol NVARCHAR(20) NOT NULL DEFAULT 'cliente'
+    rol NVARCHAR(20) NOT NULL DEFAULT 'cliente',
+    resetPasswordToken NVARCHAR(255),      -- token temporal para recuperar la contraseña
+    resetPasswordExpira DATETIME2           -- vencimiento del token (15 min despues de generarlo)
+);
 );
 GO
 

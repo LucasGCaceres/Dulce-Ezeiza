@@ -1,32 +1,33 @@
 const nodemailer = require('nodemailer');
 
-// Transporter con una casilla de correo real (Gmail), configurada por
-// variables de entorno. Ver .env.example para saber que datos completar.
-let transporter = null;
+// Ethereal es un servicio de mails "de mentira" para probar: crea una cuenta
+// de prueba sola (no hace falta Gmail ni ninguna cuenta real) y los mails que
+// mandes quedan atrapados en una bandeja de prueba que se ve por un link,
+// nunca llegan a un destinatario real.
+let transporterPromise = null;
 
 function getTransporter() {
-    if (!transporter) {
-        transporter = nodemailer.createTransport({
-            host: process.env.MAIL_HOST,
-            port: Number(process.env.MAIL_PORT),
-            secure: process.env.MAIL_SECURE === 'true',
-            auth: {
-                user: process.env.MAIL_USER,
-                pass: process.env.MAIL_PASS
-            }
+    if (!transporterPromise) {
+        transporterPromise = nodemailer.createTestAccount().then(function (cuentaDePrueba) {
+            return nodemailer.createTransport({
+                host: 'smtp.ethereal.email',
+                port: 587,
+                secure: false,
+                auth: {
+                    user: cuentaDePrueba.user,
+                    pass: cuentaDePrueba.pass
+                }
+            });
         });
     }
-    return transporter;
+    return transporterPromise;
 }
 
 exports.enviarMailRecuperacion = async function (destinatario, token) {
-    const transporter = getTransporter();
+    const transporter = await getTransporter();
 
-    // OJO: el "from" tiene que ser la misma casilla autenticada en MAIL_USER.
-    // Gmail rechaza -o marca como sospechoso- un mail cuyo remitente no coincide con la 
-    // cuenta que inicio sesion. Por eso ya no podemos inventar un remitente como haciamos antes.
-    await transporter.sendMail({
-        from: `"Dulce Ezeiza" <${process.env.MAIL_USER}>`,
+    const info = await transporter.sendMail({
+        from: '"Dulce Ezeiza" <no-responder@dulce-ezeiza.com>',
         to: destinatario,
         subject: 'Recuperar tu contraseña - Dulce Ezeiza',
         html: `
@@ -37,5 +38,7 @@ exports.enviarMailRecuperacion = async function (destinatario, token) {
         `
     });
 
-    console.log('Mail de recuperacion enviado a', destinatario);
+    // Ethereal no lo manda a ningun lado real: esto te da un link para
+    // "abrir" la bandeja de entrada del destinatario y ver como quedo.
+    console.log('Mail de recuperacion enviado. Verlo en:', nodemailer.getTestMessageUrl(info));
 };
