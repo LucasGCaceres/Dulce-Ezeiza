@@ -7,10 +7,12 @@ const usuarioRoutes = require('./api/Usuario.routes');
 const categoriaRoutes = require('./api/Categoria.routes');
 const productoRoutes = require('./api/Producto.routes');
 const consultaRoutes = require('./api/Consulta.routes');
+const comercioRoutes = require('./api/Comercio.routes');
 
 router.use('/usuarios', usuarioRoutes);
 router.use('/categorias', categoriaRoutes);
 router.use('/productos', productoRoutes);
 router.use('/consultas', consultaRoutes);
+router.use('/comercio', comercioRoutes);
 
 module.exports = router;

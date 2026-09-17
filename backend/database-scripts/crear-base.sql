@@ -89,3 +89,37 @@ CREATE TABLE Consultas (
     CONSTRAINT FK_Consultas_Productos FOREIGN KEY (productoId)
         REFERENCES Productos(id)
 );
+
+GO
+
+-- ------------------------------------------------------------
+--  Tabla: Comercio (informacion institucional del negocio)
+-- ------------------------------------------------------------
+CREATE TABLE Comercio (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    nombre NVARCHAR(150) NOT NULL,
+    descripcion NVARCHAR(1000),
+    direccion NVARCHAR(300),
+    telefono NVARCHAR(50),
+    instagram NVARCHAR(150),
+    facebook NVARCHAR(150),
+    whatsapp NVARCHAR(50),
+    tiktok NVARCHAR(150),
+    horarios NVARCHAR(500)
+);
+GO
+
+-- Fila unica con datos de ejemplo. El admin los reemplaza despues desde el panel.
+INSERT INTO Comercio (nombre, descripcion, direccion, telefono, instagram, facebook, whatsapp, tiktok, horarios)
+VALUES (
+    'Dulce Ezeiza',
+    'Panaderia y pasteleria artesanal.',
+    'Completar direccion',
+    'Completar telefono',
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    'Completar horarios de atencion'
+);
+GO
