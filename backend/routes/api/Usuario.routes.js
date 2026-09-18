@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 // Traemos el controller: cada ruta va a apuntar a una de sus funciones.
-const usuarioController = require('../../controllers/usuario.controller');
+const usuarioController = require('../../controllers/Usuario.controller');
 const  { verificarToken } = require('../../middlewares/Autorizacion.middlewares');
 
 // POST /api/usuarios/registro  -> crea un usuario nuevo

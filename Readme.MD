@@ -212,6 +212,5 @@ Dentro de Usuario, las pruebas de recuperar contraseña son la excepción: como 
 ### Pendiente
 
 - Logout (no requiere endpoint propio: sin lista negra de tokens, alcanza con que el frontend borre el token guardado).
-- Entidad Comercio (información institucional): código ya escrito (modelo, service, controller, rutas), falta terminar de probarlo y documentarlo.
 - Dashboard de métricas para el panel de administración.
 - Extras opcionales: envío de respuestas por email, buscador avanzado, promociones.
