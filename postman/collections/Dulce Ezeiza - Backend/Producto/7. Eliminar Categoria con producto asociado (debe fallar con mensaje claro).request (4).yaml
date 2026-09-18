@@ -1,7 +1,6 @@
 $kind: http-request
-description: "Punto 7. A esta altura ya existe el producto de '1. Crear Producto (admin, OK)', que usa {{categoriaId}}. La categoria tiene que sobrevivir 
-  a este intento de borrado -- la seguimos necesitando para las pruebas de Consulta."
-url: "{{baseUrl}}/categorias/{{categoriaId}}"
+description: "Usa {{categoriaSeedId}} (categoria del seed, 'Panaderia' por defecto), que siempre tiene 4 productos precargados. (Es la misma prueba que '7. Eliminar Categoria con producto asociado' de la carpeta Categoria; esta esta duplicada aca para poder correr la carpeta Producto de punta a punta sin depender de la carpeta Categoria.)"
+url: "{{baseUrl}}/categorias/{{categoriaSeedId}}"
 method: DELETE
 headers:
   x-access-token: "{{tokenAdmin}}"

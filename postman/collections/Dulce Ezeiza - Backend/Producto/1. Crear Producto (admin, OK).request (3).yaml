@@ -1,5 +1,5 @@
 $kind: http-request
-description: Necesita que ya exista {{categoriaId}} (corre primero '1. Crear Categoria (admin, OK)' en la carpeta Categoria).
+description: Usa {{categoriaSeedId}} (categoria del seed, 'Panaderia' por defecto) como categoria del producto nuevo, para no depender de que la carpeta Categoria haya corrido antes.
 url: "{{baseUrl}}/productos"
 method: POST
 headers:
@@ -12,7 +12,7 @@ body:
         "nombre": "{{productoNombre}}",
         "descripcion": "Producto de prueba generado por Postman",
         "precio": 4500.5,
-        "categoriaId": "{{categoriaId}}",
+        "categoriaId": "{{categoriaSeedId}}",
         "disponible": true,
         "activo": true,
         "destacado": false,

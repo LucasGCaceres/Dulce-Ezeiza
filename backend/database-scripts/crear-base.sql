@@ -139,6 +139,20 @@ CREATE TABLE ImagenesProducto (
 );
 GO
 
+-- ------------------------------------------------------------
+--  Mapea el login de la app como usuario de esta base, con
+--  permisos de db_owner.
+-- ------------------------------------------------------------
+BEGIN TRY
+    CREATE USER dulce_user FOR LOGIN dulce_user;
+    ALTER ROLE db_owner ADD MEMBER dulce_user;
+    PRINT 'OK: dulce_user mapeado como db_owner de DulceEzeiza.';
+END TRY
+BEGIN CATCH
+    PRINT 'AVISO: no se pudo mapear el login "dulce_user" (revisa si tu login se llama distinto -- ver DB_USER en tu .env). Error: ' + ERROR_MESSAGE();
+    PRINT 'Hacelo a mano: SSMS > Security > Logins > <tu login> > Properties > User Mapping > tildar DulceEzeiza > tildar db_owner.';
+END CATCH
+GO
 
 -- ============================================================
 --  SEED: categorias + 20 productos + 3 usuarios ficticios

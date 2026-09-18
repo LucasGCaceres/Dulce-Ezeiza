@@ -1,4 +1,5 @@
 $kind: http-request
+description: Ademas de los productos creados durante la corrida, esta lista tiene que incluir los 20 productos precargados por el seed.
 url: "{{baseUrl}}/productos"
 method: GET
 scripts:
@@ -7,6 +8,9 @@ scripts:
       pm.test('Status 200 y devuelve un array', function () {
           pm.response.to.have.status(200);
           pm.expect(pm.response.json()).to.be.an('array');
+      });
+      pm.test('Incluye al menos los 20 productos del seed', function () {
+          pm.expect(pm.response.json().length).to.be.at.least(20);
       });
     language: text/javascript
 order: 3000

@@ -1,5 +1,5 @@
 $kind: http-request
-description: Agrega una sola imagen al producto creado en el punto 1. Guarda el id devuelto en {{imagenId1}}.
+description: Agrega una sola imagen al producto creado en la request 1 (Crear Producto). Guarda el id devuelto en {{imagenId1}}.
 url: "{{baseUrl}}/productos/{{productoId}}/imagenes"
 method: POST
 headers:
@@ -9,7 +9,7 @@ body:
   type: json
   content: |-
     {
-        "url": "https://ejemplo.com/fotos/torta-chocolate-1.jpg"
+        "url": "foto-1.png"
     }
 scripts:
   - type: afterResponse

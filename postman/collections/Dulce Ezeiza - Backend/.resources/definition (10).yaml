@@ -1,0 +1,30 @@
+$kind: collection
+description: "Coleccion de pruebas para el backend de Dulce Ezeiza. Corre las carpetas en orden: Usuario -> Categoria -> Producto -> Consulta. Asume que la base ya tiene el seed cargado (backend/database-scripts/crear-base.sql o seed-datos.sql): adminEmail/adminPassword y categoriaSeedId/productoSeedId ya vienen completados con datos del seed, no hace falta tocarlos salvo que quieras probar con tu propio admin."
+variables:
+  baseUrl: http://localhost:8080/api
+  # Admin y categoria/producto de referencia: valores del seed (usuarios ficticios +
+  # 20 productos en 6 categorias). Si corriste el seed mas de una vez, o insertaste
+  # datos antes de correrlo, los ids pueden no coincidir -- ajustalos a mano en ese caso.
+  adminEmail: admin@dulceezeiza.com
+  adminPassword: Admin123!
+  categoriaSeedId: "1"
+  categoriaSeedNombre: Panaderia
+  productoSeedId: "1"
+  productoSeedNombre: Pan Frances
+  tokenAdmin: ""
+  tokenCliente: ""
+  clienteEmail: ""
+  clienteEmailHacker: ""
+  clientePassword: Cliente123!
+  categoriaId: ""
+  categoriaNombre: ""
+  categoriaNombreCliente: ""
+  productoId: ""
+  productoNombre: ""
+  consultaId: ""
+  codigoRecuperacion: ""
+  clientePasswordRecuperada: Recuperada789!
+  imagenId1: ""
+  imagenId2: ""
+  imagenId3: ""
+  imagenId4: ""

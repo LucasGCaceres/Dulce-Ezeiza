@@ -1,0 +1,16 @@
+$kind: http-request
+description: "Usa {{categoriaSeedId}} (categoria del seed, 'Panaderia' por defecto) en vez de la creada en la request 1, para probar el endpoint contra un dato precargado real y no depender de que la request 1 haya corrido antes."
+url: "{{baseUrl}}/categorias/{{categoriaSeedId}}"
+method: GET
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status 200', function () {
+          pm.response.to.have.status(200);
+      });
+      pm.test('Es la categoria del seed esperada', function () {
+          const jsonData = pm.response.json();
+          pm.expect(jsonData.nombre).to.eql(pm.collectionVariables.get('categoriaSeedNombre'));
+      });
+    language: text/javascript
+order: 5000
