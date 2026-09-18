@@ -99,6 +99,20 @@ Un usuario que se olvidó la contraseña (y por lo tanto no puede loguearse) pue
 
 **Sobre el envío del mail:** la consigna pide la funcionalidad de "recuperar contraseña", pero el envío de correos reales solo figura como puntaje extra asociado al formulario de contacto — no exige que este flujo mande un mail real. Por eso, y para no depender de una cuenta de correo externa (con los riesgos de que la bloqueen por uso automatizado), el envío usa [Ethereal](https://ethereal.email/), un servicio de mails de prueba: el mail nunca llega a ningún lado, pero se puede "abrir" y ver tal cual quedó armado. Después de pedir la recuperación, la consola del servidor imprime un link a la vista previa del mail (código incluido). Si en algún momento se quiere mandar a una casilla real, alcanza con cambiar la configuración de `backend/services/Mail.service.js` (variables `MAIL_HOST`, `MAIL_USER`, `MAIL_PASS` en `.env`) — el resto del flujo no cambia.
 
+## Imágenes de producto
+
+Cada producto puede tener varias fotos. Se guardan como URLs (tabla aparte `ImagenesProducto`, una fila por foto) — el backend no recibe ni procesa archivos, solo direcciones de imágenes ya alojadas en otro lado. Se decidió así en vez de subida real de archivos para no sumar la complejidad de multipart/form-data, almacenamiento en disco, servido de archivos estáticos y limpieza de archivos huérfanos, algo que no aporta valor extra al alcance de esta materia.
+
+Cada fila tiene un campo `orden` que determina en qué posición se muestra esa foto; la de `orden` 0 es la que se usa como portada en el catálogo. La galería de un producto se maneja con tres endpoints, todos pensados para trabajar de a una imagen o en lote (por ejemplo, para que el frontend permita arrastrar y soltar las fotos para reordenarlas, mandando la lista completa de una sola vez):
+
+- **Agregar** (`POST /api/productos/:productoId/imagenes`): acepta `{ "url": "..." }` para una sola, o `{ "urls": ["...", "..."] }` para varias de una. Se agregan al final de las que ya tiene el producto, en el orden del array.
+- **Borrar** (`DELETE /api/productos/:productoId/imagenes`): acepta `{ "imagenId": 5 }` o `{ "imagenesIds": [5, 6, 7] }`. Si alguno de los ids no existe o no pertenece a ese producto, no se borra ninguna — se evita un borrado parcial silencioso.
+- **Reordenar** (`PUT /api/productos/:productoId/imagenes/orden`): recibe `{ "orden": [7, 5, 6] }` con los ids de TODAS las imágenes del producto en el orden deseado, y actualiza el `orden` de cada una según su posición en el array.
+
+El `PUT` normal de un producto (`/api/productos/:id`) no toca las imágenes en absoluto — quedan separadas de la edición de los datos básicos. Esto no obliga a que el frontend las muestre en pantallas separadas: una sola vista de "editar producto" puede mostrar campos y fotos juntos, y al guardar disparar por detrás los llamados que hagan falta (uno para los datos básicos, y los que correspondan para las fotos agregadas, sacadas o reordenadas).
+
+No hay `ON DELETE CASCADE` en la foreign key de `ImagenesProducto`: al borrar un producto, `Producto.service.js` borra a mano todas sus imágenes antes de borrar el producto.
+
 ## Documentación de la API
 
 Todas las rutas cuelgan de `/api`. La columna "Acceso" indica qué hace falta para llamar a esa ruta.
@@ -130,10 +144,13 @@ Todas las rutas cuelgan de `/api`. La columna "Acceso" indica qué hace falta pa
 | Método | Ruta | Acceso | Descripción |
 |---|---|---|---|
 | GET | `/?busqueda=&categoriaId=&sinGluten=&soloActivos=` | Público | Lista productos, con filtros opcionales |
-| GET | `/:id` | Público | Un producto por id, con su categoría |
-| POST | `/` | Admin | Crea un producto |
-| PUT | `/:id` | Admin | Edita un producto |
-| DELETE | `/:id` | Admin | Borra un producto (rechaza si tiene consultas asociadas) |
+| GET | `/:id` | Público | Un producto por id, con su categoría y sus imágenes |
+| POST | `/` | Admin | Crea un producto (acepta `imagenes: [...]` opcional, URLs) |
+| PUT | `/:id` | Admin | Edita los datos básicos de un producto (no toca imágenes) |
+| DELETE | `/:id` | Admin | Borra un producto (rechaza si tiene consultas asociadas; borra sus imágenes) |
+| POST | `/:productoId/imagenes` | Admin | Agrega una o varias imágenes (`url` o `urls`) |
+| DELETE | `/:productoId/imagenes` | Admin | Borra una o varias imágenes (`imagenId` o `imagenesIds`) |
+| PUT | `/:productoId/imagenes/orden` | Admin | Reordena las imágenes del producto |
 
 ### Consulta (`/api/consultas`)
 
@@ -189,11 +206,12 @@ Dentro de Usuario, las pruebas de recuperar contraseña son la excepción: como 
 - Middleware de autorización que valida no solo autenticación sino también el rol correspondiente a cada ruta.
 - Endurecimiento de seguridad más allá de lo básico: protección contra mass assignment en el registro, el hash de contraseña nunca viaja en ninguna respuesta HTTP, los errores internos nunca se exponen crudos al cliente.
 - Reglas de integridad de datos: no se puede borrar una categoría o un producto que todavía tiene historial asociado.
+- Múltiples imágenes por producto (URLs, sin subida de archivos), con endpoints para agregar, borrar y reordenar de a una o en lote.
 - Colección de pruebas de Postman con casos positivos y negativos para toda la API.
 
 ### Pendiente
 
 - Logout (no requiere endpoint propio: sin lista negra de tokens, alcanza con que el frontend borre el token guardado).
-- Entidad Comercio (información institucional).
+- Entidad Comercio (información institucional): código ya escrito (modelo, service, controller, rutas), falta terminar de probarlo y documentarlo.
 - Dashboard de métricas para el panel de administración.
-- Extras opcionales: envío de respuestas por email, imágenes múltiples por producto, buscador avanzado, promociones.
+- Extras opcionales: envío de respuestas por email, buscador avanzado, promociones.
