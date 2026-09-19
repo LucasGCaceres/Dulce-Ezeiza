@@ -1,4 +1,5 @@
 $kind: http-request
+description: Ademas de la categoria creada en la request 1, esta lista tiene que incluir las 6 categorias precargadas por el seed.
 url: "{{baseUrl}}/categorias"
 method: GET
 scripts:
@@ -9,6 +10,9 @@ scripts:
       });
       pm.test('Devuelve un array', function () {
           pm.expect(pm.response.json()).to.be.an('array');
+      });
+      pm.test('Incluye al menos las 6 categorias del seed', function () {
+          pm.expect(pm.response.json().length).to.be.at.least(6);
       });
     language: text/javascript
 order: 4000

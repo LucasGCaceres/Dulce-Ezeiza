@@ -1,5 +1,5 @@
 $kind: http-request
-description: "IMPORTANTE: antes de correr esto, completa las variables de coleccion adminEmail y adminPassword con las credenciales del admin que creaste a mano en SSMS."
+description: "Usa el admin del seed (adminEmail/adminPassword ya vienen completados en las variables de coleccion). Si preferis loguearte con un admin propio creado a mano en SSMS, sobreescribi esas dos variables antes de correr esto."
 url: "{{baseUrl}}/usuarios/login"
 method: POST
 headers:

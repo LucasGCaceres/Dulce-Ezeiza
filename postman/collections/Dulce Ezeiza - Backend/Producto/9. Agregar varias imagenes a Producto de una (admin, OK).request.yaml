@@ -10,9 +10,9 @@ body:
   content: |-
     {
         "urls": [
-            "https://ejemplo.com/fotos/torta-chocolate-2.jpg",
-            "https://ejemplo.com/fotos/torta-chocolate-3.jpg",
-            "https://ejemplo.com/fotos/torta-chocolate-4.jpg"
+            "foto-2.png",
+            "foto-3.png",
+            "foto-4.png"
         ]
     }
 scripts:

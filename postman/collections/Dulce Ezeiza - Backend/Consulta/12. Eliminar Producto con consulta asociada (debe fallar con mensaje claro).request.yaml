@@ -1,5 +1,5 @@
 $kind: http-request
-description: "Punto 7 (regla espejo). La consulta de la request 3 (Crear Consulta sobre un Producto) sigue apuntando a {{productoId}}, asi que el borrado 
+description: "Regla espejo de 'Eliminar Categoria con producto asociado': la consulta de la request 3 (Crear Consulta sobre un Producto) sigue apuntando a {{productoId}}, asi que el borrado
   tiene que ser rechazado con un mensaje claro, no con el error crudo de la foreign key."
 url: "{{baseUrl}}/productos/{{productoId}}"
 method: DELETE

@@ -1,5 +1,5 @@
 $kind: http-request
-description: "Esta es LA prueba clave del punto 3: sin token, la API tiene que rechazar la consulta con 401. Si esto te da 201, algo del middleware en la ruta no quedo bien aplicado."
+description: "Sin token, la API tiene que rechazar la consulta con 401 (crear una consulta requiere estar logueado). Si esto te da 201, algo del middleware en la ruta no quedo bien aplicado."
 url: "{{baseUrl}}/consultas"
 method: POST
 headers:

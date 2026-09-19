@@ -1,0 +1,23 @@
+$kind: http-request
+description: Filtra por sinGluten=true a proposito, porque el seed carga exactamente 2 productos sin gluten ('Pan Sin Gluten' y 'Torta Sin Gluten de Naranja') -- asi el filtro se prueba contra un resultado real y conocido, no contra un array vacio.
+url: "{{baseUrl}}/productos?soloActivos=true&sinGluten=true"
+method: GET
+queryParams:
+  soloActivos: "true"
+  sinGluten: "true"
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status 200', function () {
+          pm.response.to.have.status(200);
+      });
+      pm.test('Devuelve al menos los 2 productos sin gluten del seed', function () {
+          pm.expect(pm.response.json().length).to.be.at.least(2);
+      });
+      pm.test('Todos los resultados son sinGluten', function () {
+          pm.response.json().forEach(function (p) {
+              pm.expect(p.sinGluten).to.be.true;
+          });
+      });
+    language: text/javascript
+order: 4000

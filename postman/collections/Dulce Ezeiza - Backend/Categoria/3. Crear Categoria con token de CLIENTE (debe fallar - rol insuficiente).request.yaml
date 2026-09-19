@@ -1,7 +1,7 @@
 $kind: http-request
-description: "Desde que armamos el punto 6 (verificarAdmin), un token de cliente valido ya no alcanza para crear una categoria: la autenticacion es correcta 
-  (sabemos quien es), pero la autorizacion falla (no tiene el rol). Si esto te sigue dando 201, revisa que hayas vuelto a hacer login DESPUES de agregar rol 
-  al payload del JWT -- un token viejo no tiene rol adentro."
+description: "Un token de cliente valido no alcanza para crear una categoria: la autenticacion es correcta
+  (sabemos quien es), pero la autorizacion falla (no tiene el rol admin, que exige el middleware verificarAdmin). Si esto te da 201 en vez de 403, revisa
+  que hayas vuelto a hacer login DESPUES de agregar el rol al payload del JWT -- un token viejo no tiene rol adentro."
 url: "{{baseUrl}}/categorias"
 method: POST
 headers:
