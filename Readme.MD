@@ -7,8 +7,8 @@ Plataforma web para una cafetería/pastelería artesanal. Es un catálogo admini
 ## Integrantes
 
 - Lucas Caceres - 1157093
-- Federico
-- Tomas
+- Federico Minigozi - 1173274
+- Tomas Morbach - 1178309
 
 **Cátedra:** Aplicaciones Interactivas 2026
 
