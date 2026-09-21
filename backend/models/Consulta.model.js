@@ -59,13 +59,6 @@ const Consulta = sequelize.define(
             type: DataTypes.INTEGER,
             allowNull: false
         },
-
-        // FK OPCIONAL a Producto (allowNull: true).
-        // Si la consulta es general, queda en null.
-        productoId: {
-            type: DataTypes.INTEGER,
-            allowNull: true
-        },
     },
     {
         tableName: 'Consultas',
