@@ -213,4 +213,5 @@ Dentro de Usuario, las pruebas de recuperar contraseña son la excepción: como 
 
 - Logout (no requiere endpoint propio: sin lista negra de tokens, alcanza con que el frontend borre el token guardado).
 - Dashboard de métricas para el panel de administración.
+- Limitar intentos de login fallidos (hoy no hay tope: se puede reintentar la contraseña indefinidamente, sin demora ni bloqueo). Queda anotado como mejora de seguridad a futuro; no es crítico para este alcance porque no se manejan pagos ni datos sensibles.
 - Extras opcionales: envío de respuestas por email, buscador avanzado, promociones.
