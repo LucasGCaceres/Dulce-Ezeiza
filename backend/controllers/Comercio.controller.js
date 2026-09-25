@@ -1,50 +1,43 @@
-const Comercio = require('../models/Comercio.model');
+const comercioService = require('../services/Comercio.service');
 
 // ------------------------------------------------------------
-//  OBTENER: siempre devuelve la unica fila que existe
+//  OBTENER: GET /api/comercio  (publico, lo ve cualquier visitante)
 // ------------------------------------------------------------
-exports.obtener = async function () {
+exports.obtener = async function (req, res) {
     try {
-        return await Comercio.findOne();
+        const comercio = await comercioService.obtener();
+        if (!comercio) {
+            return res.status(404).json({ mensaje: 'No se cargo la informacion del comercio' });
+        }
+        return res.status(200).json(comercio);
     } catch (e) {
-        console.log(e);
-        throw new Error('Error al obtener la informacion del comercio');
+        return res.status(400).json({ mensaje: e.message });
     }
 };
 
 // ------------------------------------------------------------
-//  EDITAR: actualiza esa misma fila (nunca crea una nueva)
+//  EDITAR: PUT /api/comercio  (admin)
 // ------------------------------------------------------------
-exports.editar = async function (datos) {
-    let comercio;
+exports.editar = async function (req, res) {
+    const datos = {
+        nombre: req.body.nombre,
+        descripcion: req.body.descripcion,
+        direccion: req.body.direccion,
+        telefono: req.body.telefono,
+        instagram: req.body.instagram,
+        facebook: req.body.facebook,
+        whatsapp: req.body.whatsapp,
+        tiktok: req.body.tiktok,
+        horarios: req.body.horarios
+    };
 
     try {
-        comercio = await Comercio.findOne();
+        const comercio = await comercioService.editar(datos);
+        return res.status(200).json({
+            comercio: comercio,
+            mensaje: 'Informacion del comercio actualizada correctamente'
+        });
     } catch (e) {
-        console.log(e);
-        throw new Error('Error al buscar la informacion del comercio');
+        return res.status(400).json({ mensaje: e.message });
     }
-
-    if (!comercio) {
-        throw new Error('No existe la informacion del comercio');
-    }
-
-    comercio.nombre = datos.nombre ?? comercio.nombre;
-    comercio.descripcion = datos.descripcion ?? comercio.descripcion;
-    comercio.direccion = datos.direccion ?? comercio.direccion;
-    comercio.telefono = datos.telefono ?? comercio.telefono;
-    comercio.instagram = datos.instagram ?? comercio.instagram;
-    comercio.facebook = datos.facebook ?? comercio.facebook;
-    comercio.whatsapp = datos.whatsapp ?? comercio.whatsapp;
-    comercio.tiktok = datos.tiktok ?? comercio.tiktok;
-    comercio.horarios = datos.horarios ?? comercio.horarios;
-
-    try {
-        await comercio.save();
-    } catch (e) {
-        console.log(e);
-        throw new Error('No se pudo actualizar la informacion del comercio');
-    }
-
-    return comercio;
 };

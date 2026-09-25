@@ -1,10 +1,7 @@
 const consultaService = require('../services/Consulta.service');
 
 // ------------------------------------------------------------
-//  CREAR: POST /api/consultas  (publico, lo usa el visitante)
-// ------------------------------------------------------------
-// ------------------------------------------------------------
-//  CREAR: POST /api/consultas  (requiere estar logueado, Escenario B)
+//  CREAR: POST /api/consultas  (requiere estar logueado)
 // ------------------------------------------------------------
 exports.crear = async function (req, res) {
     const datos = {

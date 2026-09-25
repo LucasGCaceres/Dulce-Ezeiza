@@ -17,7 +17,7 @@ router.get('/perfil', verificarToken, usuarioController.obtenerPerfil);
 // PUT  /api/usuarios/perfil    -> el usuario logueado edita su propio perfil
 router.put('/perfil', verificarToken, usuarioController.editarPerfil);
 
-// POST /api/usuarios/cambiar-password -> el usuario logueado cambia su propia contraseña
+// PUT /api/usuarios/cambiar-password -> el usuario logueado cambia su propia contraseña
 router.put('/cambiar-password', verificarToken, usuarioController.cambiarPassword);
 
 // POST /api/usuarios/recuperar-password -> pide el codigo de recuperacion por mail (sin login)

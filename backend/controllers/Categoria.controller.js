@@ -23,6 +23,7 @@ exports.crear = async function (req, res) {
             mensaje: 'Categoria creada correctamente'
         });
     } catch (e) {
+        console.log(e);
         return res.status(400).json({ mensaje: e.message });
     }
 };
@@ -35,6 +36,7 @@ exports.obtenerTodas = async function (req, res) {
         const categorias = await categoriaService.obtenerTodas();
         return res.status(200).json(categorias);
     } catch (e) {
+        console.log(e);
         return res.status(400).json({ mensaje: e.message });
     }
 };
@@ -56,6 +58,7 @@ exports.obtenerPorId = async function (req, res) {
 
         return res.status(200).json(categoria);
     } catch (e) {
+        console.log(e);
         return res.status(400).json({ mensaje: e.message });
     }
 };
@@ -78,6 +81,7 @@ exports.editar = async function (req, res) {
             mensaje: 'Categoria actualizada correctamente'
         });
     } catch (e) {
+        console.log(e);
         return res.status(400).json({ mensaje: e.message });
     }
 };
@@ -92,6 +96,7 @@ exports.eliminar = async function (req, res) {
         await categoriaService.eliminar(id);
         return res.status(200).json({ mensaje: 'Categoria eliminada correctamente' });
     } catch (e) {
+        console.log(e);
         return res.status(400).json({ mensaje: e.message });
     }
 };

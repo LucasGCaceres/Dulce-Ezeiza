@@ -252,7 +252,8 @@ exports.reordenarImagenes = async function (productoId, ordenIds) {
     }
 
     const idsExistentes = imagenes.map(function (img) { return img.id; });
-    const mismaCantidad = ordenIds.length === idsExistentes.length;
+    const idsSinRepetidos = new Set(ordenIds);
+    const mismaCantidad = ordenIds.length === idsExistentes.length && idsSinRepetidos.size === ordenIds.length;
     const todosExisten = ordenIds.every(function (id) { return idsExistentes.includes(id); });
     if (!mismaCantidad || !todosExisten) {
         throw new Error('La lista de orden no coincide con las imagenes del producto');
