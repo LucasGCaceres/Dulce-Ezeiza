@@ -70,9 +70,9 @@ exports.obtenerPorId = async function (id) {
 // ------------------------------------------------------------
 exports.cambiarEstado = async function (id, nuevoEstado) {
     // Validacion pura, sin tocar la base: no necesita try/catch.
-    const estadosValidos = ['pendiente', 'leida', 'respondida'];
+    const estadosValidos = ['pendiente', 'respondida', 'cerrada'];
     if (!estadosValidos.includes(nuevoEstado)) {
-        throw new Error('Estado invalido. Debe ser: pendiente, leida o respondida');
+        throw new Error('Estado invalido. Debe ser: pendiente, respondida o cerrada');
     }
 
     let consulta;

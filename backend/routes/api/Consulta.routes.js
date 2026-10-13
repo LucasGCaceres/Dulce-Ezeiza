@@ -3,9 +3,10 @@ const router = express.Router();
 
 const consultaController = require('../../controllers/Consulta.controller');
 const { verificarToken, verificarAdmin } = require('../../middlewares/Autorizacion.middlewares');
+const { limiteConsultas } = require('../../middlewares/RateLimit.middlewares');
 
-// POST /api/consultas -> crear consulta 
-router.post('/', consultaController.crear);
+// POST /api/consultas -> crear consulta (publico, con limite anti-spam)
+router.post('/', limiteConsultas, consultaController.crear);
 
 // GET  /api/consultas?estado=...  -> listar todas (admin)
 router.get('/', verificarToken, verificarAdmin, consultaController.obtenerTodas);

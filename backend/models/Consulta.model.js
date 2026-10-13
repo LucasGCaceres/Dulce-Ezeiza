@@ -38,7 +38,7 @@ const Consulta = sequelize.define(
         // ENUM: solo acepta uno de estos tres valores. Si intentan guardar
         // otra cosa, Sequelize lo rechaza. Nace como 'pendiente'.
         estado: {
-            type: DataTypes.ENUM('pendiente', 'leida', 'respondida'),
+            type: DataTypes.ENUM('pendiente', 'respondida', 'cerrada'),
             allowNull: false,
             defaultValue: 'pendiente'
         },

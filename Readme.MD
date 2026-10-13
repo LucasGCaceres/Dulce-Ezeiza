@@ -1,6 +1,6 @@
 # Dulce Ezeiza
 
-Plataforma web para una cafetería/pastelería artesanal. Es un catálogo administrable — **no es un e-commerce**: no tiene carrito de compras ni pagos online. Cuenta con un sitio público donde cualquier visitante puede ver el catálogo, buscar y filtrar productos, y un panel de administración privado para gestionar el contenido.
+Plataforma web para una cafetería/pastelería artesanal. Es un catálogo administrable — **no es un e-commerce**: no tiene carrito de compras ni pagos online. Cuenta con un sitio público donde cualquier visitante puede ver el catálogo, buscar y filtrar productos y enviar consultas, y un panel de administración privado para gestionar el contenido.
 
 > Este README documenta principalmente el **backend**, que es la parte del proyecto más avanzada al momento de escribir esto. La documentación del frontend se va a ir sumando a medida que esa parte tome más forma.
 
@@ -36,7 +36,8 @@ backend/
 │   ├── api.js                # Router principal, junta las rutas de cada entidad
 │   └── api/                  # Un archivo de rutas por entidad
 ├── middlewares/
-│   └── Autorizacion.middlewares.js  # verificarToken y verificarAdmin
+│   ├── Autorizacion.middlewares.js  # verificarToken y verificarAdmin
+│   └── RateLimit.middlewares.js     # Limites de pedidos por IP (login, recuperacion, consultas)
 ├── database-scripts/
 │   └── crear-base.sql       # Script de creación de la base desde cero
 ├── .env.example              # Plantilla de variables de entorno
@@ -71,10 +72,14 @@ Versión resumida (para el paso a paso completo, con troubleshooting, ver el man
 
 ## Modelo de roles y autenticación
 
-Hay tres niveles de acceso:
+Hay dos niveles de acceso:
 
-- **Visitante anónimo:** puede navegar, hacer consulas y buscar el catálogo público. No necesita token.
-- **Administrador:** acceso completo al panel (alta, baja y modificación de categorías, productos, y gestión de consultas). Necesita un token válido con `rol: 'admin'`.
+- **Visitante anónimo:** puede navegar y buscar en el catálogo público, y enviar consultas desde el formulario de contacto. No necesita cuenta ni token.
+- **Administrador:** acceso completo al panel (alta, baja y modificación de categorías, productos y datos del comercio, y gestión de consultas). Necesita un token válido con `rol: 'admin'`.
+
+No hay registro público: el único usuario del sistema es el administrador, que se crea directamente en la base (el script `crear-base.sql` ya lo inserta). Versiones anteriores del proyecto tenían un rol `cliente` con registro y login propios; se eliminó porque obligaba a los visitantes a crearse una cuenta solo para mandar una consulta, cuando la consigna plantea esa acción como propia del visitante.
+
+En el frontend, el login del administrador vive en una ruta que no aparece en la navegación del sitio público (`/admin/login`). Esto es una decisión de experiencia de usuario (que el visitante no vea algo que no le sirve), **no** una medida de seguridad: cualquier URL que use el frontend se puede descubrir. La seguridad real está en el backend (los middlewares de abajo y el límite de intentos de login).
 
 El login devuelve un JWT que hay que mandar en cada request protegida, en el header:
 
@@ -85,16 +90,50 @@ x-access-token: <token>
 El token incluye el `id` del usuario y su `rol`. Dos middlewares se encargan de la seguridad:
 
 - `verificarToken`: chequea que el token exista y sea válido (autenticación — "¿quién sos?"). Si falta o es inválido, corta con **401**.
-- `verificarAdmin`: se usa siempre después de `verificarToken`, y chequea que el rol sea `admin` (autorización — "¿te alcanza el rol para esto?"). Si no, corta con **403**.
+- `verificarAdmin`: se usa siempre después de `verificarToken`, y chequea que el rol sea `admin` (autorización — "¿te alcanza el rol para esto?"). Si no, corta con **403**. Aunque hoy haya un solo rol, se mantiene como defensa en profundidad y para que el sistema quede abierto a sumar roles en el futuro.
+
+### Límite de pedidos (rate limiting)
+
+Los endpoints públicos que se pueden abusar tienen un límite de pedidos por IP, implementado con [`express-rate-limit`](https://www.npmjs.com/package/express-rate-limit) en `middlewares/RateLimit.middlewares.js`. Al superarlo, la API responde **429** ("Too Many Requests") y la request nunca llega al controller.
+
+| Endpoint | Límite | Por qué |
+|---|---|---|
+| `POST /api/usuarios/login` | 5 intentos **fallidos** cada 15 minutos | Es la única puerta al panel: frena a quien intente adivinar la contraseña probando muchas. Los logins exitosos no cuentan. |
+| `POST /api/usuarios/recuperar-password` | 3 pedidos por hora | Cada pedido manda un mail: evita que se use para inundar la casilla del admin. |
+| `POST /api/consultas` | 5 consultas por hora | El formulario es público: frena el spam. |
+
+Este límite se había evaluado antes y se había descartado por no ser crítico. La decisión cambió al eliminar el login de clientes: el login pasó a proteger solamente el acceso al panel de administración.
+
+Los contadores se guardan en memoria, así que se reinician al reiniciar el servidor. Para este alcance alcanza; en un despliegue con varios servidores habría que guardarlos en un almacenamiento compartido (por ejemplo, Redis).
 
 ## Recuperar contraseña
 
-Un usuario que se olvidó la contraseña (y por lo tanto no puede loguearse) puede recuperarla en dos pasos, sin necesitar ningún token:
+Si el administrador se olvidó la contraseña (y por lo tanto no puede loguearse), puede recuperarla en dos pasos, sin necesitar ningún token:
 
 1. **`POST /api/usuarios/recuperar-password`** con `{ "email": "..." }`. Si ese email existe, se genera un código numérico de 6 dígitos con **15 minutos** de vencimiento y se manda por mail. La respuesta es siempre la misma (200, mensaje genérico) exista o no el email — si dijera explícitamente "ese email no existe", cualquiera podría usar este endpoint para averiguar qué emails están registrados, el mismo motivo por el que el login tampoco distingue "usuario inexistente" de "contraseña incorrecta".
 2. **`PUT /api/usuarios/resetear-password`** con `{ "token": "123456", "passwordNueva": "..." }`. Si el código es válido y no venció, actualiza la contraseña; si no, devuelve un 400 con un mensaje claro.
 
-**Sobre el envío del mail:** la consigna pide la funcionalidad de "recuperar contraseña", pero el envío de correos reales solo figura como puntaje extra asociado al formulario de contacto — no exige que este flujo mande un mail real. Por eso, y para no depender de una cuenta de correo externa (con los riesgos de que la bloqueen por uso automatizado), el envío usa [Ethereal](https://ethereal.email/), un servicio de mails de prueba: el mail nunca llega a ningún lado, pero se puede "abrir" y ver tal cual quedó armado. Después de pedir la recuperación, la consola del servidor imprime un link a la vista previa del mail (código incluido). Si en algún momento se quiere mandar a una casilla real, alcanza con cambiar la configuración de `backend/services/Mail.service.js` (variables `MAIL_HOST`, `MAIL_USER`, `MAIL_PASS` en `.env`) — el resto del flujo no cambia.
+**Sobre el envío del mail:** la consigna pide la funcionalidad de "recuperar contraseña", pero el envío de correos reales solo figura como puntaje extra asociado al formulario de contacto — no exige que este flujo mande un mail real. Por eso, y para no depender de una cuenta de correo externa (con los riesgos de que la bloqueen por uso automatizado), el envío usa [Ethereal](https://ethereal.email/), un servicio de mails de prueba: el mail nunca llega a ningún lado, pero se puede "abrir" y ver tal cual quedó armado. Después de pedir la recuperación, la consola del servidor imprime un link a la vista previa del mail (código incluido). Si en algún momento se quiere mandar a una casilla real, hay que reemplazar en `backend/services/Mail.service.js` la cuenta de prueba de Ethereal por los datos de un servidor SMTP real (idealmente leídos desde el `.env`) — el resto del flujo no cambia.
+
+## Consultas: formulario de contacto y panel
+
+Cualquier visitante puede mandar una consulta desde el formulario de contacto, sin cuenta. Deja sus datos sueltos (nombre, email, teléfono opcional, asunto y mensaje) y, si la consulta es sobre un producto puntual, puede quedar asociada a ese producto.
+
+Como el endpoint es público, el backend no confía en lo que llega: limpia los espacios de cada campo, valida que los obligatorios no estén vacíos, que el email tenga un formato válido y que ningún campo supere el largo de su columna en la base. Si algo falla, responde **400** con la lista completa de errores (no solo el primero), para que el frontend pueda marcar todos los campos con problemas de una vez. Además, el endpoint tiene un límite de envíos por IP (ver "Límite de pedidos").
+
+El administrador gestiona las consultas desde el panel con un ciclo de vida inspirado en los sistemas de tickets:
+
+| Estado | Significado |
+|---|---|
+| `pendiente` | Nadie la atendió todavía. Es el estado con el que nace toda consulta. |
+| `respondida` | Ya se respondió y la conversación sigue por mail. |
+| `cerrada` | Resuelta, no hay nada más que hacer. |
+
+Una consulta que se resuelve con una sola respuesta puede pasar directo de `pendiente` a `cerrada`, y una cerrada se puede reabrir si el visitante vuelve a escribir. Las transiciones las decide el administrador; el backend solo valida que el estado sea uno de los tres.
+
+**El panel no es un sistema de mensajería, a propósito.** Para responder, el panel abre el cliente de correo del administrador (link `mailto:`) con el destinatario, el asunto y el mensaje original ya completos, y la conversación sigue por mail. Por eso la respuesta no se guarda en la base: el panel sirve para no perder consultas y saber cuáles faltan atender, y el mail es donde ocurre la conversación. La contracara es que el sistema no ve esos mails, así que el estado depende de que el administrador lo actualice a mano.
+
+Se descartó mandar un mail automático de confirmación al visitante: el email que escribe en el formulario no está verificado, así que cualquiera podría usar el formulario para mandarle mails a un tercero.
 
 ## Imágenes de producto
 
@@ -118,12 +157,11 @@ Todas las rutas cuelgan de `/api`. La columna "Acceso" indica qué hace falta pa
 
 | Método | Ruta | Acceso | Descripción |
 |---|---|---|---|
-| POST | `/registro` | Público | Registra un cliente nuevo (rol siempre `cliente`) |
-| POST | `/login` | Público | Valida credenciales y devuelve un token |
+| POST | `/login` | Público (con límite de intentos) | Valida credenciales y devuelve un token |
 | GET | `/perfil` | Logueado | Devuelve los datos del propio perfil |
 | PUT | `/perfil` | Logueado | Edita nombre, apellido, teléfono y/o email propios |
 | PUT | `/cambiar-password` | Logueado | Cambia la contraseña (pide la actual + la nueva) |
-| POST | `/recuperar-password` | Público | Genera un código de recuperación y lo manda por mail |
+| POST | `/recuperar-password` | Público (con límite de pedidos) | Genera un código de recuperación y lo manda por mail |
 | PUT | `/resetear-password` | Público | Cambia la contraseña usando el código recibido por mail |
 
 ### Categoría (`/api/categorias`)
@@ -153,11 +191,10 @@ Todas las rutas cuelgan de `/api`. La columna "Acceso" indica qué hace falta pa
 
 | Método | Ruta | Acceso | Descripción |
 |---|---|---|---|
-| POST | `/` | Logueado | Crea una consulta (ver nota sobre Escenario B abajo) |
-| GET | `/mis-consultas` | Logueado | Historial de consultas propias |
+| POST | `/` | Público (con límite de envíos) | Crea una consulta desde el formulario de contacto |
 | GET | `/?estado=` | Admin | Lista todas las consultas, filtro opcional por estado |
 | GET | `/:id` | Admin | Una consulta por id |
-| PATCH | `/:id/estado` | Admin | Cambia el estado (`pendiente` / `leida` / `respondida`) |
+| PATCH | `/:id/estado` | Admin | Cambia el estado (`pendiente` / `respondida` / `cerrada`) |
 | DELETE | `/:id` | Admin | Borra una consulta |
 
 ## Convenciones del proyecto
@@ -166,14 +203,18 @@ Todas las rutas cuelgan de `/api`. La columna "Acceso" indica qué hace falta pa
 - Los `catch` nunca reenvían el error técnico crudo (`e.message` de Sequelize/SQL Server) al cliente: se loguea el detalle completo con `console.log(e)` del lado del servidor, y al cliente solo le llega un mensaje pensado para mostrarse.
 - El logging de las queries de Sequelize está condicionado a `NODE_ENV`: se ve en `development`, se apaga en `production`.
 - Cuando una respuesta podría revelar si un dato existe o no en la base (login, recuperar contraseña), se devuelve siempre el mismo mensaje genérico, para no dar pistas que sirvan para enumerar usuarios o emails registrados.
+- Códigos de error: **400** datos inválidos, **401** sin token o token inválido ("¿quién sos?"), **403** el rol no alcanza ("no podés hacer esto"), **404** recurso inexistente, **429** demasiados pedidos.
+- Los largos máximos que valida el backend coinciden con los de las columnas en `crear-base.sql`: si se cambia uno, hay que cambiar el otro.
 
 ## Cómo probar la API
 
-Hay una colección de Postman con casos de prueba (positivos y negativos) para las cuatro entidades, incluyendo los tres niveles de acceso. Para usarla:
+Hay una colección de Postman con casos de prueba (positivos y negativos) para las cuatro entidades, incluyendo los accesos público y de administrador. Para usarla:
 
 1. Importarla en Postman.
-2. En las variables de la colección, completar `adminEmail` y `adminPassword` con las credenciales del admin creado a mano en la base.
-3. Correr las carpetas en orden: Usuario → Categoría → Producto → Consulta. Las requests de registro/login guardan automáticamente los tokens e ids que necesitan las siguientes.
+2. En las variables de la colección, completar `adminEmail` y `adminPassword` con las credenciales del admin que crea `crear-base.sql`.
+3. Correr las carpetas en orden: Usuario → Categoría → Producto → Consulta. La request de login guarda automáticamente el token, y las demás guardan los ids que necesitan las siguientes.
+
+**Ojo con el límite de pedidos:** el contador es por IP, y al probar en local todas las requests salen de la misma. Si se corre la colección varias veces seguidas, los tests de login fallido o de creación de consultas pueden terminar en 429 en vez del código esperado. Reiniciar el servidor resetea los contadores.
 
 Dentro de Usuario, las pruebas de recuperar contraseña son la excepción: como el código llega por mail y no en la respuesta de la API, dos de esas requests son manuales (hay que copiar el código de la vista previa de Ethereal y pegarlo en la variable de colección `codigoRecuperacion` antes de correrlas). Cada request tiene su descripción con el paso a paso.
 
@@ -181,7 +222,7 @@ Dentro de Usuario, las pruebas de recuperar contraseña son la excepción: como 
 
 - **Manual de instalación:** paso a paso detallado para levantar el entorno desde cero (SQL Server Express, SSMS, variables de entorno, troubleshooting).
 - **Modelo de datos:** diagrama entidad-relación de las cuatro tablas y sus relaciones.
-- **Diagrama de navegación:** flujo de pantallas para visitante, cliente y administrador.
+- **Diagrama de navegación:** flujo de pantallas para visitante y administrador.
 
 ## Estado del proyecto
 
@@ -189,7 +230,7 @@ Dentro de Usuario, las pruebas de recuperar contraseña son la excepción: como 
 
 - Catálogo de productos administrable por categoría (CRUD completo de Categoría y Producto).
 - Búsqueda y filtros en el catálogo (por texto, categoría, sin TACC, solo activos).
-- Sistema de consultas/contacto con gestión de estado (crear, listar, cambiar estado).
+- Sistema de consultas/contacto abierto a visitantes, con gestión de estado (crear, listar, cambiar estado).
 - Sitio público de solo lectura + panel de administración protegido por login.
 - Recuperar contraseña (código temporal enviado por mail).
 - Validación de datos obligatorios tanto en el front como en el back.
@@ -198,10 +239,11 @@ Dentro de Usuario, las pruebas de recuperar contraseña son la excepción: como 
 
 ### Extras, más allá de lo pedido
 
-- Sistema de roles de tres niveles (visitante / cliente / admin) en vez de un único usuario administrador, con registro y login de clientes.
-- Funciones de autoservicio para el cliente: historial de sus propias consultas, ver y editar su perfil, cambiar su contraseña.
 - Middleware de autorización que valida no solo autenticación sino también el rol correspondiente a cada ruta.
-- Endurecimiento de seguridad más allá de lo básico: protección contra mass assignment en el registro, el hash de contraseña nunca viaja en ninguna respuesta HTTP, los errores internos nunca se exponen crudos al cliente.
+- Límite de pedidos por IP en login, recuperación de contraseña y formulario de consultas.
+- Validación estricta del formulario público (tipos, espacios, formato de email, largos máximos), con todos los errores devueltos juntos.
+- Ciclo de vida de consultas tipo ticket (pendiente / respondida / cerrada), con respuesta por mail desde el panel.
+- Endurecimiento de seguridad más allá de lo básico: el hash de contraseña nunca viaja en ninguna respuesta HTTP, los errores internos nunca se exponen crudos al cliente.
 - Reglas de integridad de datos: no se puede borrar una categoría o un producto que todavía tiene historial asociado.
 - Múltiples imágenes por producto (URLs, sin subida de archivos), con endpoints para agregar, borrar y reordenar de a una o en lote.
 - Colección de pruebas de Postman con casos positivos y negativos para toda la API.
@@ -210,5 +252,5 @@ Dentro de Usuario, las pruebas de recuperar contraseña son la excepción: como 
 
 - Logout (no requiere endpoint propio: sin lista negra de tokens, alcanza con que el frontend borre el token guardado).
 - Dashboard de métricas para el panel de administración.
-- Limitar intentos de login fallidos (hoy no hay tope: se puede reintentar la contraseña indefinidamente, sin demora ni bloqueo). Queda anotado como mejora de seguridad a futuro; no es crítico para este alcance porque no se manejan pagos ni datos sensibles.
-- Extras opcionales: envío de respuestas por email, buscador avanzado, promociones.
+- Segundo factor para el login del administrador (código por mail), reutilizando el mecanismo de recuperar contraseña.
+- Extras opcionales: envío de mails reales (hoy se usa Ethereal), buscador avanzado, promociones.

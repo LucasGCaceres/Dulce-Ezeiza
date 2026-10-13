@@ -4,12 +4,10 @@ const router = express.Router();
 // Traemos el controller: cada ruta va a apuntar a una de sus funciones.
 const usuarioController = require('../../controllers/Usuario.controller');
 const  { verificarToken } = require('../../middlewares/Autorizacion.middlewares');
-
-// POST /api/usuarios/registro  -> crea un usuario nuevo
-router.post('/registro', usuarioController.registrar);
+const { limiteLogin, limiteRecuperacion } = require('../../middlewares/RateLimit.middlewares');
 
 // POST /api/usuarios/login     -> valida credenciales y devuelve token
-router.post('/login', usuarioController.login);
+router.post('/login', limiteLogin, usuarioController.login);
 
 // GET  /api/usuarios/perfil   -> el usuario logueado ve sus propios datos
 router.get('/perfil', verificarToken, usuarioController.obtenerPerfil);
@@ -21,7 +19,7 @@ router.put('/perfil', verificarToken, usuarioController.editarPerfil);
 router.put('/cambiar-password', verificarToken, usuarioController.cambiarPassword);
 
 // POST /api/usuarios/recuperar-password -> pide el codigo de recuperacion por mail (sin login)
-router.post('/recuperar-password', usuarioController.solicitarRecuperacion);
+router.post('/recuperar-password', limiteRecuperacion, usuarioController.solicitarRecuperacion);
 
 // PUT  /api/usuarios/resetear-password  -> cambia la contraseña usando el codigo (sin login)
 router.put('/resetear-password', usuarioController.resetearPassword);
