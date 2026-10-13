@@ -73,8 +73,7 @@ Versión resumida (para el paso a paso completo, con troubleshooting, ver el man
 
 Hay tres niveles de acceso:
 
-- **Visitante anónimo:** solo puede navegar y buscar el catálogo público. No necesita token.
-- **Cliente registrado:** puede mandar consultas, ver el historial de sus propias consultas, y ver/editar su propio perfil. Necesita un token válido.
+- **Visitante anónimo:** puede navegar, hacer consulas y buscar el catálogo público. No necesita token.
 - **Administrador:** acceso completo al panel (alta, baja y modificación de categorías, productos, y gestión de consultas). Necesita un token válido con `rol: 'admin'`.
 
 El login devuelve un JWT que hay que mandar en cada request protegida, en el header:
@@ -87,8 +86,6 @@ El token incluye el `id` del usuario y su `rol`. Dos middlewares se encargan de 
 
 - `verificarToken`: chequea que el token exista y sea válido (autenticación — "¿quién sos?"). Si falta o es inválido, corta con **401**.
 - `verificarAdmin`: se usa siempre después de `verificarToken`, y chequea que el rol sea `admin` (autorización — "¿te alcanza el rol para esto?"). Si no, corta con **403**.
-
-El registro público (`POST /api/usuarios/registro`) siempre crea usuarios con `rol: 'cliente'`, sin importar qué se mande en el body — es una protección explícita contra mass assignment (que alguien intente registrarse como admin mandando `rol: "admin"` en el request). El usuario administrador se crea a mano directamente en la base de datos.
 
 ## Recuperar contraseña
 

@@ -81,11 +81,8 @@ CREATE TABLE Consultas (
     asunto NVARCHAR(200) NOT NULL,
     mensaje NVARCHAR(2000) NOT NULL,
     estado NVARCHAR(20) NOT NULL DEFAULT 'pendiente',
-    usuarioId INT NOT NULL,
     productoId INT NULL,
     fecha DATETIME DEFAULT GETDATE(),
-    CONSTRAINT FK_Consultas_Usuarios FOREIGN KEY (usuarioId)
-        REFERENCES Usuarios(id),
     CONSTRAINT FK_Consultas_Productos FOREIGN KEY (productoId)
         REFERENCES Productos(id)
 );
@@ -174,9 +171,9 @@ GO
 -- ------------------------------------------------------------
 INSERT INTO Usuarios (nombre, apellido, email, telefono, password, rol) VALUES
 ('Admin', 'Dulce Ezeiza', 'admin@dulceezeiza.com', '1122334455', '$2b$08$a4Y3ECUAhZuT5Cw/B6mEqe726/hixNeWY.t90dSRRjmajWaV0AMmS', 'admin'),
-('Maria', 'Gonzalez', 'maria.gonzalez@ejemplo.com', '1133445566', '$2b$08$ki6OdO6LHtTCJ1S/jUiAv.jcruJxcZWIdfu5B5EZdfkv90sP8R3uG', 'cliente'),
-('Juan', 'Perez', 'juan.perez@ejemplo.com', '1144556677', '$2b$08$ki6OdO6LHtTCJ1S/jUiAv.jcruJxcZWIdfu5B5EZdfkv90sP8R3uG', 'cliente'),
-('Sofia', 'Martinez', 'sofia.martinez@ejemplo.com', '1155667788', '$2b$08$5dZbFNs65.MfICrphnVGW.Txap8Vrhuei4Az8Go2jF0bAUS5NxEGG', 'cliente');
+('Maria', 'Gonzalez', 'maria.gonzalez@ejemplo.com', '1133445566', '$2b$08$ki6OdO6LHtTCJ1S/jUiAv.jcruJxcZWIdfu5B5EZdfkv90sP8R3uG'),
+('Juan', 'Perez', 'juan.perez@ejemplo.com', '1144556677', '$2b$08$ki6OdO6LHtTCJ1S/jUiAv.jcruJxcZWIdfu5B5EZdfkv90sP8R3uG'),
+('Sofia', 'Martinez', 'sofia.martinez@ejemplo.com', '1155667788', '$2b$08$5dZbFNs65.MfICrphnVGW.Txap8Vrhuei4Az8Go2jF0bAUS5NxEGG');
 GO
 -- ------------------------------------------------------------
 --  Categorias

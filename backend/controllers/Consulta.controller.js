@@ -11,7 +11,6 @@ exports.crear = async function (req, res) {
         asunto: req.body.asunto,
         mensaje: req.body.mensaje,
         productoId: req.body.productoId,
-        usuarioId: req.usuarioId   // viene del token verificado, NUNCA del body
     };
 
     // Validacion: nombre, email, asunto y mensaje son obligatorios.
@@ -30,19 +29,6 @@ exports.crear = async function (req, res) {
     } catch (e) {
         console.log(e);
         return res.status(400).json({ mensaje: 'No se pudo enviar la consulta' });
-    }
-};
-
-// ------------------------------------------------------------
-//  MIS CONSULTAS: GET /api/consultas/mis-consultas  (cliente logueado)
-// ------------------------------------------------------------
-exports.obtenerMisConsultas = async function (req, res) {
-    try {
-        const consultas = await consultaService.obtenerPorUsuario(req.usuarioId);
-        return res.status(200).json(consultas);
-    } catch (e) {
-        console.log(e);
-        return res.status(400).json({ mensaje: 'No se pudieron obtener tus consultas' });
     }
 };
 

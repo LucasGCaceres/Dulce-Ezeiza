@@ -16,9 +16,4 @@ ImagenProducto.belongsTo(Producto, { foreignKey: 'productoId' });
 Producto.hasMany(Consulta, { foreignKey: 'productoId' });
 Consulta.belongsTo(Producto, { foreignKey: 'productoId' });
 
-// --- Relacion Usuario 1..N Consulta ---
-// Toda consulta pertenece a un usuario logueado.
-Usuario.hasMany(Consulta, { foreignKey: 'usuarioId' });
-Consulta.belongsTo(Usuario, { foreignKey: 'usuarioId' });
-
 module.exports = { Categoria, Producto, Consulta, Usuario, ImagenProducto };
