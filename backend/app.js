@@ -21,8 +21,15 @@ const app = express();
 // 5. Middlewares base
 app.use(express.json());                       // entiende JSON en el body
 app.use(express.urlencoded({ extended: false }));
-app.use(cors());                               // permite pedidos desde el front (React)
 
+// CORS: solo el frontend puede leer las respuestas de la API desde el navegador.
+// Se lee del .env para no hardcodear la URL (cambia entre desarrollo y produccion).
+// Se pueden poner varias separadas por coma.
+const origenesPermitidos = (process.env.FRONTEND_URL || 'http://localhost:5173')
+    .split(',')
+    .map(origen => origen.trim());
+
+app.use(cors({ origin: origenesPermitidos }));
 // 6. Ruta de prueba: para confirmar que el servidor responde
 app.get('/', (req, res) => {
     res.send('Servidor de Dulce Ezeiza funcionando');
