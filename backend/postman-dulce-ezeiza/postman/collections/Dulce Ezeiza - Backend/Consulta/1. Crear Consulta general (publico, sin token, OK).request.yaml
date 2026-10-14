@@ -1,0 +1,34 @@
+$kind: http-request
+description: "El formulario de contacto es publico: un visitante sin cuenta deja sus datos sueltos y la consulta se crea igual. Se mandan espacios de mas en el nombre a proposito, para comprobar que el backend los limpia."
+url: "{{baseUrl}}/consultas"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+        "nombre": "   Visitante De Prueba   ",
+        "email": "visitante@test.com",
+        "telefono": "1122334455",
+        "asunto": "Horarios de atencion",
+        "mensaje": "Hola, queria saber el horario del local los domingos."
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status 201', function () {
+          pm.response.to.have.status(201);
+      });
+      const jsonData = pm.response.json();
+      pm.test('Nace en estado pendiente', function () {
+          pm.expect(jsonData.consulta.estado).to.eql('pendiente');
+      });
+      pm.test('El nombre llega sin los espacios de mas', function () {
+          pm.expect(jsonData.consulta.nombre).to.eql('Visitante De Prueba');
+      });
+      if (jsonData.consulta && jsonData.consulta.id) {
+          pm.collectionVariables.set('consultaId', jsonData.consulta.id);
+      }
+    language: text/javascript
+order: 1000

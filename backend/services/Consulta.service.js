@@ -66,7 +66,7 @@ exports.obtenerPorId = async function (id) {
 };
 
 // ------------------------------------------------------------
-//  CAMBIAR EL ESTADO de una consulta (pendiente/leida/respondida)
+//  CAMBIAR EL ESTADO de una consulta (pendiente/respondida/cerrada)
 // ------------------------------------------------------------
 exports.cambiarEstado = async function (id, nuevoEstado) {
     // Validacion pura, sin tocar la base: no necesita try/catch.

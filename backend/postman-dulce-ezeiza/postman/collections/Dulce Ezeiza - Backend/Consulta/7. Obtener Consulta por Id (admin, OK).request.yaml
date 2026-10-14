@@ -1,0 +1,17 @@
+$kind: http-request
+url: "{{baseUrl}}/consultas/{{consultaId}}"
+method: GET
+headers:
+  x-access-token: "{{tokenAdmin}}"
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status 200', function () {
+          pm.response.to.have.status(200);
+      });
+      pm.test('Es la consulta creada en la request 1', function () {
+          const jsonData = pm.response.json();
+          pm.expect(jsonData.id).to.eql(Number(pm.collectionVariables.get('consultaId')));
+      });
+    language: text/javascript
+order: 7000

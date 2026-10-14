@@ -1,0 +1,28 @@
+$kind: http-request
+description: "Usa el admin del seed (adminEmail/adminPassword ya vienen completados en las variables de coleccion). Guarda {{tokenAdmin}} para el resto de la coleccion."
+url: "{{baseUrl}}/usuarios/login"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+        "email": "{{adminEmail}}",
+        "password": "{{adminPassword}}"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status 200', function () {
+          pm.response.to.have.status(200);
+      });
+      const jsonData = pm.response.json();
+      pm.test('El usuario es admin', function () {
+          pm.expect(jsonData.usuario.rol).to.eql('admin');
+      });
+      if (jsonData.token) {
+          pm.collectionVariables.set('tokenAdmin', jsonData.token);
+      }
+    language: text/javascript
+order: 1000

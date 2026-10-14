@@ -1,0 +1,24 @@
+$kind: http-request
+description: "Ciclo de vida tipo ticket: pendiente -> respondida (la conversacion sigue por mail) -> cerrada."
+url: "{{baseUrl}}/consultas/{{consultaId}}/estado"
+method: PATCH
+headers:
+  Content-Type: application/json
+  x-access-token: "{{tokenAdmin}}"
+body:
+  type: json
+  content: |-
+    {
+        "estado": "respondida"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status 200', function () {
+          pm.response.to.have.status(200);
+      });
+      pm.test('Quedo en respondida', function () {
+          pm.expect(pm.response.json().consulta.estado).to.eql('respondida');
+      });
+    language: text/javascript
+order: 8000

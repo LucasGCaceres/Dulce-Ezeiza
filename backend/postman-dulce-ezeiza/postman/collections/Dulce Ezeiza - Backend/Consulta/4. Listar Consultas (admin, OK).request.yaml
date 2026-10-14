@@ -1,0 +1,26 @@
+$kind: http-request
+description: "Las consultas ya no estan asociadas a un usuario: los datos de contacto vienen en la propia consulta. Tambien tiene que incluir las 3 consultas del seed."
+url: "{{baseUrl}}/consultas"
+method: GET
+headers:
+  x-access-token: "{{tokenAdmin}}"
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status 200', function () {
+          pm.response.to.have.status(200);
+      });
+      const consultas = pm.response.json();
+      pm.test('Devuelve un array con al menos las 3 del seed', function () {
+          pm.expect(consultas).to.be.an('array');
+          pm.expect(consultas.length).to.be.at.least(3);
+      });
+      pm.test('Cada consulta trae sus datos de contacto y ninguna trae un Usuario', function () {
+          consultas.forEach(function (c) {
+              pm.expect(c.email).to.be.a('string');
+              pm.expect(c.Usuario).to.be.undefined;
+              pm.expect(c.usuarioId).to.be.undefined;
+          });
+      });
+    language: text/javascript
+order: 4000

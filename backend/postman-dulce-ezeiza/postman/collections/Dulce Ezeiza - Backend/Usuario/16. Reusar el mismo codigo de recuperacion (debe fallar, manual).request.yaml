@@ -1,0 +1,21 @@
+$kind: http-request
+description: "Corre esto DESPUES de que la request 15 haya funcionado. El codigo de recuperacion es de un solo uso: al resetear la contraseña se borra de la base, asi que usarlo de nuevo tiene que fallar."
+url: "{{baseUrl}}/usuarios/resetear-password"
+method: PUT
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+        "token": "{{codigoRecuperacion}}",
+        "passwordNueva": "OtraMas123!"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status 400 - el codigo ya se uso', function () {
+          pm.response.to.have.status(400);
+      });
+    language: text/javascript
+order: 16000

@@ -1,0 +1,35 @@
+$kind: http-request
+description: "Prueba que editar el perfil solo toca los campos permitidos (nombre, apellido, telefono, email) y nunca password ni rol. Solo cambia el telefono (a uno generado en el momento), asi el email del admin queda igual y el login sigue funcionando en las proximas corridas."
+url: "{{baseUrl}}/usuarios/perfil"
+method: PUT
+headers:
+  Content-Type: application/json
+  x-access-token: "{{tokenAdmin}}"
+body:
+  type: json
+  content: |-
+    {
+        "telefono": "{{telefonoPrueba}}",
+        "rol": "cliente"
+    }
+scripts:
+  - type: beforeRequest
+    code: pm.collectionVariables.set('telefonoPrueba', '11' + String(Date.now()).slice(-8));
+    language: text/javascript
+  - type: afterResponse
+    code: |-
+      pm.test('Status 200', function () {
+          pm.response.to.have.status(200);
+      });
+      const jsonData = pm.response.json();
+      pm.test('El telefono se actualizo', function () {
+          pm.expect(jsonData.usuario.telefono).to.eql(pm.collectionVariables.get('telefonoPrueba'));
+      });
+      pm.test('El rol no cambio aunque mandamos rol en el body', function () {
+          pm.expect(jsonData.usuario.rol).to.eql('admin');
+      });
+      pm.test('No trae password', function () {
+          pm.expect(jsonData.usuario.password).to.be.undefined;
+      });
+    language: text/javascript
+order: 6000

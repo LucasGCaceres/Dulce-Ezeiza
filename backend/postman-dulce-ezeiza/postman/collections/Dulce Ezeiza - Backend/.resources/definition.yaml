@@ -1,0 +1,24 @@
+$kind: collection
+description: "Coleccion de pruebas para el backend de Dulce Ezeiza. Corre las carpetas en orden: Usuario -> Categoria -> Producto -> Consulta -> Comercio -> Limites de pedidos. Asume que la base tiene el seed cargado (backend/database-scripts/crear-base.sql): adminEmail/adminPassword y categoriaSeedId/productoSeedId ya vienen completados con datos del seed. IMPORTANTE: la API limita pedidos por IP (login, recuperar password, consultas) y los contadores viven en memoria del servidor. Reinicia el servidor antes de cada corrida completa; si no, a partir de la segunda corrida algunos tests van a recibir 429 en vez del codigo esperado. La carpeta 'Limites de pedidos' agota esos limites a proposito, por eso va ultima."
+variables:
+  baseUrl: http://localhost:8080/api
+  adminEmail: admin@dulceezeiza.com
+  adminPassword: Admin123!
+  adminPasswordNueva: AdminNueva456!
+  categoriaSeedId: "1"
+  categoriaSeedNombre: Panaderia
+  productoSeedId: "1"
+  productoSeedNombre: Pan Frances
+  tokenAdmin: ""
+  telefonoPrueba: ""
+  categoriaId: ""
+  categoriaNombre: ""
+  productoId: ""
+  productoNombre: ""
+  consultaId: ""
+  codigoRecuperacion: ""
+  horariosOriginales: ""
+  imagenId1: ""
+  imagenId2: ""
+  imagenId3: ""
+  imagenId4: ""

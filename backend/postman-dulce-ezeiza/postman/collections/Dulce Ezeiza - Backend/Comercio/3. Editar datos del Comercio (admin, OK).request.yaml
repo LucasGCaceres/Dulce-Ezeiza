@@ -1,0 +1,28 @@
+$kind: http-request
+description: "Edicion parcial: solo se manda horarios, el resto de los campos tiene que quedar como estaba."
+url: "{{baseUrl}}/comercio"
+method: PUT
+headers:
+  Content-Type: application/json
+  x-access-token: "{{tokenAdmin}}"
+body:
+  type: json
+  content: |-
+    {
+        "horarios": "Horario de prueba de Postman"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status 200', function () {
+          pm.response.to.have.status(200);
+      });
+      const jsonData = pm.response.json();
+      pm.test('Los horarios se actualizaron', function () {
+          pm.expect(jsonData.comercio.horarios).to.eql('Horario de prueba de Postman');
+      });
+      pm.test('El nombre no se toco', function () {
+          pm.expect(jsonData.comercio.nombre).to.be.a('string').and.not.empty;
+      });
+    language: text/javascript
+order: 3000

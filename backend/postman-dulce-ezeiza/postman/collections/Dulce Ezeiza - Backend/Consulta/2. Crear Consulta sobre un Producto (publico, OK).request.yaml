@@ -1,0 +1,28 @@
+$kind: http-request
+description: "Necesita {{productoId}} ya creado (carpeta Producto, request 1). Ojo: productoId va SIN comillas, como numero. El backend valida que sea un entero; si se manda como texto (\"5\"), lo rechaza con 400."
+url: "{{baseUrl}}/consultas"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+        "nombre": "Visitante De Prueba",
+        "email": "visitante@test.com",
+        "asunto": "Pregunta sobre un producto",
+        "mensaje": "Este producto tiene gluten de verdad?",
+        "productoId": {{productoId}}
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status 201', function () {
+          pm.response.to.have.status(201);
+      });
+      pm.test('Quedo asociada al producto', function () {
+          const jsonData = pm.response.json();
+          pm.expect(jsonData.consulta.productoId).to.eql(Number(pm.collectionVariables.get('productoId')));
+      });
+    language: text/javascript
+order: 2000

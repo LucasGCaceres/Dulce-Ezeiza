@@ -32,7 +32,7 @@ CREATE TABLE Usuarios (
     telefono NVARCHAR(50),                 -- opcional
     password NVARCHAR(255) NOT NULL,       -- se guarda el hash de bcrypt
     fecha DATETIME DEFAULT GETDATE(),
-    rol NVARCHAR(20) NOT NULL DEFAULT 'cliente',
+    rol NVARCHAR(20) NOT NULL,
     resetPasswordToken NVARCHAR(255),      -- token temporal para recuperar la contraseña
     resetPasswordExpira DATETIME2           -- vencimiento del token (15 min despues de generarlo)
 );
@@ -165,12 +165,9 @@ GO
 --  Las passwords estan hasheadas con bcrypt (costo 8, igual que
 --  usa el backend). En texto plano son:
 --    admin@dulceezeiza.com        -> Admin123!
---    maria.gonzalez@ejemplo.com   -> Cliente123!
---    juan.perez@ejemplo.com       -> Cliente123!
---    sofia.martinez@ejemplo.com   -> Cliente123!
 -- ------------------------------------------------------------
 INSERT INTO Usuarios (nombre, apellido, email, telefono, password, rol) VALUES
-('Admin', 'Dulce Ezeiza', 'admin@dulceezeiza.com', '1122334455', '$2b$08$a4Y3ECUAhZuT5Cw/B6mEqe726/hixNeWY.t90dSRRjmajWaV0AMmS', 'admin'),
+('Admin', 'Dulce Ezeiza', 'admin@dulceezeiza.com', '1122334455', '$2b$08$a4Y3ECUAhZuT5Cw/B6mEqe726/hixNeWY.t90dSRRjmajWaV0AMmS', 'admin');
 GO
 -- ------------------------------------------------------------
 --  Categorias
@@ -228,4 +225,16 @@ INSERT INTO Productos (nombre, descripcion, precio, disponible, activo, destacad
 ('Cafe en Grano 500g', 'Cafe de especialidad en grano, bolsa de 500g.', 6500.00, 1, 1, 0, 0, (SELECT id FROM Categorias WHERE nombre = 'Bebidas')),
 ('Limonada Casera 1L', 'Limonada casera con menta, botella de 1 litro.', 2100.00, 1, 1, 0, 0, (SELECT id FROM Categorias WHERE nombre = 'Bebidas'));
 GO
- 
+
+-- ------------------------------------------------------------
+--  Consultas de ejemplo (una en cada estado, para probar el panel
+--  y sus filtros). Las mandan visitantes sin cuenta: los datos de
+--  contacto van sueltos en la consulta.
+--  Va al final porque una consulta apunta a un producto, y la FK
+--  exige que ese producto ya exista.
+-- ------------------------------------------------------------
+INSERT INTO Consultas (nombre, email, telefono, asunto, mensaje, estado, productoId) VALUES
+('Maria Gonzalez', 'maria.gonzalez@ejemplo.com', '1133445566', 'Torta para cumpleaños', '¿Hacen tortas por encargo para 20 personas?', 'pendiente', NULL),
+('Juan Perez', 'juan.perez@ejemplo.com', NULL, 'Consulta sin TACC', '¿El pan sin gluten se elabora en un espacio separado?', 'respondida', (SELECT id FROM Productos WHERE nombre = 'Pan Sin Gluten')),
+('Sofia Martinez', 'sofia.martinez@ejemplo.com', '1155667788', 'Horarios', '¿Abren los domingos?', 'cerrada', NULL);
+GO

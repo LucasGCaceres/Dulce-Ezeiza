@@ -1,0 +1,50 @@
+$kind: http-request
+description: "El limite del formulario es de 5 consultas por hora por IP. El script previo manda 5 consultas validas seguidas (si la carpeta Consulta ya corrio, algunas ya van a dar 429, y no pasa nada). Esta request es como minimo la sexta, asi que tiene que ser rechazada."
+url: "{{baseUrl}}/consultas"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+        "nombre": "Spammer",
+        "email": "spam@test.com",
+        "asunto": "Spam",
+        "mensaje": "Esta consulta tiene que ser rechazada por el limite."
+    }
+scripts:
+  - type: beforeRequest
+    code: |-
+      // Manda 5 consultas una detras de otra antes de la request principal.
+      function mandar(restantes) {
+          if (restantes === 0) return;
+          pm.sendRequest({
+              url: pm.collectionVariables.get('baseUrl') + '/consultas',
+              method: 'POST',
+              header: { 'Content-Type': 'application/json' },
+              body: {
+                  mode: 'raw',
+                  raw: JSON.stringify({
+                      nombre: 'Spammer',
+                      email: 'spam@test.com',
+                      asunto: 'Spam',
+                      mensaje: 'Consulta de relleno para agotar el limite.'
+                  })
+              }
+          }, function () {
+              mandar(restantes - 1);
+          });
+      }
+      mandar(5);
+    language: text/javascript
+  - type: afterResponse
+    code: |-
+      pm.test('Status 429 - demasiadas consultas', function () {
+          pm.response.to.have.status(429);
+      });
+      pm.test('Mensaje claro', function () {
+          pm.expect(pm.response.json().mensaje).to.include('demasiadas consultas');
+      });
+    language: text/javascript
+order: 1000
