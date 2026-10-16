@@ -1,0 +1,46 @@
+$kind: http-request
+description: "El limite es de 5 intentos FALLIDOS cada 15 minutos por IP (los exitosos no cuentan). El script previo manda 5 logins con password incorrecta; esta request es el sexto intento y tiene que ser rechazada con 429, aunque la password sea la correcta. Despues de esto el login queda bloqueado 15 minutos para tu IP: reinicia el servidor para resetearlo."
+url: "{{baseUrl}}/usuarios/login"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+        "email": "{{adminEmail}}",
+        "password": "{{adminPassword}}"
+    }
+scripts:
+  - type: beforeRequest
+    code: |-
+      // Manda 5 logins fallidos uno detras de otro antes de la request principal.
+      function intentar(restantes) {
+          if (restantes === 0) return;
+          pm.sendRequest({
+              url: pm.collectionVariables.get('baseUrl') + '/usuarios/login',
+              method: 'POST',
+              header: { 'Content-Type': 'application/json' },
+              body: {
+                  mode: 'raw',
+                  raw: JSON.stringify({
+                      email: pm.collectionVariables.get('adminEmail'),
+                      password: 'password-incorrecta'
+                  })
+              }
+          }, function () {
+              intentar(restantes - 1);
+          });
+      }
+      intentar(5);
+    language: text/javascript
+  - type: afterResponse
+    code: |-
+      pm.test('Status 429 - bloqueado aunque la password sea correcta', function () {
+          pm.response.to.have.status(429);
+      });
+      pm.test('Mensaje claro', function () {
+          pm.expect(pm.response.json().mensaje).to.include('Demasiados intentos fallidos');
+      });
+    language: text/javascript
+order: 2000

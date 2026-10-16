@@ -1,0 +1,24 @@
+$kind: http-request
+description: "Vuelve a poner los horarios que habia antes de la request 3, asi la coleccion no deja la base modificada."
+url: "{{baseUrl}}/comercio"
+method: PUT
+headers:
+  Content-Type: application/json
+  x-access-token: "{{tokenAdmin}}"
+body:
+  type: json
+  content: |-
+    {
+        "horarios": "{{horariosOriginales}}"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status 200', function () {
+          pm.response.to.have.status(200);
+      });
+      pm.test('Los horarios volvieron a los originales', function () {
+          pm.expect(pm.response.json().comercio.horarios).to.eql(pm.collectionVariables.get('horariosOriginales'));
+      });
+    language: text/javascript
+order: 4000

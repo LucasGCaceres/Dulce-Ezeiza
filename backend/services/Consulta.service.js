@@ -1,6 +1,5 @@
 const Consulta = require('../models/Consulta.model');
 const Producto = require('../models/Producto.model');
-const Usuario = require('../models/Usuario.model');
 
 // ------------------------------------------------------------
 //  CREAR una consulta (la manda un visitante desde el formulario)
@@ -14,30 +13,12 @@ exports.crear = async function (datos) {
             asunto: datos.asunto,
             mensaje: datos.mensaje,
             productoId: datos.productoId,
-            usuarioId: datos.usuarioId
-            // estado no se manda: la base lo pone en 'pendiente' por default
+                // estado no se manda: la base lo pone en 'pendiente' por default
         });
         return nuevaConsulta;
     } catch (e) {
         console.log(e);
         throw new Error('Error al crear la consulta');
-    }
-};
-
-// ------------------------------------------------------------
-//  LISTAR las consultas de UN usuario (para su propio historial)
-// ------------------------------------------------------------
-exports.obtenerPorUsuario = async function (usuarioId) {
-    try {
-        const consultas = await Consulta.findAll({
-            where: { usuarioId: usuarioId },
-            include: [{ model: Producto }],
-            order: [['fecha', 'DESC']]
-        });
-        return consultas;
-    } catch (e) {
-        console.log(e);
-        throw new Error('Error al obtener tus consultas');
     }
 };
 
@@ -57,7 +38,6 @@ exports.obtenerTodas = async function (filtros = {}) {
             where: where,
             include: [
                 { model: Producto },
-                { model: Usuario, attributes: { exclude: ['password'] } }
             ],
             order: [['fecha', 'DESC']]
         });
@@ -76,7 +56,6 @@ exports.obtenerPorId = async function (id) {
         const consulta = await Consulta.findByPk(id, {
             include: [
                 { model: Producto },
-                { model: Usuario, attributes: { exclude: ['password'] } }
             ]
         });
         return consulta;
@@ -87,13 +66,13 @@ exports.obtenerPorId = async function (id) {
 };
 
 // ------------------------------------------------------------
-//  CAMBIAR EL ESTADO de una consulta (pendiente/leida/respondida)
+//  CAMBIAR EL ESTADO de una consulta (pendiente/respondida/cerrada)
 // ------------------------------------------------------------
 exports.cambiarEstado = async function (id, nuevoEstado) {
     // Validacion pura, sin tocar la base: no necesita try/catch.
-    const estadosValidos = ['pendiente', 'leida', 'respondida'];
+    const estadosValidos = ['pendiente', 'respondida', 'cerrada'];
     if (!estadosValidos.includes(nuevoEstado)) {
-        throw new Error('Estado invalido. Debe ser: pendiente, leida o respondida');
+        throw new Error('Estado invalido. Debe ser: pendiente, respondida o cerrada');
     }
 
     let consulta;

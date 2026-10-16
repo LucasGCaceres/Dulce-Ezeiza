@@ -1,0 +1,23 @@
+$kind: http-request
+url: "{{baseUrl}}/consultas/{{consultaId}}/estado"
+method: PATCH
+headers:
+  Content-Type: application/json
+  x-access-token: "{{tokenAdmin}}"
+body:
+  type: json
+  content: |-
+    {
+        "estado": "cerrada"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status 200', function () {
+          pm.response.to.have.status(200);
+      });
+      pm.test('Quedo en cerrada', function () {
+          pm.expect(pm.response.json().consulta.estado).to.eql('cerrada');
+      });
+    language: text/javascript
+order: 9000

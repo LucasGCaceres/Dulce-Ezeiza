@@ -1,0 +1,25 @@
+$kind: http-request
+description: "'leida' era un estado valido en versiones anteriores y se elimino. Este test confirma que ya no se acepta."
+url: "{{baseUrl}}/consultas/{{consultaId}}/estado"
+method: PATCH
+headers:
+  Content-Type: application/json
+  x-access-token: "{{tokenAdmin}}"
+body:
+  type: json
+  content: |-
+    {
+        "estado": "leida"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status 400', function () {
+          pm.response.to.have.status(400);
+      });
+      pm.test('Avisa cual es el problema', function () {
+          const jsonData = pm.response.json();
+          pm.expect(jsonData.mensaje).to.include('Estado invalido');
+      });
+    language: text/javascript
+order: 10000

@@ -1,0 +1,3 @@
+$kind: collection
+description: "Prueba que los limites de pedidos por IP (express-rate-limit) corten con 429. Cada request agota el limite con un script previo y verifica que el siguiente pedido sea rechazado. Corre esta carpeta AL FINAL: despues de esto el login queda bloqueado 15 minutos para tu IP. Reinicia el servidor para resetear los contadores."
+order: 6000

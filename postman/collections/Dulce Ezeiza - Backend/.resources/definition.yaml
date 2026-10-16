@@ -1,29 +1,23 @@
 $kind: collection
-description: "Coleccion de pruebas para el backend de Dulce Ezeiza. Corre las carpetas en orden: Usuario -> Categoria -> Producto -> Consulta. Asume que la base ya tiene el seed cargado (backend/database-scripts/crear-base.sql o seed-datos.sql): adminEmail/adminPassword y categoriaSeedId/productoSeedId ya vienen completados con datos del seed, no hace falta tocarlos salvo que quieras probar con tu propio admin."
+description: "Coleccion de pruebas para el backend de Dulce Ezeiza. Corre las carpetas en orden: Usuario -> Categoria -> Producto -> Consulta -> Comercio -> Limites de pedidos. Asume que la base tiene el seed cargado (backend/database-scripts/crear-base.sql): adminEmail/adminPassword y categoriaSeedId/productoSeedId ya vienen completados con datos del seed. IMPORTANTE: la API limita pedidos por IP (login, recuperar password, consultas) y los contadores viven en memoria del servidor. Reinicia el servidor antes de cada corrida completa; si no, a partir de la segunda corrida algunos tests van a recibir 429 en vez del codigo esperado. La carpeta 'Limites de pedidos' agota esos limites a proposito, por eso va ultima."
 variables:
   baseUrl: http://localhost:8080/api
-  # Admin y categoria/producto de referencia: valores del seed (usuarios ficticios +
-  # 20 productos en 6 categorias). Si corriste el seed mas de una vez, o insertaste
-  # datos antes de correrlo, los ids pueden no coincidir -- ajustalos a mano en ese caso.
   adminEmail: admin@dulceezeiza.com
   adminPassword: Admin123!
+  adminPasswordNueva: AdminNueva456!
   categoriaSeedId: "1"
   categoriaSeedNombre: Panaderia
   productoSeedId: "1"
   productoSeedNombre: Pan Frances
   tokenAdmin: ""
-  tokenCliente: ""
-  clienteEmail: ""
-  clienteEmailHacker: ""
-  clientePassword: Cliente123!
+  telefonoPrueba: ""
   categoriaId: ""
   categoriaNombre: ""
-  categoriaNombreCliente: ""
   productoId: ""
   productoNombre: ""
   consultaId: ""
   codigoRecuperacion: ""
-  clientePasswordRecuperada: Recuperada789!
+  horariosOriginales: ""
   imagenId1: ""
   imagenId2: ""
   imagenId3: ""

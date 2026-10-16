@@ -1,23 +1,73 @@
 const consultaService = require('../services/Consulta.service');
 
+// Limites: los mismos largos que las columnas de la tabla Consultas.
+const LARGO_MAXIMO = {
+    nombre: 100,
+    email: 150,
+    telefono: 50,
+    asunto: 200,
+    mensaje: 2000
+};
+
+const FORMATO_EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+// Devuelve el texto sin espacios en los extremos, o null si no vino
+// un string (un numero, un objeto, nada). Nunca confiamos en el tipo
+// de lo que llega en el body de un endpoint publico.
+function limpiarTexto(valor) {
+    if (typeof valor !== 'string') {
+        return null;
+    }
+    const limpio = valor.trim();
+    return limpio === '' ? null : limpio;
+}
+
 // ------------------------------------------------------------
 //  CREAR: POST /api/consultas  (requiere estar logueado)
 // ------------------------------------------------------------
 exports.crear = async function (req, res) {
+    const body = req.body || {};
+
     const datos = {
-        nombre: req.body.nombre,
-        email: req.body.email,
-        telefono: req.body.telefono,
-        asunto: req.body.asunto,
-        mensaje: req.body.mensaje,
-        productoId: req.body.productoId,
-        usuarioId: req.usuarioId   // viene del token verificado, NUNCA del body
+        nombre: limpiarTexto(body.nombre),
+        email: limpiarTexto(body.email),
+        telefono: limpiarTexto(body.telefono),
+        asunto: limpiarTexto(body.asunto),
+        mensaje: limpiarTexto(body.mensaje),
+        productoId: body.productoId ?? null
     };
 
-    // Validacion: nombre, email, asunto y mensaje son obligatorios.
-    if (!datos.nombre || !datos.email || !datos.asunto || !datos.mensaje) {
+    const errores = [];
+
+    // 1. Obligatorios (despues del trim: "   " cuenta como vacio).
+    if (!datos.nombre) errores.push('El nombre es obligatorio');
+    if (!datos.email) errores.push('El email es obligatorio');
+    if (!datos.asunto) errores.push('El asunto es obligatorio');
+    if (!datos.mensaje) errores.push('El mensaje es obligatorio');
+
+    // 2. Formato de email (solo si vino, para no repetir el error de arriba).
+    if (datos.email && !FORMATO_EMAIL.test(datos.email)) {
+        errores.push('El email no tiene un formato valido');
+    }
+
+    // 3. Largos maximos, campo por campo.
+    for (const campo in LARGO_MAXIMO) {
+        if (datos[campo] && datos[campo].length > LARGO_MAXIMO[campo]) {
+            errores.push(`El campo ${campo} no puede superar los ${LARGO_MAXIMO[campo]} caracteres`);
+        }
+    }
+
+    // 4. productoId es opcional, pero si viene tiene que ser un entero positivo.
+    if (datos.productoId !== null && !(Number.isInteger(datos.productoId) && datos.productoId > 0)) {
+        errores.push('El productoId debe ser un numero entero');
+    }
+
+    // Devolvemos todos los errores juntos, asi el frontend puede
+    // marcar todos los campos con problemas de una sola vez.
+    if (errores.length > 0) {
         return res.status(400).json({
-            mensaje: 'Faltan datos obligatorios: nombre, email, asunto y mensaje'
+            mensaje: 'Hay datos invalidos en la consulta',
+            errores: errores
         });
     }
 
@@ -30,19 +80,6 @@ exports.crear = async function (req, res) {
     } catch (e) {
         console.log(e);
         return res.status(400).json({ mensaje: 'No se pudo enviar la consulta' });
-    }
-};
-
-// ------------------------------------------------------------
-//  MIS CONSULTAS: GET /api/consultas/mis-consultas  (cliente logueado)
-// ------------------------------------------------------------
-exports.obtenerMisConsultas = async function (req, res) {
-    try {
-        const consultas = await consultaService.obtenerPorUsuario(req.usuarioId);
-        return res.status(200).json(consultas);
-    } catch (e) {
-        console.log(e);
-        return res.status(400).json({ mensaje: 'No se pudieron obtener tus consultas' });
     }
 };
 

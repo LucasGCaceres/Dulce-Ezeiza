@@ -8,17 +8,25 @@ let transporterPromise = null;
 
 function getTransporter() {
     if (!transporterPromise) {
-        transporterPromise = nodemailer.createTestAccount().then(function (cuentaDePrueba) {
-            return nodemailer.createTransport({
-                host: 'smtp.ethereal.email',
-                port: 587,
-                secure: false,
-                auth: {
-                    user: cuentaDePrueba.user,
-                    pass: cuentaDePrueba.pass
-                }
+        transporterPromise = nodemailer.createTestAccount()
+            .then(function (cuentaDePrueba) {
+                return nodemailer.createTransport({
+                    host: 'smtp.ethereal.email',
+                    port: 587,
+                    secure: false,
+                    auth: {
+                        user: cuentaDePrueba.user,
+                        pass: cuentaDePrueba.pass
+                    }
+                });
+            })
+            .catch(function (e) {
+                // Si falla, no dejamos guardada la promesa rota: asi el
+                // proximo pedido vuelve a intentar desde cero en vez de
+                // fallar para siempre hasta reiniciar el servidor.
+                transporterPromise = null;
+                throw e;
             });
-        });
     }
     return transporterPromise;
 }

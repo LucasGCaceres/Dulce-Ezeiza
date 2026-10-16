@@ -3,41 +3,6 @@
 const usuarioService = require('../services/Usuario.service');
 
 // ------------------------------------------------------------
-//  REGISTRAR: POST /api/usuarios/registro
-// ------------------------------------------------------------
-exports.registrar = async function (req, res) {
-    // Leemos del body los datos que mando el cliente.
-    const datos = {
-        nombre: req.body.nombre,
-        apellido: req.body.apellido,
-        email: req.body.email,
-        telefono: req.body.telefono,
-        password: req.body.password
-    };
-
-    // Validacion minima en el backend: campos obligatorios presentes.
-    if (!datos.nombre || !datos.apellido || !datos.email || !datos.password) {
-        return res.status(400).json({
-            mensaje: 'Faltan datos obligatorios: nombre, apellido, email y password'
-        });
-    }
-
-    try {
-        // Llamamos al service con datos limpios. El service no ve req ni res.
-        const token = await usuarioService.registrar(datos);
-
-        // 201 = "Created". Se creo un recurso nuevo.
-        return res.status(201).json({
-            token: token,
-            mensaje: 'Usuario registrado correctamente'
-        });
-    } catch (e) {
-        console.log(e); // el detalle completo queda en el server, nunca va al cliente
-        return res.status(400).json({ mensaje: 'No se pudo registrar el usuario' });
-    }
-};
-
-// ------------------------------------------------------------
 //  LOGIN: POST /api/usuarios/login
 // ------------------------------------------------------------
 exports.login = async function (req, res) {
