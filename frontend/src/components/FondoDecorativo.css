@@ -1,0 +1,55 @@
+.fondo-decorativo {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  color: var(--color-dorado);
+}
+
+.garabato {
+  position: absolute;
+  opacity: 0.07;
+}
+
+.garabato-1 {
+  top: 8%;
+  left: 4%;
+  transform: rotate(-12deg);
+}
+
+.garabato-2 {
+  bottom: 10%;
+  right: 6%;
+  transform: rotate(8deg);
+}
+
+.garabato-3 {
+  top: 55%;
+  left: 85%;
+  transform: rotate(-6deg);
+}
+
+.garabato-4 {
+  top: 70%;
+  left: 10%;
+  transform: rotate(10deg);
+}
+
+.garabato-5 {
+  top: 20%;
+  right: 10%;
+  transform: rotate(15deg);
+}
+
+.garabato-6 {
+  bottom: 25%;
+  left: 6%;
+  transform: rotate(-8deg);
+}
+
+.garabato-7 {
+  top: 35%;
+  right: 22%;
+  transform: rotate(20deg);
+}
