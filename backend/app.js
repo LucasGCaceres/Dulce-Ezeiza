@@ -5,6 +5,7 @@ require('dotenv').config();
 // 2. Importar dependencias
 const express = require('express');
 const cors = require('cors');
+const rateLimit = require('express-rate-limit');
 
 // 3. Importar la conexion a la base (ya usa las variables del .env cargadas arriba)
 const sequelize = require('./databases/database');
@@ -21,15 +22,18 @@ const app = express();
 // 5. Middlewares base
 app.use(express.json());                       // entiende JSON en el body
 app.use(express.urlencoded({ extended: false }));
-app.use(cors());                               // permite pedidos desde el front (React)
+app.use(cors({ origin: origenesPermitidos }));                  // permite pedidos desde el front (React)
 
 // 6. Ruta de prueba: para confirmar que el servidor responde
 app.get('/', (req, res) => {
     res.send('Servidor de Dulce Ezeiza funcionando');
 });
 
-// Montar las rutas de la API bajo el prefijo /api
-app.use('/api', apiRouter);
+// un pedido que no viene del front no llega a ninguna ruta.
+app.use('/api', verificarOrigen, apiRouter);
+
+// Lista de origenes del frontend (FRONTEND_URL) + middleware que rechaza el resto
+const { origenesPermitidos, verificarOrigen } = require('./middlewares/Origen.middlewares');
 
 // 7. Probar la conexion con la base
 sequelize.authenticate()

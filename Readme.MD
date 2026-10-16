@@ -37,6 +37,7 @@ backend/
 │   └── api/                  # Un archivo de rutas por entidad
 ├── middlewares/
 │   └── Autorizacion.middlewares.js  # verificarToken y verificarAdmin
+│   └── Origen.middlewares.js        # verificarOrigen: solo acepta pedidos del frontend
 ├── database-scripts/
 │   └── crear-base.sql       # Script de creación de la base desde cero
 ├── .env.example              # Plantilla de variables de entorno
@@ -89,6 +90,16 @@ El token incluye el `id` del usuario y su `rol`. Dos middlewares se encargan de 
 - `verificarAdmin`: se usa siempre después de `verificarToken`, y chequea que el rol sea `admin` (autorización — "¿te alcanza el rol para esto?"). Si no, corta con **403**.
 
 El registro público (`POST /api/usuarios/registro`) siempre crea usuarios con `rol: 'cliente'`, sin importar qué se mande en el body — es una protección explícita contra mass assignment (que alguien intente registrarse como admin mandando `rol: "admin"` en el request). El usuario administrador se crea a mano directamente en la base de datos.
+
+## Restricción de origen (solo el frontend puede llamar a la API)
+
+Las rutas públicas (catálogo, categorías, info del comercio) no piden token, porque un visitante anónimo tiene que poder verlas. Para que igual no las pueda consumir cualquiera, la API solo acepta pedidos que vengan del frontend:
+
+- **CORS restringido:** `cors({ origin: ... })` solo habilita los orígenes listados en `FRONTEND_URL` del `.env`. Si otra página web intenta llamar a la API desde el navegador, el navegador no le entrega la respuesta.
+- **`verificarOrigen`:** se aplica a todo `/api`. Mira el header `Origin` del pedido y, si no es uno de los permitidos, corta con **403** antes de llegar a cualquier ruta. CORS solo no alcanza: el servidor ejecutaría igual el pedido y el navegador solo escondería la respuesta.
+- **Pedidos sin `Origin`** (Postman, curl): se aceptan con `NODE_ENV=development` para poder correr la colección de Postman, y se rechazan con `NODE_ENV=production`.
+
+Limitación: el header `Origin` lo pone el navegador, pero alguien que arme el pedido a mano lo puede falsificar. Esta restricción frena el uso de la API desde otros sitios web, no a un atacante decidido. Por eso las rutas que modifican datos siguen protegidas con `verificarToken`/`verificarAdmin`.
 
 ## Recuperar contraseña
 
