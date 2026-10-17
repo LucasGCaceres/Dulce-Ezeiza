@@ -10,7 +10,7 @@
 // a verificarToken/verificarAdmin en las rutas que modifican datos.
 
 // FRONTEND_URL puede tener uno o varios origenes separados por coma.
-const origenesPermitidos = (process.env.FRONTEND_URL || 'http://localhost:5173')
+const origenesPermitidos = (process.env.FRONTEND_URL || 'http://localhost:8080')
     .split(',')
     .map(function (origen) { return origen.trim(); })
     .filter(function (origen) { return origen !== ''; });

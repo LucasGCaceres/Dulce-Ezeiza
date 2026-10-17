@@ -22,7 +22,7 @@ function Catalogo() {
   const [categoriaActiva, setCategoriaActiva] = useState('Todas')
 
   useEffect(() => {
-    obtenerProductos()
+    obtenerProductos({ soloActivos: true })
       .then((datos) => {
         setProductos(datos)
         setCargando(false)

@@ -46,7 +46,6 @@ const Usuario = sequelize.define(
         rol: {
             type: DataTypes.STRING,
             allowNull: false,
-            defaultValue: 'cliente'
         },
 
         resetPasswordToken: {

@@ -159,9 +159,6 @@ GO
 -- ============================================================
 
 -- ------------------------------------------------------------
---  Usuarios ficticios (para no tener que registrarte/crear el
---  admin a mano antes de poder probar nada).
---
 --  Las passwords estan hasheadas con bcrypt (costo 8, igual que
 --  usa el backend). En texto plano son:
 --    admin@dulceezeiza.com        -> Admin123!
