@@ -43,13 +43,6 @@ const Consulta = sequelize.define(
             defaultValue: 'pendiente'
         },
 
-        // FK OPCIONAL a Producto (allowNull: true).
-        // Si la consulta es general, queda en null.
-        productoId: {
-            type: DataTypes.INTEGER,
-            allowNull: true
-        },
-
         fecha: {
             type: DataTypes.DATE
         },
