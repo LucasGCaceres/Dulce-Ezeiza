@@ -81,10 +81,7 @@ CREATE TABLE Consultas (
     asunto NVARCHAR(200) NOT NULL,
     mensaje NVARCHAR(2000) NOT NULL,
     estado NVARCHAR(20) NOT NULL DEFAULT 'pendiente',
-    productoId INT NULL,
-    fecha DATETIME DEFAULT GETDATE(),
-    CONSTRAINT FK_Consultas_Productos FOREIGN KEY (productoId)
-        REFERENCES Productos(id)
+    fecha DATETIME DEFAULT GETDATE()
 );
 
 GO
@@ -104,6 +101,23 @@ CREATE TABLE Comercio (
     tiktok NVARCHAR(150),
     horarios NVARCHAR(500)
 );
+GO
+
+-- ------------------------------------------------------------
+--  Tabla: ConsultaProductos (relacion N..N Consulta - Producto)
+--  Cada fila dice "esta consulta menciona este producto".
+--  La PK compuesta impide repetir un producto en la misma consulta.
+-- ------------------------------------------------------------
+CREATE TABLE ConsultaProductos (
+    consultaId INT NOT NULL,
+    productoId INT NOT NULL,
+    CONSTRAINT PK_ConsultaProductos PRIMARY KEY (consultaId, productoId),
+    CONSTRAINT FK_ConsultaProductos_Consultas FOREIGN KEY (consultaId)
+        REFERENCES Consultas(id),
+    CONSTRAINT FK_ConsultaProductos_Productos FOREIGN KEY (productoId)
+        REFERENCES Productos(id)
+);
+
 GO
 
 -- Fila unica con datos de ejemplo. El admin los reemplaza despues desde el panel.
@@ -230,8 +244,37 @@ GO
 --  Va al final porque una consulta apunta a un producto, y la FK
 --  exige que ese producto ya exista.
 -- ------------------------------------------------------------
-INSERT INTO Consultas (nombre, email, telefono, asunto, mensaje, estado, productoId) VALUES
-('Maria Gonzalez', 'maria.gonzalez@ejemplo.com', '1133445566', 'Torta para cumpleaños', '¿Hacen tortas por encargo para 20 personas?', 'pendiente', NULL),
-('Juan Perez', 'juan.perez@ejemplo.com', NULL, 'Consulta sin TACC', '¿El pan sin gluten se elabora en un espacio separado?', 'respondida', (SELECT id FROM Productos WHERE nombre = 'Pan Sin Gluten')),
-('Sofia Martinez', 'sofia.martinez@ejemplo.com', '1155667788', 'Horarios', '¿Abren los domingos?', 'cerrada', NULL);
+INSERT INTO Consultas (nombre, email, telefono, asunto, mensaje, estado) VALUES
+('Maria Gonzalez', 'maria.gonzalez@ejemplo.com', '1133445566', 'Torta para cumpleaños', '¿Hacen tortas por encargo para 20 personas?', 'pendiente'),
+('Juan Perez', 'juan.perez@ejemplo.com', NULL, 'Consulta sin TACC', '¿El pan y la torta sin gluten se elaboran en un espacio separado?', 'respondida'),
+('Sofia Martinez', 'sofia.martinez@ejemplo.com', '1155667788', 'Horarios', '¿Abren los domingos?', 'cerrada');
 GO
+
+-- La consulta de Juan menciona dos productos sin TACC.
+INSERT INTO ConsultaProductos (consultaId, productoId)
+SELECT c.id, p.id
+FROM Consultas c, Productos p
+WHERE c.email = 'juan.perez@ejemplo.com'
+  AND p.nombre IN ('Pan Sin Gluten', 'Torta Sin Gluten de Naranja');
+GO
+
+
+/* Para hacer los cambios en la bd sin borrarla 
+USE DulceEzeiza;
+GO
+CREATE TABLE ConsultaProductos (
+    consultaId INT NOT NULL,
+    productoId INT NOT NULL,
+    CONSTRAINT PK_ConsultaProductos PRIMARY KEY (consultaId, productoId),
+    CONSTRAINT FK_ConsultaProductos_Consultas FOREIGN KEY (consultaId) REFERENCES Consultas(id),
+    CONSTRAINT FK_ConsultaProductos_Productos FOREIGN KEY (productoId) REFERENCES Productos(id)
+);
+GO
+INSERT INTO ConsultaProductos (consultaId, productoId)
+SELECT id, productoId FROM Consultas WHERE productoId IS NOT NULL;
+GO
+ALTER TABLE Consultas DROP CONSTRAINT FK_Consultas_Productos;
+ALTER TABLE Consultas DROP COLUMN productoId;
+GO
+
+*/

@@ -11,6 +11,8 @@ const LARGO_MAXIMO = {
 
 const FORMATO_EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+const MAXIMO_PRODUCTOS = 10;
+
 // Devuelve el texto sin espacios en los extremos, o null si no vino
 // un string (un numero, un objeto, nada). Nunca confiamos en el tipo
 // de lo que llega en el body de un endpoint publico.
@@ -23,7 +25,7 @@ function limpiarTexto(valor) {
 }
 
 // ------------------------------------------------------------
-//  CREAR: POST /api/consultas  (requiere estar logueado)
+//  CREAR: POST /api/consultas
 // ------------------------------------------------------------
 exports.crear = async function (req, res) {
     const body = req.body || {};
@@ -34,7 +36,7 @@ exports.crear = async function (req, res) {
         telefono: limpiarTexto(body.telefono),
         asunto: limpiarTexto(body.asunto),
         mensaje: limpiarTexto(body.mensaje),
-        productoId: body.productoId ?? null
+        productoIds: body.productoIds ?? []
     };
 
     const errores = [];
@@ -57,9 +59,20 @@ exports.crear = async function (req, res) {
         }
     }
 
-    // 4. productoId es opcional, pero si viene tiene que ser un entero positivo.
-    if (datos.productoId !== null && !(Number.isInteger(datos.productoId) && datos.productoId > 0)) {
-        errores.push('El productoId debe ser un numero entero');
+    // 4. productoIds es opcional, pero si viene tiene que ser un array de
+    //    enteros positivos, sin repetidos y con un maximo de MAXIMO_PRODUCTOS.
+    if (!Array.isArray(datos.productoIds)) {
+        errores.push('productoIds debe ser una lista de ids de productos');
+    } else {
+        const todosEnteros = datos.productoIds.every((id) => Number.isInteger(id) && id > 0);
+        if (!todosEnteros) {
+            errores.push('Cada productoId debe ser un numero entero');
+        } else if (new Set(datos.productoIds).size !== datos.productoIds.length) {
+            errores.push('No se puede repetir un producto en la misma consulta');
+        }
+        if (datos.productoIds.length > MAXIMO_PRODUCTOS) {
+            errores.push(`No se pueden elegir mas de ${MAXIMO_PRODUCTOS} productos por consulta`);
+        }
     }
 
     // Devolvemos todos los errores juntos, asi el frontend puede
@@ -78,8 +91,9 @@ exports.crear = async function (req, res) {
             mensaje: 'Consulta enviada correctamente'
         });
     } catch (e) {
-        console.log(e);
-        return res.status(400).json({ mensaje: 'No se pudo enviar la consulta' });
+        // El service ya loguea el detalle tecnico y solo lanza mensajes
+        // pensados para el usuario (ej.: un producto que no existe).
+        return res.status(400).json({ mensaje: e.message });
     }
 };
 

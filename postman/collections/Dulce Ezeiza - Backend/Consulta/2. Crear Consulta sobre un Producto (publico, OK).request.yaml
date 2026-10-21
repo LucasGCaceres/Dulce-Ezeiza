@@ -12,7 +12,7 @@ body:
         "email": "visitante@test.com",
         "asunto": "Pregunta sobre un producto",
         "mensaje": "Este producto tiene gluten de verdad?",
-        "productoId": {{productoId}}
+        "productoIds": [{{productoId}}]
     }
 scripts:
   - type: afterResponse
@@ -22,7 +22,8 @@ scripts:
       });
       pm.test('Quedo asociada al producto', function () {
           const jsonData = pm.response.json();
-          pm.expect(jsonData.consulta.productoId).to.eql(Number(pm.collectionVariables.get('productoId')));
+          const ids = jsonData.consulta.productos.map(p => p.id);
+          pm.expect(ids).to.include(Number(pm.collectionVariables.get('productoId')));
       });
     language: text/javascript
 order: 2000

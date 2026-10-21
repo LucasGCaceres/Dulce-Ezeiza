@@ -12,7 +12,7 @@ body:
         "email": "esto-no-es-un-email",
         "asunto": "{{asuntoLargo}}",
         "mensaje": "Mensaje valido",
-        "productoId": "abc"
+        "productoIds": "abc"
     }
 scripts:
   - type: beforeRequest
@@ -33,7 +33,7 @@ scripts:
           pm.expect(errores).to.include('El nombre es obligatorio');
           pm.expect(errores).to.include('El email no tiene un formato valido');
           pm.expect(errores).to.include('asunto no puede superar los 200 caracteres');
-          pm.expect(errores).to.include('productoId debe ser un numero entero');
+          pm.expect(errores).to.include('productoIds debe ser una lista de ids de productos');
       });
     language: text/javascript
 order: 3000
