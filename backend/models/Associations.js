@@ -4,6 +4,7 @@ const Producto = require('./Producto.model');
 const Consulta = require('./Consulta.model');
 const ImagenProducto = require('./ImagenProducto.model');
 const ConsultaProducto = require('./ConsultaProducto.model');
+const Novedad = require('./Novedad.model');
 
 // --- Relacion Categoria 1..N Producto ---
 Categoria.hasMany(Producto, { foreignKey: 'categoriaId' });
@@ -30,4 +31,10 @@ Producto.belongsToMany(Consulta, {
     as: 'consultas'
 });
 
-module.exports = { Categoria, Producto, Consulta, Usuario, ImagenProducto, ConsultaProducto };
+// --- Relacion Producto 1..N Novedad (opcional del lado de la novedad) ---
+// Una novedad puede mencionar un producto (o ninguno). Si se borra el
+// producto, la base pone productoId en NULL (ON DELETE SET NULL).
+Producto.hasMany(Novedad, { foreignKey: 'productoId' });
+Novedad.belongsTo(Producto, { foreignKey: 'productoId' });
+
+module.exports = { Categoria, Producto, Consulta, Usuario, ImagenProducto, ConsultaProducto, Novedad };

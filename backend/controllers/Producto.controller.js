@@ -38,11 +38,15 @@ exports.crear = async function (req, res) {
 //  LISTAR con filtros: GET /api/productos?busqueda=...&categoriaId=...&sinGluten=true
 // ------------------------------------------------------------
 exports.obtenerTodos = async function (req, res) {
+
+    // req.rol lo deja cargado identificarUsuario (solo si vino un token valido).
+    const esAdmin = req.rol === 'admin';
+
     // Los filtros vienen en la URL, se leen de req.query.
     const filtros = {
         busqueda: req.query.busqueda,
         categoriaId: req.query.categoriaId,
-        soloActivos: req.query.soloActivos === 'true',
+        soloActivos: !esAdmin || req.query.soloActivos === 'true',
         sinGluten: req.query.sinGluten === 'true',
         destacado: req.query.destacado === 'true'
     };
@@ -60,10 +64,10 @@ exports.obtenerTodos = async function (req, res) {
 // ------------------------------------------------------------
 exports.obtenerPorId = async function (req, res) {
     const id = req.params.id;
+    const soloActivos = req.rol !== 'admin';
 
     try {
-        const producto = await productoService.obtenerPorId(id);
-        if (!producto) {
+        const producto = await productoService.obtenerPorId(id, soloActivos);        if (!producto) {
             return res.status(404).json({ mensaje: 'Producto no encontrado' });
         }
         return res.status(200).json(producto);

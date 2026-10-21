@@ -32,7 +32,29 @@ const verificarAdmin = function (req, res, next) {
     next();
 };
 
+// Para rutas PUBLICAS que responden distinto segun quien pregunta (ej.: el
+// catalogo, donde el admin ve tambien los productos dados de baja).
+// Si viene un token valido, deja req.usuarioId y req.rol cargados igual que
+// verificarToken. Si no viene, o es invalido, NO corta: sigue como visitante
+// anonimo (req.rol queda undefined). Nunca responde 401.
+const identificarUsuario = function (req, res, next) {
+    const token = req.headers['x-access-token'];
+
+    if (!token) {
+        return next();
+    }
+
+    jwt.verify(token, process.env.SECRET, function (err, decoded) {
+        if (!err) {
+            req.usuarioId = decoded.id;
+            req.rol = decoded.rol;
+        }
+        next();
+    });
+};
+
 module.exports = {
     verificarToken: verificarToken,
-    verificarAdmin: verificarAdmin
+    verificarAdmin: verificarAdmin,
+    identificarUsuario: identificarUsuario
 };

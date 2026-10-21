@@ -98,9 +98,15 @@ exports.obtenerTodos = async function (filtros = {}) {
 // ------------------------------------------------------------
 //  BUSCAR un producto por id (con su categoria y sus imagenes)
 // ------------------------------------------------------------
-exports.obtenerPorId = async function (id) {
+// soloActivos (opcional): si es true, un producto dado de baja se trata
+// como inexistente (devuelve null, y el controller responde 404).
+exports.obtenerPorId = async function (id, soloActivos = false) {
     try {
-        const producto = await Producto.findByPk(id, { include: includeCompleto });
+        const where = { id: id };
+        if (soloActivos) {
+            where.activo = true;
+        }
+        const producto = await Producto.findOne({ where: where, include: includeCompleto });
         return producto;
     } catch (e) {
         console.log(e);
