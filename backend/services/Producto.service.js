@@ -1,6 +1,6 @@
 const Producto = require('../models/Producto.model');
 const Categoria = require('../models/Categoria.model');
-const Consulta = require('../models/Consulta.model');
+const ConsultaProducto = require('../models/ConsultaProducto.model');
 const ImagenProducto = require('../models/ImagenProducto.model');
 const { Op } = require('sequelize');   // Op = operadores (LIKE, mayor que, etc.)
 
@@ -79,6 +79,10 @@ exports.obtenerTodos = async function (filtros = {}) {
             where.sinGluten = true;
         }
 
+        if (filtros.destacado) {
+            where.destacado = true;
+        }
+
         const productos = await Producto.findAll({
             where: where,
             include: includeCompleto
@@ -155,7 +159,7 @@ exports.eliminar = async function (id) {
  
     let cantidadConsultas;
     try {
-        cantidadConsultas = await Consulta.count({ where: { productoId: id } });
+        cantidadConsultas = await ConsultaProducto.count({ where: { productoId: id } });
     } catch (e) {
         console.log(e);
         throw new Error('Error al verificar las consultas asociadas');

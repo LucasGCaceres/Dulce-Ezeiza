@@ -43,7 +43,8 @@ exports.obtenerTodos = async function (req, res) {
         busqueda: req.query.busqueda,
         categoriaId: req.query.categoriaId,
         soloActivos: req.query.soloActivos === 'true',
-        sinGluten: req.query.sinGluten === 'true'
+        sinGluten: req.query.sinGluten === 'true',
+        destacado: req.query.destacado === 'true'
     };
 
     try {

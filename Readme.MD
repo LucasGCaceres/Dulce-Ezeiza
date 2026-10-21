@@ -128,7 +128,7 @@ Si el administrador se olvidó la contraseña (y por lo tanto no puede loguearse
 
 ## Consultas: formulario de contacto y panel
 
-Cualquier visitante puede mandar una consulta desde el formulario de contacto, sin cuenta. Deja sus datos sueltos (nombre, email, teléfono opcional, asunto y mensaje) y, si la consulta es sobre un producto puntual, puede quedar asociada a ese producto.
+Cualquier visitante puede mandar una consulta desde el formulario de contacto, sin cuenta. Deja sus datos sueltos (nombre, email, teléfono opcional, asunto y mensaje) y, la consulta puede quedar asociada a uno o varios productos (hasta 10).
 
 Como el endpoint es público, el backend no confía en lo que llega: limpia los espacios de cada campo, valida que los obligatorios no estén vacíos, que el email tenga un formato válido y que ningún campo supere el largo de su columna en la base. Si algo falla, responde **400** con la lista completa de errores (no solo el primero), para que el frontend pueda marcar todos los campos con problemas de una vez. Además, el endpoint tiene un límite de envíos por IP (ver "Límite de pedidos").
 
