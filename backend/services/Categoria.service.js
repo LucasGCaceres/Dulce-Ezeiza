@@ -25,8 +25,8 @@ exports.crear = async function (datos) {
 // ------------------------------------------------------------
 exports.obtenerTodas = async function () {
     try {
-        // findAll sin condiciones trae todas las filas de la tabla.
-        const categorias = await Categoria.findAll();
+        const where = soloActivas ? { activa: true } : {};
+        const categorias = await Categoria.findAll({ where: where, order: [['nombre', 'ASC']] });
         return categorias;
     } catch (e) {
         console.log(e);

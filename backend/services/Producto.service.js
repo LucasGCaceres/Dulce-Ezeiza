@@ -82,9 +82,14 @@ exports.obtenerTodos = async function (filtros = {}) {
             where.destacado = true;
         }
 
+                // Para el publico, ademas del producto, la categoria tiene que estar activa.
+        const include = filtros.soloActivos
+            ? [{ model: Categoria, where: { activa: true } }, includeCompleto[1]]
+            : includeCompleto;
+        
         const productos = await Producto.findAll({
             where: where,
-            include: includeCompleto
+            include: include
         });
 
         return productos;

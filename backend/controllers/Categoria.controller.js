@@ -33,7 +33,8 @@ exports.crear = async function (req, res) {
 // ------------------------------------------------------------
 exports.obtenerTodas = async function (req, res) {
     try {
-        const categorias = await categoriaService.obtenerTodas();
+        const soloActivas = req.rol !== 'admin';
+        const categorias = await categoriaService.obtenerTodas(soloActivas);
         return res.status(200).json(categorias);
     } catch (e) {
         console.log(e);

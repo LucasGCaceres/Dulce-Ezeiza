@@ -2,12 +2,12 @@ const express = require('express');
 const router = express.Router();
 
 const categoriaController = require('../../controllers/Categoria.controller');
-const { verificarToken, verificarAdmin } = require('../../middlewares/Autorizacion.middlewares');
+const { verificarToken, verificarAdmin, identificarUsuario  } = require('../../middlewares/Autorizacion.middlewares');
 
 // Cada linea conecta un VERBO + RUTA con una funcion del controller.
 
 // GET  /api/categorias        -> lista todas las categorias
-router.get('/', categoriaController.obtenerTodas);
+router.get('/', identificarUsuario, categoriaController.obtenerTodas);
 
 // GET  /api/categorias/:id    -> trae una categoria por su id
 // El :id es un "comodin": lo que venga ahi queda en req.params.id
