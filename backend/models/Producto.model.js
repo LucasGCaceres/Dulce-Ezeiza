@@ -20,12 +20,6 @@ const Producto = sequelize.define(
             type: DataTypes.STRING
         },
 
-        // DECIMAL para dinero. El (10,2) coincide con la tabla.
-        precio: {
-            type: DataTypes.DECIMAL(10, 2),
-            allowNull: false
-        },
-
         // Los tres flags (BIT en la tabla = BOOLEAN en Sequelize):
         disponible: {
             type: DataTypes.BOOLEAN,

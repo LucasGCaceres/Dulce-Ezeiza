@@ -8,7 +8,6 @@ body:
   type: json
   content: |-
     {
-        "precio": 4800.0,
         "destacado": true
     }
 scripts:

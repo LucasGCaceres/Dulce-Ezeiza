@@ -16,10 +16,10 @@ exports.crear = async function (req, res) {
         imagenes: req.body.imagenes // opcional: array de URLs para la carga inicial
     };
 
-    // Validaciones: nombre, precio y categoria son obligatorios.
-    if (!datos.nombre || datos.precio == null || !datos.categoriaId) {
+    // Validaciones: nombre y categoria son obligatorios.
+    if (!datos.nombre || !datos.categoriaId) {
         return res.status(400).json({
-            mensaje: 'Faltan datos obligatorios: nombre, precio y categoriaId'
+            mensaje: 'Faltan datos obligatorios: nombre y categoriaId'
         });
     }
 

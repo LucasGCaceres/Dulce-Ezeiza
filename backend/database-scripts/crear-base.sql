@@ -61,7 +61,6 @@ CREATE TABLE Productos (
     id INT IDENTITY(1,1) PRIMARY KEY,
     nombre NVARCHAR(150) NOT NULL,
     descripcion NVARCHAR(1000),
-    precio DECIMAL(10,2) NOT NULL,
     disponible BIT NOT NULL DEFAULT 1,
     activo BIT NOT NULL DEFAULT 1,
     destacado BIT NOT NULL DEFAULT 0,
@@ -224,42 +223,42 @@ GO
 -- ------------------------------------------------------------
  
 -- Panaderia
-INSERT INTO Productos (nombre, descripcion, precio, disponible, activo, destacado, sinGluten, categoriaId) VALUES
-(N'Pan Francés', N'Pan francés clásico, horneado todos los días.', 1200.00, 1, 1, 0, 0, (SELECT id FROM Categorias WHERE nombre = N'Panadería')),
-(N'Pan de Campo', N'Pan de campo de miga tierna y corteza crocante.', 2200.00, 1, 1, 0, 0, (SELECT id FROM Categorias WHERE nombre = N'Panadería')),
-(N'Pan Lactal', N'Pan lactal casero, ideal para sándwiches.', 2600.00, 1, 1, 0, 0, (SELECT id FROM Categorias WHERE nombre = N'Panadería')),
-(N'Pan de Salvado', N'Pan de salvado, alto en fibra.', 2400.00, 1, 1, 0, 0, (SELECT id FROM Categorias WHERE nombre = N'Panadería'));
+INSERT INTO Productos (nombre, descripcion, disponible, activo, destacado, sinGluten, categoriaId) VALUES
+(N'Pan Francés', N'Pan francés clásico, horneado todos los días.',  1, 1, 0, 0, (SELECT id FROM Categorias WHERE nombre = N'Panadería')),
+(N'Pan de Campo', N'Pan de campo de miga tierna y corteza crocante.',  1, 1, 0, 0, (SELECT id FROM Categorias WHERE nombre = N'Panadería')),
+(N'Pan Lactal', N'Pan lactal casero, ideal para sándwiches.',  1, 1, 0, 0, (SELECT id FROM Categorias WHERE nombre = N'Panadería')),
+(N'Pan de Salvado', N'Pan de salvado, alto en fibra.',  1, 1, 0, 0, (SELECT id FROM Categorias WHERE nombre = N'Panadería'));
  
 -- Facturas y Bolleria
-INSERT INTO Productos (nombre, descripcion, precio, disponible, activo, destacado, sinGluten, categoriaId) VALUES
-(N'Medialunas de Manteca', N'Docena de medialunas de manteca, bien dulces.', 3800.00, 1, 1, 1, 0, (SELECT id FROM Categorias WHERE nombre = N'Facturas y Bollería')),
-(N'Medialunas de Grasa', N'Docena de medialunas de grasa, estilo tradicional.', 3200.00, 1, 1, 0, 0, (SELECT id FROM Categorias WHERE nombre = N'Facturas y Bollería')),
-(N'Vigilantes', N'Factura rellena de dulce de batata.', 900.00, 1, 1, 0, 0, (SELECT id FROM Categorias WHERE nombre = N'Facturas y Bollería')),
-(N'Sacramentos', N'Factura hojaldrada rellena de crema pastelera.', 950.00, 1, 1, 0, 0, (SELECT id FROM Categorias WHERE nombre = N'Facturas y Bollería'));
+INSERT INTO Productos (nombre, descripcion, disponible, activo, destacado, sinGluten, categoriaId) VALUES
+(N'Medialunas de Manteca', N'Docena de medialunas de manteca, bien dulces.',  1, 1, 1, 0, (SELECT id FROM Categorias WHERE nombre = N'Facturas y Bollería')),
+(N'Medialunas de Grasa', N'Docena de medialunas de grasa, estilo tradicional.',  1, 1, 0, 0, (SELECT id FROM Categorias WHERE nombre = N'Facturas y Bollería')),
+(N'Vigilantes', N'Factura rellena de dulce de batata.',  1, 1, 0, 0, (SELECT id FROM Categorias WHERE nombre = N'Facturas y Bollería')),
+(N'Sacramentos', N'Factura hojaldrada rellena de crema pastelera.',  1, 1, 0, 0, (SELECT id FROM Categorias WHERE nombre = N'Facturas y Bollería'));
  
 -- Tortas y Tartas
-INSERT INTO Productos (nombre, descripcion, precio, disponible, activo, destacado, sinGluten, categoriaId) VALUES
-(N'Torta de Chocolate', N'Torta de chocolate con ganache, porción individual.', 3500.00, 1, 1, 1, 0, (SELECT id FROM Categorias WHERE nombre = N'Tortas y Tartas')),
-(N'Torta Selva Negra', N'Bizcochuelo de chocolate, crema y cerezas.', 4200.00, 0, 1, 0, 0, (SELECT id FROM Categorias WHERE nombre = N'Tortas y Tartas')),
-(N'Tarta de Manzana', N'Tarta de manzana con masa sablée, porción individual.', 2800.00, 1, 1, 0, 0, (SELECT id FROM Categorias WHERE nombre = N'Tortas y Tartas')),
-(N'Cheesecake de Frutos Rojos', N'Cheesecake horneado con coulis de frutos rojos.', 3900.00, 1, 1, 1, 0, (SELECT id FROM Categorias WHERE nombre = N'Tortas y Tartas'));
+INSERT INTO Productos (nombre, descripcion, disponible, activo, destacado, sinGluten, categoriaId) VALUES
+(N'Torta de Chocolate', N'Torta de chocolate con ganache, porción individual.',  1, 1, 1, 0, (SELECT id FROM Categorias WHERE nombre = N'Tortas y Tartas')),
+(N'Torta Selva Negra', N'Bizcochuelo de chocolate, crema y cerezas.',  0, 1, 0, 0, (SELECT id FROM Categorias WHERE nombre = N'Tortas y Tartas')),
+(N'Tarta de Manzana', N'Tarta de manzana con masa sablée, porción individual.',  1, 1, 0, 0, (SELECT id FROM Categorias WHERE nombre = N'Tortas y Tartas')),
+(N'Cheesecake de Frutos Rojos', N'Cheesecake horneado con coulis de frutos rojos.',  1, 1, 1, 0, (SELECT id FROM Categorias WHERE nombre = N'Tortas y Tartas'));
  
 -- Pasteleria individual
-INSERT INTO Productos (nombre, descripcion, precio, disponible, activo, destacado, sinGluten, categoriaId) VALUES
-(N'Alfajor de Maicena', N'Dos tapas de maicena rellenas de dulce de leche.', 1100.00, 1, 1, 0, 0, (SELECT id FROM Categorias WHERE nombre = N'Pastelería individual')),
-(N'Lemon Pie Individual', N'Porción individual de lemon pie con merengue.', 1900.00, 1, 1, 0, 0, (SELECT id FROM Categorias WHERE nombre = N'Pastelería individual')),
-(N'Brownie', N'Brownie de chocolate con nueces.', 1500.00, 1, 1, 0, 0, (SELECT id FROM Categorias WHERE nombre = N'Pastelería individual')),
-(N'Cupcake de Vainilla', N'Cupcake de vainilla con frosting de manteca.', 1300.00, 1, 1, 0, 0, (SELECT id FROM Categorias WHERE nombre = N'Pastelería individual'));
+INSERT INTO Productos (nombre, descripcion, disponible, activo, destacado, sinGluten, categoriaId) VALUES
+(N'Alfajor de Maicena', N'Dos tapas de maicena rellenas de dulce de leche.',  1, 1, 0, 0, (SELECT id FROM Categorias WHERE nombre = N'Pastelería individual')),
+(N'Lemon Pie Individual', N'Porción individual de lemon pie con merengue.',  1, 1, 0, 0, (SELECT id FROM Categorias WHERE nombre = N'Pastelería individual')),
+(N'Brownie', N'Brownie de chocolate con nueces.',  1, 1, 0, 0, (SELECT id FROM Categorias WHERE nombre = N'Pastelería individual')),
+(N'Cupcake de Vainilla', N'Cupcake de vainilla con frosting de manteca.',  1, 1, 0, 0, (SELECT id FROM Categorias WHERE nombre = N'Pastelería individual'));
  
 -- Sin gluten
-INSERT INTO Productos (nombre, descripcion, precio, disponible, activo, destacado, sinGluten, categoriaId) VALUES
-(N'Pan Sin Gluten', N'Pan apto celíacos, elaborado en zona libre de contaminación cruzada.', 3200.00, 1, 1, 0, 1, (SELECT id FROM Categorias WHERE nombre = N'Sin gluten')),
-(N'Torta Sin Gluten de Naranja', N'Torta de naranja apta celíacos.', 4500.00, 1, 1, 1, 1, (SELECT id FROM Categorias WHERE nombre = N'Sin gluten'));
+INSERT INTO Productos (nombre, descripcion, disponible, activo, destacado, sinGluten, categoriaId) VALUES
+(N'Pan Sin Gluten', N'Pan apto celíacos, elaborado en zona libre de contaminación cruzada.',  1, 1, 0, 1, (SELECT id FROM Categorias WHERE nombre = N'Sin gluten')),
+(N'Torta Sin Gluten de Naranja', N'Torta de naranja apta celíacos.',  1, 1, 1, 1, (SELECT id FROM Categorias WHERE nombre = N'Sin gluten'));
  
 -- Bebidas
-INSERT INTO Productos (nombre, descripcion, precio, disponible, activo, destacado, sinGluten, categoriaId) VALUES
-(N'Café en Grano 500g', N'Café de especialidad en grano, bolsa de 500g.', 6500.00, 1, 1, 0, 0, (SELECT id FROM Categorias WHERE nombre = N'Bebidas')),
-(N'Limonada Casera 1L', N'Limonada casera con menta, botella de 1 litro.', 2100.00, 1, 1, 0, 0, (SELECT id FROM Categorias WHERE nombre = N'Bebidas'));
+INSERT INTO Productos (nombre, descripcion, disponible, activo, destacado, sinGluten, categoriaId) VALUES
+(N'Café en Grano 500g', N'Café de especialidad en grano, bolsa de 500g.',  1, 1, 0, 0, (SELECT id FROM Categorias WHERE nombre = N'Bebidas')),
+(N'Limonada Casera 1L', N'Limonada casera con menta, botella de 1 litro.',  1, 1, 0, 0, (SELECT id FROM Categorias WHERE nombre = N'Bebidas'));
 GO
 
 -- ------------------------------------------------------------

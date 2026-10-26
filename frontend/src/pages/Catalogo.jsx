@@ -99,7 +99,7 @@ function Catalogo() {
                     </span>
                     <span className="item-linea"></span>
                     <span className="item-precio">
-                      {producto.disponible ? `$${producto.precio}` : 'Agotado'}
+                      {producto.disponible ? `` : 'Agotado'}
                     </span>
                   </div>
                   <p className="item-descripcion">{producto.descripcion}</p>

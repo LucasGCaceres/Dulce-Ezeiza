@@ -24,7 +24,6 @@ exports.crear = async function (datos) {
         nuevoProducto = await Producto.create({
             nombre: datos.nombre,
             descripcion: datos.descripcion,
-            precio: datos.precio,
             categoriaId: datos.categoriaId,
             disponible: datos.disponible ?? true,
             activo: datos.activo ?? true,
@@ -131,7 +130,6 @@ exports.editar = async function (id, datos) {
 
     producto.nombre = datos.nombre ?? producto.nombre;
     producto.descripcion = datos.descripcion ?? producto.descripcion;
-    producto.precio = datos.precio ?? producto.precio;
     producto.categoriaId = datos.categoriaId ?? producto.categoriaId;
     producto.disponible = datos.disponible ?? producto.disponible;
     producto.activo = datos.activo ?? producto.activo;

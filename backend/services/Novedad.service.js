@@ -10,7 +10,7 @@ const ImagenProducto = require('../models/ImagenProducto.model');
 // daria 404.
 const INCLUIR_PRODUCTO_PUBLICO = {
     model: Producto,
-    attributes: ['id', 'nombre', 'precio'],
+    attributes: ['id', 'nombre'],
     where: { activo: true },
     required: false,
     include: [
