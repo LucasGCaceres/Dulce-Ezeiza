@@ -1,26 +1,38 @@
-const API_URL = `${import.meta.env.VITE_API_URL}/productos`
+import { pedir, simularRed, USAR_MOCKS } from './api'
+import { productos as productosMock } from '../mocks/productos'
 
-// Recibe filtros opcionales: { busqueda, categoriaId, soloActivos, sinGluten }
-// - El catalogo publico pide { soloActivos: true } para no mostrar los dados de baja.
-// - El panel admin llama sin filtros para ver todos (activos e inactivos).
-export async function obtenerProductos(filtros = {}) {
-  const params = new URLSearchParams()
+// Saca tildes y pasa a minúsculas. SQL Server compara así por defecto
+// (LIKE no distingue "pan" de "Pán"), y el mock tiene que hacer lo mismo.
+function normalizar(texto) {
+  return texto.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
+}
 
-  // Solo agregamos a la URL los filtros que tienen valor.
-  Object.entries(filtros).forEach(([clave, valor]) => {
-    if (valor !== undefined && valor !== null && valor !== '' && valor !== false) {
-      params.append(clave, valor)
-    }
+// Lo mismo que hace Producto.service.js para un visitante: solo productos
+// activos de categorías activas, más los filtros que lleguen.
+function filtrarMock({ busqueda, categoriaId, sinGluten, destacado }) {
+  return productosMock.filter((p) => {
+    if (!p.activo || !p.Categorium.activa) return false
+    if (busqueda && !normalizar(p.nombre).includes(normalizar(busqueda))) return false
+    if (categoriaId && p.categoriaId !== Number(categoriaId)) return false
+    if (sinGluten && !p.sinGluten) return false
+    if (destacado && !p.destacado) return false
+    return true
   })
+}
 
-  const query = params.toString()
-  const url = query ? `${API_URL}?${query}` : API_URL
+// GET /api/productos (público).
+// filtros (todos opcionales): { busqueda, categoriaId, sinGluten, destacado }
+export function obtenerProductos(filtros = {}) {
+  if (USAR_MOCKS) return simularRed(filtrarMock(filtros))
 
-  const respuesta = await fetch(url)
+  // URLSearchParams arma "?busqueda=pan&sinGluten=true" y escapa los
+  // caracteres raros. Solo mandamos los filtros que tienen valor.
+  const parametros = new URLSearchParams()
+  if (filtros.busqueda) parametros.set('busqueda', filtros.busqueda)
+  if (filtros.categoriaId) parametros.set('categoriaId', filtros.categoriaId)
+  if (filtros.sinGluten) parametros.set('sinGluten', 'true')
+  if (filtros.destacado) parametros.set('destacado', 'true')
 
-  if (!respuesta.ok) {
-    throw new Error('No se pudieron obtener los productos')
-  }
-
-  return respuesta.json()
+  const consulta = parametros.toString()
+  return pedir(consulta ? `/productos?${consulta}` : '/productos')
 }

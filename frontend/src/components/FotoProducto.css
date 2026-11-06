@@ -1,0 +1,18 @@
+/* object-fit: cover recorta la foto para llenar el recuadro sin
+   deformarla, aunque la original tenga otra proporción. */
+.foto-producto {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: var(--radio);
+}
+
+.foto-producto-vacia {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-esqueleto);
+  color: var(--color-texto-tenue);
+  font-weight: 600;
+}

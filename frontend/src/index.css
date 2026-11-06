@@ -155,3 +155,39 @@ textarea {
   clip: rect(0 0 0 0);
   white-space: nowrap;
 }
+
+/* ---------- Títulos de sección (se repiten en varias páginas) ---------- */
+
+/* Rótulo chico en mayúsculas que va arriba de un título. */
+.antetitulo {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-acento);
+}
+
+.titulo-seccion {
+  margin: 0;
+  font-family: var(--fuente-titulos);
+  font-weight: 700;
+  font-size: clamp(1.9rem, 3vw, 2.6rem);
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+}
+
+/* Título a la izquierda y link "Ver todo" a la derecha. */
+.encabezado-seccion {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px 24px;
+  margin-bottom: 28px;
+}
+
+.link-acento {
+  font-weight: 600;
+  color: var(--color-acento);
+}

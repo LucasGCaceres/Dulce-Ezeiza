@@ -1,0 +1,376 @@
+/* ============================================================
+   Inicio. Todo está pensado para PC; el bloque de celular está
+   al final, por si algún día se trabaja.
+   ============================================================ */
+
+/* Separación entre secciones. */
+.inicio-seccion {
+  padding-bottom: 96px;
+}
+
+/* Las listas de tarjetas son <ul> por accesibilidad (el lector de
+   pantalla anuncia "lista, 6 elementos"); les sacamos el estilo. */
+.inicio-seccion ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Las tarjetas son links enteros: sin subrayado y con el color del texto. */
+.especialidad-principal,
+.especialidad-chica,
+.categoria-tarjeta,
+.inicio-sintacc-producto,
+.inicio-novedad-principal,
+.inicio-novedad {
+  color: var(--color-texto);
+  text-decoration: none;
+}
+
+/* ---------- Portada ---------- */
+
+.inicio-portada {
+  padding-top: 56px;
+  padding-bottom: 88px;
+  display: grid;
+  grid-template-columns: 1fr 1.3fr;   /* texto | foto un poco más ancha */
+  align-items: center;
+  gap: 48px;
+}
+
+.inicio-portada-texto {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.inicio-portada-titulo {
+  margin: 0;
+  font-family: var(--fuente-titulos);
+  font-weight: 700;
+  font-size: clamp(2.5rem, 4.4vw, 3.9rem);
+  line-height: 1.04;
+  letter-spacing: -0.035em;
+}
+
+.inicio-portada-bajada {
+  margin: 0;
+  font-size: 1.15rem;
+  color: var(--color-texto-tenue);
+  max-width: 36ch;   /* ch = ancho de un carácter: líneas cómodas de leer */
+}
+
+.inicio-botones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+.inicio-portada-foto {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: var(--radio);
+  box-shadow: 0 24px 50px rgba(74, 38, 16, 0.18);
+}
+
+/* ---------- Especialidades ---------- */
+
+.especialidades {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 20px;
+}
+
+.especialidad-principal {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.especialidad-principal-nombre {
+  font-family: var(--fuente-titulos);
+  font-size: 1.7rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.especialidad-descripcion {
+  color: var(--color-texto-tenue);
+}
+
+/* La columna de la derecha reparte el alto entre las tres tarjetas. */
+.especialidades-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.especialidades-lista > * {
+  flex: 1 1 0;
+}
+
+.especialidad-chica {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 12px;
+  border-radius: var(--radio);
+  background: var(--color-fondo-suave);
+}
+
+.especialidad-chica:hover,
+.categoria-tarjeta:hover .categoria-nombre,
+.inicio-novedad:hover .inicio-novedad-titulo,
+.inicio-novedad-principal:hover .inicio-novedad-principal-titulo {
+  color: var(--color-acento);
+}
+
+.especialidad-chica-foto {
+  width: 150px;
+  height: 112px;
+  flex-shrink: 0;
+  border-radius: 10px;
+}
+
+.especialidad-chica-texto {
+  flex-grow: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.especialidad-chica-nombre {
+  font-family: var(--fuente-titulos);
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.especialidad-chica .especialidad-descripcion {
+  font-size: 0.95rem;
+}
+
+/* ---------- Categorías ---------- */
+
+.inicio-titulo-categorias {
+  margin-bottom: 24px;
+  font-size: clamp(1.6rem, 2.4vw, 2.1rem);
+}
+
+/* En PC las 6 categorías entran en una fila. Si hubiera más, auto-fill
+   arma filas nuevas en vez de una tira que haya que scrollear de costado. */
+.categorias-grilla {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 20px 16px;
+}
+
+.categoria-tarjeta {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.categoria-pie {
+  display: flex;
+  flex-direction: column;
+}
+
+.categoria-nombre {
+  font-family: var(--fuente-titulos);
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+}
+
+.categoria-cantidad {
+  font-size: 0.9rem;
+  color: var(--color-texto-tenue);
+}
+
+/* ---------- Encargos ---------- */
+
+.inicio-encargos {
+  background: var(--color-etiqueta);
+  margin-bottom: 96px;
+}
+
+.inicio-encargos-interior {
+  padding-top: 88px;
+  padding-bottom: 88px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 56px;
+}
+
+.inicio-encargos-foto {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: var(--radio);
+}
+
+.inicio-encargos-texto {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.inicio-encargos-bajada {
+  margin: 0;
+  font-size: 1.1rem;
+  color: var(--color-texto-medio);
+}
+
+.inicio-pasos {
+  margin: 4px 0 8px;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.inicio-pasos li {
+  display: flex;
+  flex-direction: column;
+  padding-left: 18px;
+  border-left: 3px solid var(--color-acento);
+  color: var(--color-texto-medio);
+}
+
+.inicio-paso-titulo {
+  font-weight: 700;
+  color: var(--color-texto);
+}
+
+/* ---------- Sin TACC ---------- */
+
+.inicio-sintacc {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  align-items: center;
+  gap: 40px;
+  padding: 40px;
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio);
+  background: var(--color-fondo-suave);
+}
+
+.inicio-sintacc-texto {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.inicio-sintacc-bajada {
+  margin: 0;
+  color: var(--color-texto-tenue);
+  max-width: 44ch;
+}
+
+.inicio-sintacc-productos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.inicio-sintacc-producto {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+/* ---------- Novedades ---------- */
+
+.inicio-novedades {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 32px 48px;
+}
+
+.inicio-novedad-principal {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.inicio-novedad-foto {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: var(--radio);
+}
+
+.inicio-novedad-fecha {
+  font-weight: 600;
+  color: var(--color-acento);
+}
+
+.inicio-novedad-principal-titulo {
+  font-family: var(--fuente-titulos);
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+.inicio-novedad-resumen {
+  color: var(--color-texto-tenue);
+}
+
+.inicio-novedades-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Línea divisoria entre novedades (menos después de la última). */
+.inicio-novedades-lista li:not(:last-child) {
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--color-borde);
+}
+
+.inicio-novedad {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.inicio-novedad .inicio-novedad-fecha {
+  font-size: 0.9rem;
+}
+
+.inicio-novedad-titulo {
+  font-family: var(--fuente-titulos);
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+/* ---------- Celular (pendiente) ----------
+   Por ahora solo apila las columnas para que no se rompa. */
+@media (max-width: 640px) {
+  .inicio-portada,
+  .especialidades,
+  .inicio-encargos-interior,
+  .inicio-sintacc,
+  .inicio-novedades {
+    grid-template-columns: 1fr;
+  }
+
+  .inicio-sintacc {
+    padding: 24px;
+  }
+}
