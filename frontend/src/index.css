@@ -1,43 +1,157 @@
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=Work+Sans:wght@400;500;600;700&display=swap');
+/* ============================================================
+   Estilos globales: colores, tipografías y reglas base.
+   Todo lo que se repite en el sitio sale de estas variables,
+   así un cambio de color se hace en un solo lugar.
+   ============================================================
+ */
 
 :root {
-  --color-fondo: #1c1410;
-  --color-fondo-alt: #241a14;
-  --color-texto: #f3e9da;
-  --color-texto-tenue: #b9a088;
-  --color-dorado: #d9a441;
-  --color-frutos-rojos: #c4536a;
-  --color-borde: #3a2a20;
+  /* Fondos */
+  --color-fondo: #f4e9d8;        /* crema: fondo de todas las páginas */
+  --color-fondo-suave: #fbf5ec;  /* cajas y tarjetas sobre el crema */
+  --color-fondo-campo: #fff8ef;  /* inputs y botones claros */
+  --color-esqueleto: #e6d5bc;    /* bloques de "cargando" */
 
-  --fuente-titulos: 'Fraunces', serif;
-  --fuente-texto: 'Work Sans', sans-serif;
+  /* Texto */
+  --color-texto: #2b1a12;        /* marrón casi negro */
+  --color-texto-medio: #4d3628;
+  --color-texto-tenue: #6b5242;  /* subtítulos, datos secundarios */
+
+  /* Acento */
+  --color-acento: #8f4519;       /* terracota: botones y links activos */
+  --color-sobre-acento: #fff8ef; /* texto encima del terracota */
+
+  /* Bordes y etiquetas */
+  --color-borde: #e2cfb2;
+  --color-borde-fuerte: #b89a78; /* bordes de inputs */
+  --color-etiqueta: #ead6b8;     /* fondo de la etiqueta "Sin TACC" */
+
+  /* Footer (fondo oscuro) */
+  --color-footer: #2b1a12;
+  --color-footer-texto: #ead6b8;
+  --color-footer-titulo: #c9b08f;
+  --color-footer-claro: #f4e9d8;
+  --color-footer-borde: #4a3426;
+
+  /* Tipografías */
+  --fuente-titulos: 'Bricolage Grotesque', sans-serif;
+  --fuente-texto: 'Figtree', sans-serif;
+
+  /* Medidas */
+  --ancho-maximo: 1240px;
+  --margen-lateral: 24px;
+  --radio: 14px;
+  --radio-pildora: 999px;
 }
 
-* {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
 body {
   margin: 0;
-  background-color: var(--color-fondo);
+  background: var(--color-fondo);
   color: var(--color-texto);
   font-family: var(--fuente-texto);
   line-height: 1.6;
 }
 
-h1, h2, h3 {
-  font-family: var(--fuente-titulos);
-  font-weight: 600;
-  line-height: 1.15;
-  margin: 0 0 0.5em 0;
+img {
+  display: block;
+  max-width: 100%;
 }
 
 a {
-  color: inherit;
+  color: var(--color-texto);
 }
 
-ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
+a:hover {
+  color: var(--color-acento);
+}
+
+/* Los botones y campos no heredan la fuente por defecto: se la forzamos. */
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+/* Contorno visible al navegar con teclado (Tab). */
+:focus-visible {
+  outline: 3px solid var(--color-acento);
+  outline-offset: 2px;
+}
+
+/* ---------- Piezas reutilizables ---------- */
+
+/* Caja centrada con el ancho máximo del sitio. */
+.contenedor {
+  width: 100%;
+  max-width: var(--ancho-maximo);
+  margin: 0 auto;
+  padding: 0 var(--margen-lateral);
+}
+
+/* Botón principal (terracota). Sirve para <button> y para <a>. */
+.boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0 24px;
+  border: none;
+  border-radius: var(--radio-pildora);
+  background: var(--color-acento);
+  color: var(--color-sobre-acento);
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.boton:hover {
+  color: var(--color-sobre-acento);
+  filter: brightness(1.1);
+}
+
+/* Variante con borde, para acciones secundarias. */
+.boton-secundario {
+  background: none;
+  border: 1.5px solid var(--color-texto);
+  color: var(--color-texto);
+}
+
+.boton-secundario:hover {
+  color: var(--color-texto);
+  background: var(--color-fondo-suave);
+  filter: none;
+}
+
+/* Bloque gris que late mientras se cargan los datos. */
+.esqueleto {
+  background: var(--color-esqueleto);
+  border-radius: var(--radio);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .esqueleto {
+    animation: pulso 1.4s ease-in-out infinite;
+  }
+}
+
+@keyframes pulso {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+
+/* Texto solo para lectores de pantalla (no se ve, pero se lee). */
+.solo-lector {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
 }

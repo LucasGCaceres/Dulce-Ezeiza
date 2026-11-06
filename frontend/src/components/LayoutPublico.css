@@ -1,0 +1,11 @@
+/* Columna de alto completo: si la página tiene poco contenido,
+   el main crece y empuja el footer al fondo de la pantalla. */
+.layout-publico {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.layout-contenido {
+  flex-grow: 1;
+}

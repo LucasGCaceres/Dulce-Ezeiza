@@ -1,0 +1,133 @@
+.footer {
+  background: var(--color-footer);
+  color: var(--color-footer-texto);
+}
+
+.footer p {
+  margin: 0;
+}
+
+.footer-interior {
+  padding-top: 64px;
+  padding-bottom: 48px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 48px;
+}
+
+/* flex: crecer encogerse base. Con base 520px y 440px, en pantallas
+   anchas van lado a lado; cuando no entran, el mapa baja solo. */
+.footer-info {
+  flex: 1 1 520px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+
+.footer-marca {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.footer-nombre {
+  font-family: var(--fuente-titulos);
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  color: var(--color-footer-claro);
+}
+
+.footer-descripcion {
+  max-width: 36ch;
+}
+
+/* auto-fit: tantas columnas de 170px como entren; el resto baja. */
+.footer-columnas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 28px 32px;
+}
+
+.footer-titulo {
+  margin: 0 0 10px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-footer-titulo);
+}
+
+.footer-horarios {
+  white-space: pre-line;
+  color: var(--color-footer-claro);
+}
+
+.footer-lista {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.footer-link {
+  display: inline-block;
+  padding: 4px 0;
+  color: var(--color-footer-claro);
+  text-decoration: none;
+}
+
+.footer-link:hover {
+  color: var(--color-footer-claro);
+  text-decoration: underline;
+}
+
+.footer-mapa {
+  flex: 1 1 440px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.footer-mapa iframe {
+  display: block;
+  width: 100%;
+  aspect-ratio: 800 / 520;
+  border: 1px solid var(--color-footer-borde);
+  border-radius: var(--radio);
+}
+
+.footer-como-llegar {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 20px;
+  border-radius: var(--radio-pildora);
+  border: 1.5px solid var(--color-footer-texto);
+  color: var(--color-footer-claro);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.footer-como-llegar:hover {
+  color: var(--color-footer);
+  background: var(--color-footer-claro);
+}
+
+.footer-pie {
+  border-top: 1px solid var(--color-footer-borde);
+}
+
+.footer-pie-interior {
+  padding-top: 20px;
+  padding-bottom: 28px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 24px;
+  font-size: 0.85rem;
+  color: var(--color-footer-titulo);
+}
