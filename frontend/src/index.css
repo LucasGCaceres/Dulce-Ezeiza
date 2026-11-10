@@ -42,6 +42,10 @@
   --margen-lateral: 24px;
   --radio: 14px;
   --radio-pildora: 999px;
+
+  /* Errores de formulario (rojo oscuro: se lee bien sobre el crema) */
+  --color-error: #a3261c;
+  --color-error-fondo: #fbe9e5;
 }
 
 *,
@@ -208,4 +212,73 @@ textarea {
   background: none;
   border: 1px solid var(--color-borde-fuerte);
   color: var(--color-texto-tenue);
+}
+
+/* ---------- Formularios (Contacto y panel admin) ---------- */
+
+/* Un campo: etiqueta, control y ayuda/error, uno abajo del otro. */
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.campo-etiqueta {
+  font-weight: 600;
+}
+
+.campo-opcional {
+  font-weight: 400;
+  color: var(--color-texto-tenue);
+}
+
+/* input, select y textarea con el mismo aspecto. */
+.campo-control {
+  width: 100%;
+  min-height: 48px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1.5px solid var(--color-borde-fuerte);
+  background: var(--color-fondo-campo);
+  color: var(--color-texto);
+  font-size: 1rem;
+  /* Si el foco salta a este campo, que no quede tapado por el navbar fijo. */
+  scroll-margin-top: 100px;
+}
+
+textarea.campo-control {
+  resize: vertical;   /* se puede agrandar hacia abajo, no de costado */
+  line-height: 1.5;
+}
+
+.campo-control:focus {
+  border-color: var(--color-acento);
+}
+
+.campo-control:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.campo-control.con-error {
+  border-color: var(--color-error);
+}
+
+.campo-ayuda {
+  font-size: 0.9rem;
+  color: var(--color-texto-tenue);
+}
+
+.campo-error {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-error);
+}
+
+/* Botón deshabilitado (por ejemplo, mientras se envía un formulario). */
+.boton:disabled {
+  opacity: 0.6;
+  cursor: wait;
+  filter: none;
 }

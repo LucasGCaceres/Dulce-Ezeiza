@@ -5,6 +5,7 @@ import Inicio from './pages/Inicio'
 import Catalogo from './pages/Catalogo'
 import DetalleProducto from './pages/DetalleProducto'
 import NoEncontrado from './pages/NoEncontrado'
+import Contacto from './pages/Contacto'
 
 // Rutas del sitio. Las páginas se van reemplazando a medida que
 // las armamos; por ahora casi todas muestran "en construcción".
@@ -20,7 +21,7 @@ function App() {
         <Route path="/novedades" element={<EnConstruccion titulo="Novedades" />} />
         <Route path="/novedades/:id" element={<EnConstruccion titulo="Detalle de novedad" />} />
         <Route path="/nosotros" element={<EnConstruccion titulo="Nosotros" />} />
-        <Route path="/contacto" element={<EnConstruccion titulo="Contacto" />} />
+        <Route path="/contacto" element={<Contacto />} />
         {/* "*" atrapa cualquier URL que no coincida con las de arriba. */}
         <Route path="*" element={<NoEncontrado />} />
       </Route>
