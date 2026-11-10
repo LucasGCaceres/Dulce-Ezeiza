@@ -1,0 +1,212 @@
+/* ============================================================
+   Catálogo. Pensado para PC; el bloque de celular está al final.
+   ============================================================ */
+
+.catalogo {
+  padding-top: 48px;
+  padding-bottom: 96px;
+}
+
+.catalogo-titulo {
+  margin: 0 0 8px;
+  font-family: var(--fuente-titulos);
+  font-weight: 700;
+  font-size: clamp(2.3rem, 4vw, 3.4rem);
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+}
+
+.catalogo-bajada {
+  margin: 0 0 32px;
+  font-size: 1.1rem;
+  color: var(--color-texto-tenue);
+}
+
+/* ---------- Caja de filtros ---------- */
+
+.catalogo-filtros {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 24px;
+  margin-bottom: 28px;
+  border-radius: var(--radio);
+  border: 1px solid var(--color-borde);
+  background: var(--color-fondo-suave);
+}
+
+.catalogo-filtros-fila {
+  display: flex;
+  align-items: flex-end;
+  gap: 24px;
+}
+
+.catalogo-campo-busqueda {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-weight: 600;
+}
+
+/* Inputs y check comparten la misma altura y borde. */
+.catalogo-input,
+.catalogo-check {
+  min-height: 48px;
+  border-radius: 10px;
+  border: 1.5px solid var(--color-borde-fuerte);
+  background: var(--color-fondo-campo);
+  color: var(--color-texto);
+}
+
+.catalogo-input {
+  padding: 0 16px;
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+.catalogo-input:focus {
+  border-color: var(--color-acento);
+}
+
+.catalogo-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 16px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+/* accent-color pinta el tilde del checkbox con nuestro color. */
+.catalogo-check input {
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  accent-color: var(--color-acento);
+}
+
+.catalogo-pildoras {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.catalogo-pildora {
+  min-height: 44px;
+  padding: 0 18px;
+  border-radius: var(--radio-pildora);
+  border: 1.5px solid var(--color-borde-fuerte);
+  background: var(--color-fondo-campo);
+  color: var(--color-texto);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.catalogo-pildora:hover {
+  border-color: var(--color-texto);
+}
+
+.catalogo-pildora.activa {
+  border-color: var(--color-texto);
+  background: var(--color-texto);
+  color: var(--color-sobre-acento);
+}
+
+/* ---------- Resultados ---------- */
+
+.catalogo-resumen {
+  min-height: 1.6em;   /* reserva el lugar aunque esté vacío: así nada salta */
+  margin: 0 0 20px;
+  color: var(--color-texto-tenue);
+  font-weight: 500;
+}
+
+/* Con 1240px de ancho entran 4 columnas. */
+.catalogo-grilla {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 28px 24px;
+  transition: opacity 0.2s;
+}
+
+/* Resultados viejos mientras llegan los nuevos. */
+.catalogo-grilla.actualizando {
+  opacity: 0.5;
+}
+
+.catalogo-tarjeta {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  color: var(--color-texto);
+  text-decoration: none;
+}
+
+.catalogo-tarjeta-texto {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.catalogo-tarjeta-categoria {
+  font-size: 0.85rem;
+  color: var(--color-texto-tenue);
+}
+
+.catalogo-tarjeta-nombre {
+  font-family: var(--fuente-titulos);
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+}
+
+.catalogo-tarjeta:hover .catalogo-tarjeta-nombre {
+  color: var(--color-acento);
+}
+
+.catalogo-etiquetas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+/* ---------- Sin resultados ---------- */
+
+.catalogo-vacio {
+  max-width: 640px;
+  padding: 64px 24px;
+  border-radius: var(--radio);
+  border: 1.5px dashed var(--color-borde-fuerte);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.catalogo-vacio p {
+  margin: 0;
+  color: var(--color-texto-tenue);
+}
+
+.catalogo-vacio .catalogo-vacio-titulo {
+  font-family: var(--fuente-titulos);
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--color-texto);
+}
+
+/* ---------- Celular (pendiente) ---------- */
+@media (max-width: 640px) {
+  .catalogo-filtros-fila {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

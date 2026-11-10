@@ -53,6 +53,7 @@ export function usePedido(pedido, dependencias = []) {
     datos: cargando ? null : resultado.datos,
     error: cargando ? null : resultado.error,
     cargando,
+    ultimosDatos: resultado.datos,
     reintentar: () => setIntento((n) => n + 1)
   }
 }
