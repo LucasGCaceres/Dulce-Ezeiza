@@ -1,0 +1,217 @@
+/* ============================================================
+   Detalle de producto. Pensado para PC; celular al final.
+   ============================================================ */
+
+.detalle {
+  padding-top: 28px;
+  padding-bottom: 96px;
+}
+
+/* El esqueleto deja el mismo espacio que ocupan las migas. */
+.detalle-cargando {
+  margin-top: 52px;
+}
+
+.detalle-error {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  max-width: 640px;
+  margin-top: 40px;
+}
+
+/* ---------- Migas de pan (Catálogo / Categoría / Producto) ---------- */
+
+.detalle-migas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 28px;
+  font-size: 0.95rem;
+  color: var(--color-texto-tenue);
+}
+
+.detalle-migas a {
+  color: var(--color-texto-tenue);
+}
+
+.detalle-migas [aria-current='page'] {
+  color: var(--color-texto);
+  font-weight: 600;
+}
+
+/* ---------- Foto | información ---------- */
+
+.detalle-principal {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  align-items: start;
+  gap: 48px;
+}
+
+.detalle-galeria {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.detalle-foto-grande {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: var(--radio);
+}
+
+.detalle-miniaturas {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+/* El borde transparente ocupa lugar aunque no se vea: así al elegir
+   una miniatura el borde aparece sin que la imagen se achique. */
+.detalle-miniatura {
+  padding: 0;
+  border: 3px solid transparent;
+  border-radius: 12px;
+  background: none;
+  overflow: hidden;
+  cursor: pointer;
+  line-height: 0;
+}
+
+.detalle-miniatura img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+.detalle-miniatura:hover {
+  border-color: var(--color-borde-fuerte);
+}
+
+.detalle-miniatura.elegida {
+  border-color: var(--color-acento);
+}
+
+.detalle-info {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.detalle-info p {
+  margin: 0;
+}
+
+.detalle-categoria {
+  color: var(--color-texto-tenue);
+  font-weight: 600;
+}
+
+.detalle-titulo {
+  margin: 0;
+  font-family: var(--fuente-titulos);
+  font-weight: 700;
+  font-size: clamp(2.2rem, 3.6vw, 3.2rem);
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+}
+
+.detalle-descripcion {
+  font-size: 1.1rem;
+  color: var(--color-texto-medio);
+}
+
+.detalle-aviso {
+  padding: 16px 20px;
+  border-radius: var(--radio);
+  border: 1.5px dashed var(--color-borde-fuerte);
+  color: var(--color-texto-tenue);
+}
+
+.detalle-aviso-titulo,
+.detalle-retiro-titulo {
+  font-weight: 700;
+  color: var(--color-texto);
+}
+
+.detalle-accion {
+  margin-top: 8px;
+}
+
+.detalle-boton {
+  min-height: 52px;
+  padding: 0 30px;
+}
+
+.detalle-retiro {
+  margin-top: 12px;
+  padding: 20px 22px;
+  border-radius: var(--radio);
+  border: 1px solid var(--color-borde);
+  background: var(--color-fondo-suave);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: var(--color-texto-tenue);
+}
+
+/* ---------- Relacionados ---------- */
+
+.detalle-relacionados {
+  margin-top: 88px;
+}
+
+.detalle-relacionados-titulo {
+  margin-bottom: 24px;
+  font-size: clamp(1.6rem, 2.4vw, 2.1rem);
+}
+
+.detalle-relacionados-lista {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.detalle-relacionado {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px;
+  border-radius: var(--radio);
+  background: var(--color-fondo-suave);
+  color: var(--color-texto);
+  text-decoration: none;
+}
+
+.detalle-relacionado:hover {
+  color: var(--color-acento);
+}
+
+.detalle-relacionado-foto {
+  width: 130px;
+  height: 98px;
+  flex-shrink: 0;
+  border-radius: 10px;
+}
+
+.detalle-relacionado-nombre {
+  font-family: var(--fuente-titulos);
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+}
+
+/* ---------- Celular (pendiente) ---------- */
+@media (max-width: 640px) {
+  .detalle-principal,
+  .detalle-relacionados-lista {
+    grid-template-columns: 1fr;
+  }
+}

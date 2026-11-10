@@ -1,4 +1,4 @@
-import { pedir, simularRed, USAR_MOCKS } from './api'
+import { pedir, simularRed, simularFallo, USAR_MOCKS } from './api'
 import { productos as productosMock } from '../mocks/productos'
 
 // Saca tildes y pasa a minúsculas. SQL Server compara así por defecto
@@ -35,4 +35,20 @@ export function obtenerProductos(filtros = {}) {
 
   const consulta = parametros.toString()
   return pedir(consulta ? `/productos?${consulta}` : '/productos')
+}
+
+// GET /api/productos/:id (público). Si no existe o no está activo,
+// el backend responde 404 { mensaje: 'Producto no encontrado' }.
+export function obtenerProducto(id) {
+  if (USAR_MOCKS) {
+    const producto = productosMock.find((p) => p.id === Number(id))
+    // Mismo criterio que el listado: oculto si el producto o su categoría
+    // están desactivados. (El backend real hoy no mira la categoría acá:
+    // está anotado como pendiente.)
+    if (!producto || !producto.activo || !producto.Categorium.activa) {
+      return simularFallo('Producto no encontrado', 404)
+    }
+    return simularRed(producto)
+  }
+  return pedir(`/productos/${id}`)
 }

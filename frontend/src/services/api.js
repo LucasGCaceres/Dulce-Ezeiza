@@ -39,8 +39,20 @@ export async function pedir(ruta, { metodo = 'GET', cuerpo } = {}) {
     throw new ErrorApi('No pudimos conectarnos con el servidor.', 0)
   }
 
-  // Algunas respuestas pueden no traer JSON: no rompemos por eso.
-  const datos = await respuesta.json().catch(() => null)
+  // Si el servidor dice "todo bien" (200) pero no manda JSON, algo está
+  // mal configurado: por ejemplo, VITE_API_URL apunta al propio Vite y
+  // nos devolvió el index.html. Eso es un error, no "datos vacíos".
+  // (204 significa "OK, sin contenido": ese sí es válido sin JSON.)
+  let datos = null
+  if (respuesta.status !== 204) {
+    try {
+      datos = await respuesta.json()
+    } catch {
+      if (respuesta.ok) {
+        throw new ErrorApi('El servidor respondió algo que no es JSON. ¿Está bien VITE_API_URL?', respuesta.status)
+      }
+    }
+  }
 
   if (!respuesta.ok) {
     throw new ErrorApi(
@@ -59,5 +71,14 @@ export async function pedir(ruta, { metodo = 'GET', cuerpo } = {}) {
 export function simularRed(datos, demora = 400) {
   return new Promise((resolver) => {
     setTimeout(() => resolver(structuredClone(datos)), demora)
+  })
+}
+
+// Lo mismo que simularRed, pero para cuando el backend respondería con
+// un error (por ejemplo, un 404 "Producto no encontrado"). Así el mock
+// también prueba los caminos de error de las páginas.
+export function simularFallo(mensaje, status, demora = 400) {
+  return new Promise((resolver, rechazar) => {
+    setTimeout(() => rechazar(new ErrorApi(mensaje, status)), demora)
   })
 }

@@ -1,0 +1,52 @@
+.no-encontrado {
+  padding-top: 72px;
+  padding-bottom: 96px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 48px;
+}
+
+.no-encontrado-texto {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.no-encontrado-titulo {
+  margin: 0;
+  font-family: var(--fuente-titulos);
+  font-weight: 700;
+  font-size: clamp(2.4rem, 4.2vw, 3.6rem);
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+}
+
+.no-encontrado-bajada {
+  margin: 0;
+  font-size: 1.1rem;
+  color: var(--color-texto-tenue);
+  max-width: 40ch;
+}
+
+.no-encontrado-botones {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 24px;
+  margin-top: 6px;
+}
+
+.no-encontrado-foto {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: var(--radio);
+}
+
+/* ---------- Celular (pendiente) ---------- */
+@media (max-width: 640px) {
+  .no-encontrado {
+    grid-template-columns: 1fr;
+  }
+}
