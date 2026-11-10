@@ -6,6 +6,8 @@ import Catalogo from './pages/Catalogo'
 import DetalleProducto from './pages/DetalleProducto'
 import NoEncontrado from './pages/NoEncontrado'
 import Contacto from './pages/Contacto'
+import Novedades from './pages/Novedades'
+import DetalleNovedad from './pages/DetalleNovedad'
 
 // Rutas del sitio. Las páginas se van reemplazando a medida que
 // las armamos; por ahora casi todas muestran "en construcción".
@@ -18,8 +20,8 @@ function App() {
         <Route path="/" element={<Inicio />} />
         <Route path="/catalogo" element={<Catalogo />} />
         <Route path="/productos/:id" element={<DetalleProducto />} />
-        <Route path="/novedades" element={<EnConstruccion titulo="Novedades" />} />
-        <Route path="/novedades/:id" element={<EnConstruccion titulo="Detalle de novedad" />} />
+        <Route path="/novedades" element={<Novedades />} />
+        <Route path="/novedades/:id" element={<DetalleNovedad />} />
         <Route path="/nosotros" element={<EnConstruccion titulo="Nosotros" />} />
         <Route path="/contacto" element={<Contacto />} />
         {/* "*" atrapa cualquier URL que no coincida con las de arriba. */}

@@ -1,0 +1,29 @@
+.novedad-tarjeta {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  color: var(--color-texto);
+  text-decoration: none;
+}
+
+.novedad-tarjeta-titulo {
+  font-family: var(--fuente-titulos);
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.novedad-tarjeta:hover .novedad-tarjeta-titulo {
+  color: var(--color-acento);
+}
+
+.novedad-fecha {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-acento);
+}
+
+.novedad-resumen {
+  color: var(--color-texto-tenue);
+}

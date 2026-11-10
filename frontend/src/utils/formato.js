@@ -19,3 +19,14 @@ export function fechaParaTime(fechaIso) {
   const dia = String(fecha.getDate()).padStart(2, '0')
   return `${fecha.getFullYear()}-${mes}-${dia}`
 }
+
+// Texto con saltos de línea → lista de párrafos.
+// "Hola.\n\nChau." → ['Hola.', 'Chau.']
+// Cada línea no vacía es un párrafo; las líneas en blanco se ignoran.
+export function dividirEnParrafos(texto) {
+  if (!texto) return []
+  return texto
+    .split('\n')
+    .map((linea) => linea.trim())
+    .filter((linea) => linea !== '')
+}

@@ -9,6 +9,7 @@ import { productos } from './productos'
 // Diferencia con el seed: el seed no tiene imágenes (imagenUrl NULL).
 // Acá le pusimos foto a algunas para ver los dos casos en pantalla.
 
+// Con un número negativo da una fecha futura: haceDias(-5) = dentro de 5 días.
 function haceDias(dias) {
   const fecha = new Date()
   fecha.setDate(fecha.getDate() - dias)
@@ -75,5 +76,30 @@ export const novedades = [
     publicada: true,
     productoId: 19,
     Producto: productoRelacionado(19)
+  },
+
+  // Estas dos NO están en el seed. Sirven para probar que el sitio
+  // público no las muestra (y después, para el panel admin).
+  {
+    id: 6,
+    titulo: 'Rosca de Pascua por encargo',
+    resumen: 'Ya tomamos pedidos de roscas para Pascua.',
+    contenido: 'Este año también hacemos roscas de Pascua por encargo. Escribinos desde el formulario de contacto para reservar la tuya.',
+    imagenUrl: null,
+    fechaPublicacion: haceDias(-5),   // programada: se publica en 5 días
+    publicada: true,
+    productoId: null,
+    Producto: null
+  },
+  {
+    id: 7,
+    titulo: 'Borrador: vacaciones de verano',
+    resumen: 'Fechas de cierre por vacaciones (a confirmar).',
+    contenido: 'Todavía no definimos las fechas.',
+    imagenUrl: null,
+    fechaPublicacion: haceDias(1),
+    publicada: false,                 // borrador: nunca se ve en el sitio
+    productoId: null,
+    Producto: null
   }
 ]

@@ -1,0 +1,114 @@
+/* ============================================================
+   Novedades (listado). La tarjeta de las anteriores tiene su
+   propio CSS en components/TarjetaNovedad.css.
+   ============================================================ */
+
+.novedades {
+  padding-top: 48px;
+  padding-bottom: 96px;
+}
+
+.novedades-titulo {
+  margin: 0 0 8px;
+  font-family: var(--fuente-titulos);
+  font-weight: 700;
+  font-size: clamp(2.3rem, 4vw, 3.4rem);
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+}
+
+.novedades-bajada {
+  margin: 0 0 40px;
+  font-size: 1.1rem;
+  color: var(--color-texto-tenue);
+}
+
+/* ---------- La más nueva, destacada ---------- */
+
+.novedad-destacada {
+  color: var(--color-texto);
+  text-decoration: none;
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  align-items: center;
+  gap: 40px;
+  margin-bottom: 72px;
+}
+
+.novedad-destacada-texto {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.novedad-destacada-titulo {
+  font-family: var(--fuente-titulos);
+  font-size: clamp(1.9rem, 3vw, 2.6rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+}
+
+.novedad-destacada .novedad-resumen {
+  font-size: 1.1rem;
+}
+
+.novedad-leer {
+  font-weight: 600;
+  color: var(--color-acento);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.novedad-destacada:hover .novedad-destacada-titulo {
+  color: var(--color-acento);
+}
+
+/* ---------- Anteriores ---------- */
+
+.novedades-subtitulo {
+  margin-bottom: 24px;
+  font-size: clamp(1.6rem, 2.4vw, 2.1rem);
+}
+
+.novedades-grilla {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 40px 28px;
+}
+
+/* ---------- Sin novedades ---------- */
+
+.novedades-vacio {
+  max-width: 640px;
+  padding: 64px 24px;
+  border-radius: var(--radio);
+  border: 1.5px dashed var(--color-borde-fuerte);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.novedades-vacio p {
+  margin: 0;
+  color: var(--color-texto-tenue);
+}
+
+.novedades-vacio .novedades-vacio-titulo {
+  font-family: var(--fuente-titulos);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-texto);
+}
+
+/* ---------- Celular (pendiente) ---------- */
+@media (max-width: 640px) {
+  .novedad-destacada,
+  .novedades-grilla {
+    grid-template-columns: 1fr;
+  }
+}

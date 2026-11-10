@@ -1,0 +1,19 @@
+.foto-novedad {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: var(--radio);
+}
+
+.foto-novedad-vacia {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-etiqueta);
+  color: var(--color-acento);
+  font-family: var(--fuente-titulos);
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}

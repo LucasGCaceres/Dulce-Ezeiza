@@ -1,0 +1,146 @@
+/* ============================================================
+   Detalle de novedad. Pensado para PC; celular al final.
+   ============================================================ */
+
+.detalle-novedad {
+  padding-top: 28px;
+  padding-bottom: 96px;
+}
+
+.detalle-novedad-error,
+.detalle-novedad-cargando {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  max-width: 820px;
+  margin-top: 52px;
+}
+
+.detalle-novedad-cargando {
+  align-items: stretch;
+}
+
+/* ---------- Migas ---------- */
+
+.detalle-novedad-migas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 32px;
+  font-size: 0.95rem;
+  color: var(--color-texto-tenue);
+}
+
+.detalle-novedad-migas a {
+  color: var(--color-texto-tenue);
+}
+
+.detalle-novedad-migas [aria-current='page'] {
+  color: var(--color-texto);
+  font-weight: 600;
+}
+
+/* ---------- Encabezado ---------- */
+
+/* Un texto largo se lee mejor en una columna no tan ancha: el
+   encabezado tiene un tope, y el cuerpo usa 68ch (~68 letras por línea). */
+.detalle-novedad-encabezado {
+  max-width: 820px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 36px;
+}
+
+.detalle-novedad-titulo {
+  margin: 0;
+  font-family: var(--fuente-titulos);
+  font-weight: 700;
+  font-size: clamp(2.3rem, 4vw, 3.4rem);
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+}
+
+.detalle-novedad-resumen {
+  margin: 0;
+  font-size: 1.25rem;
+  color: var(--color-texto-medio);
+}
+
+.detalle-novedad-foto {
+  width: 100%;
+  aspect-ratio: 21 / 9;
+  object-fit: cover;
+  border-radius: var(--radio);
+  margin-bottom: 40px;
+}
+
+/* ---------- Cuerpo: texto | producto ---------- */
+
+.detalle-novedad-cuerpo {
+  display: grid;
+  grid-template-columns: minmax(0, 68ch) 300px;
+  justify-content: space-between;
+  align-items: start;
+  gap: 48px;
+}
+
+.detalle-novedad-texto p {
+  margin: 0 0 18px;
+  font-size: 1.1rem;
+  line-height: 1.75;
+  color: var(--color-texto-medio);
+}
+
+.detalle-novedad-producto {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 16px;
+  border-radius: var(--radio);
+  border: 1px solid var(--color-borde);
+  background: var(--color-fondo-suave);
+}
+
+.detalle-novedad-producto-rotulo {
+  margin-top: 4px;
+  font-size: 0.85rem;
+  color: var(--color-texto-tenue);
+}
+
+.detalle-novedad-producto-nombre {
+  font-family: var(--fuente-titulos);
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+/* ---------- Otras novedades ---------- */
+
+.detalle-novedad-otras {
+  margin-top: 80px;
+}
+
+.detalle-novedad-otras-titulo {
+  font-size: clamp(1.6rem, 2.4vw, 2.1rem);
+}
+
+.detalle-novedad-otras-lista {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px;
+}
+
+/* ---------- Celular (pendiente) ---------- */
+@media (max-width: 640px) {
+  .detalle-novedad-cuerpo,
+  .detalle-novedad-otras-lista {
+    grid-template-columns: 1fr;
+  }
+}
