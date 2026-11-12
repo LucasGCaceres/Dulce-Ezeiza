@@ -1,10 +1,10 @@
-import { pedir, simularRed, simularFallo, USAR_MOCKS } from './api'
+import { pedir, pedirAdmin, simularRed, simularFallo, USAR_MOCKS } from './api'
 import { novedades as novedadesMock } from '../mocks/novedades'
 
 // ¿La ve un visitante? Publicada y con la fecha de publicación ya cumplida.
 // Una novedad "programada" (publicada con fecha futura) todavía no se ve.
 // Es el mismo criterio que usa Novedad.service.js en el backend.
-function esVisible(novedad) {
+export function esVisible(novedad) {
   return novedad.publicada && new Date(novedad.fechaPublicacion) <= new Date()
 }
 
@@ -30,4 +30,21 @@ export function obtenerNovedad(id) {
     return simularRed(novedad)
   }
   return pedir(`/novedades/${id}`)
+}
+
+// ---------- Panel admin ----------
+
+// GET /api/novedades/admin/todas: todas, también borradores y programadas,
+// de la más nueva a la más vieja. Para el admin, el producto relacionado
+// viene solo con { id, nombre, activo } (sin imágenes).
+export function obtenerTodasLasNovedades() {
+  return pedirAdmin('/novedades/admin/todas', {}, () => {
+    const todas = [...novedadesMock]
+      .sort((a, b) => new Date(b.fechaPublicacion) - new Date(a.fechaPublicacion))
+      .map((n) => ({
+        ...n,
+        Producto: n.Producto ? { id: n.Producto.id, nombre: n.Producto.nombre, activo: true } : null
+      }))
+    return simularRed(todas)
+  })
 }

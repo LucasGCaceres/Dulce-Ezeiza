@@ -30,3 +30,24 @@ export function dividirEnParrafos(texto) {
     .map((linea) => linea.trim())
     .filter((linea) => linea !== '')
 }
+
+// Hace cuánto pasó algo, en palabras: "hace 3 horas", "ayer", "hace 5 días".
+// Intl.RelativeTimeFormat ya sabe cómo se dice en español; con
+// numeric: 'auto' usa "ayer" en vez de "hace 1 día".
+const tiempoRelativo = new Intl.RelativeTimeFormat('es', { numeric: 'auto' })
+
+export function formatearHace(fechaIso) {
+  const minutos = Math.round((new Date(fechaIso) - Date.now()) / 60000)  // negativo = pasado
+  if (Math.abs(minutos) < 1) return 'recién'
+  if (Math.abs(minutos) < 60) return tiempoRelativo.format(minutos, 'minute')
+  const horas = Math.round(minutos / 60)
+  if (Math.abs(horas) < 24) return tiempoRelativo.format(horas, 'hour')
+  const dias = Math.round(horas / 24)
+  if (Math.abs(dias) < 30) return tiempoRelativo.format(dias, 'day')
+  return formatearFecha(fechaIso)
+}
+
+// Fecha de hoy con el día de la semana: "jueves, 12 de noviembre".
+export function formatearHoy() {
+  return new Date().toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' })
+}

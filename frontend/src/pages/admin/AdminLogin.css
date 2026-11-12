@@ -1,0 +1,108 @@
+/* Pantalla completa: imagen a la izquierda, formulario a la derecha. */
+.login {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: var(--color-fondo);
+}
+
+/* ---------- Mitad de la imagen ---------- */
+
+.login-imagen {
+  position: relative;
+  overflow: hidden;
+  background: var(--color-footer);
+}
+
+.login-imagen img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.55;
+}
+
+/* El nombre va encima de la imagen, abajo a la izquierda. */
+.login-marca {
+  position: absolute;
+  left: 48px;
+  bottom: 48px;
+  color: var(--color-footer-claro);
+}
+
+.login-marca-nombre {
+  font-family: var(--fuente-titulos);
+  font-size: 2.6rem;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+}
+
+.login-marca p {
+  margin: 4px 0 0;
+  color: var(--color-footer-texto);
+}
+
+/* ---------- Mitad del formulario ---------- */
+
+.login-lado-formulario {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+}
+
+.login-formulario {
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.login-titulo {
+  margin: 0;
+  font-family: var(--fuente-titulos);
+  font-size: 2.4rem;
+  font-weight: 700;
+  letter-spacing: -0.035em;
+}
+
+.login-bajada {
+  margin: 4px 0 0;
+  color: var(--color-texto-tenue);
+}
+
+.login-aviso {
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 1px solid var(--color-borde-fuerte);
+  background: var(--color-fondo-suave);
+  font-weight: 600;
+}
+
+.login-aviso-error {
+  border-color: var(--color-error);
+  background: var(--color-error-fondo);
+  color: var(--color-error);
+}
+
+.login-boton {
+  width: 100%;
+  min-height: 52px;
+  margin-top: 4px;
+}
+
+.login-volver {
+  align-self: center;
+  color: var(--color-texto-tenue);
+}
+
+/* ---------- Celular (pendiente) ---------- */
+@media (max-width: 640px) {
+  .login {
+    grid-template-columns: 1fr;
+  }
+
+  .login-imagen {
+    display: none;
+  }
+}

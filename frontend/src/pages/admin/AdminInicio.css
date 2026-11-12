@@ -1,0 +1,198 @@
+.admin-inicio {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.admin-inicio-encabezado {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px 24px;
+}
+
+/* "jueves, 12 de noviembre" → "Jueves, 12 de noviembre" */
+.admin-inicio-fecha::first-letter {
+  text-transform: uppercase;
+}
+
+/* ::first-letter solo funciona en elementos de bloque. */
+.admin-inicio-fecha {
+  display: inline-block;
+}
+
+.admin-inicio-atajos {
+  display: flex;
+  gap: 12px;
+}
+
+/* ---------- Tarjetas con números ---------- */
+
+.admin-inicio-tarjetas {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.admin-tarjeta {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 22px 24px;
+  border-radius: var(--radio);
+  border: 1px solid var(--color-borde);
+  background: var(--color-fondo-suave);
+  color: var(--color-texto);
+  text-decoration: none;
+}
+
+.admin-tarjeta:hover {
+  border-color: var(--color-borde-fuerte);
+}
+
+/* La de consultas, si hay pendientes, se destaca. */
+.admin-tarjeta.resaltada {
+  border-color: var(--color-acento);
+  background: var(--color-acento);
+  color: var(--color-sobre-acento);
+}
+
+.admin-tarjeta-numero {
+  font-family: var(--fuente-titulos);
+  font-size: 2.6rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+.admin-tarjeta-texto {
+  font-weight: 600;
+}
+
+.admin-tarjeta-detalle {
+  font-size: 0.9rem;
+  color: var(--color-texto-tenue);
+}
+
+.admin-tarjeta.resaltada .admin-tarjeta-detalle {
+  color: var(--color-sobre-acento);
+}
+
+/* ---------- Cajas de abajo ---------- */
+
+.admin-inicio-columnas {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  align-items: start;
+  gap: 24px;
+}
+
+/* Caja blanca con borde: la usan varias pantallas del panel. */
+.admin-caja {
+  padding: 24px;
+  border-radius: var(--radio);
+  border: 1px solid var(--color-borde);
+  background: var(--color-fondo-suave);
+}
+
+.admin-caja-encabezado {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.admin-caja-titulo {
+  margin: 0;
+  font-family: var(--fuente-titulos);
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.admin-vacio {
+  margin: 16px 0 0;
+  color: var(--color-texto-tenue);
+}
+
+.admin-lista-cargando {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.admin-pendientes {
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.admin-pendientes li + li {
+  border-top: 1px solid var(--color-borde);
+}
+
+.admin-pendiente {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 4px;
+  color: var(--color-texto);
+  text-decoration: none;
+}
+
+.admin-pendiente:hover .admin-pendiente-asunto {
+  color: var(--color-acento);
+}
+
+.admin-pendiente-texto {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-pendiente-asunto {
+  font-weight: 700;
+}
+
+/* Una sola línea con "..." al final si el mensaje es largo. */
+.admin-pendiente-extracto {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--color-texto-tenue);
+}
+
+.admin-pendiente-cuando {
+  flex-shrink: 0;
+  font-size: 0.9rem;
+  color: var(--color-texto-tenue);
+}
+
+.admin-ultima-novedad {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.admin-ultima-novedad p {
+  margin: 0;
+}
+
+.admin-ultima-novedad-titulo {
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.admin-ultima-novedad-fecha {
+  font-size: 0.9rem;
+  color: var(--color-texto-tenue);
+}

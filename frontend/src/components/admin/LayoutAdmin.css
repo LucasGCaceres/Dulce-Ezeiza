@@ -1,0 +1,147 @@
+/* ============================================================
+   Layout del panel admin: menú lateral fijo + contenido.
+   El panel es solo para PC: no tiene versión de celular.
+   ============================================================ */
+
+.panel {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  background: var(--color-fondo);
+}
+
+/* ---------- Menú lateral ---------- */
+
+/* sticky + height 100vh: el menú queda quieto mientras el contenido
+   de la derecha scrollea. */
+.panel-menu {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding: 28px 18px;
+  background: var(--color-footer);
+  color: var(--color-footer-texto);
+}
+
+.panel-marca {
+  display: flex;
+  flex-direction: column;
+  padding: 0 12px;
+}
+
+.panel-marca-nombre {
+  font-family: var(--fuente-titulos);
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--color-footer-claro);
+}
+
+.panel-marca-bajada {
+  font-size: 0.85rem;
+  color: var(--color-footer-titulo);
+}
+
+.panel-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex-grow: 1;   /* empuja la caja del usuario hacia abajo */
+}
+
+.panel-nav-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 44px;
+  padding: 0 12px;
+  border-radius: 10px;
+  color: var(--color-footer-texto);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.panel-nav-link:hover {
+  color: var(--color-footer-claro);
+  background: rgba(244, 233, 216, 0.08);
+}
+
+/* "active" la pone NavLink en el link de la página actual. */
+.panel-nav-link.active {
+  color: var(--color-texto);
+  background: var(--color-fondo);
+}
+
+.panel-contador {
+  min-width: 24px;
+  padding: 0 8px;
+  border-radius: var(--radio-pildora);
+  background: var(--color-acento);
+  color: var(--color-sobre-acento);
+  font-size: 0.8rem;
+  font-weight: 700;
+  line-height: 24px;
+  text-align: center;
+}
+
+.panel-usuario {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 16px 12px 0;
+  border-top: 1px solid var(--color-footer-borde);
+}
+
+.panel-usuario-nombre {
+  font-weight: 700;
+  color: var(--color-footer-claro);
+}
+
+.panel-usuario-email {
+  font-size: 0.85rem;
+  color: var(--color-footer-titulo);
+  overflow-wrap: anywhere;
+}
+
+.panel-usuario-acciones {
+  display: flex;
+  gap: 16px;
+  margin-top: 10px;
+  font-size: 0.9rem;
+}
+
+.panel-usuario-acciones a,
+.panel-usuario-acciones button {
+  padding: 4px 0;
+  border: none;
+  background: none;
+  color: var(--color-footer-claro);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+/* ---------- Contenido ---------- */
+
+.panel-contenido {
+  min-width: 0;
+  padding: 40px 48px 64px;
+}
+
+/* Título de cada pantalla del panel (lo usan todas). */
+.panel-titulo {
+  margin: 0;
+  font-family: var(--fuente-titulos);
+  font-size: 2.2rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+.panel-bajada {
+  margin: 6px 0 0;
+  color: var(--color-texto-tenue);
+}

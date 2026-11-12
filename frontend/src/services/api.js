@@ -6,6 +6,8 @@
 // devuelve datos de prueba (mocks) o le pega al backend real.
 // Para pasar de uno a otro se cambia VITE_USAR_MOCKS en .env.local.
 
+import { leerToken, tokenVigente } from './sesion'
+
 const API_URL = import.meta.env.VITE_API_URL
 
 // Las variables de entorno de Vite siempre llegan como texto,
@@ -25,12 +27,17 @@ export class ErrorApi extends Error {
 // Hace el pedido al backend y devuelve el JSON de la respuesta.
 // - ruta: lo que va después de /api (ej.: '/comercio').
 // - cuerpo: objeto que se manda como JSON (POST, PUT, PATCH).
-export async function pedir(ruta, { metodo = 'GET', cuerpo } = {}) {
+// - token: si viene, va en el header que lee verificarToken en el backend.
+export async function pedir(ruta, { metodo = 'GET', cuerpo, token } = {}) {
+  const headers = {}
+  if (cuerpo) headers['Content-Type'] = 'application/json'
+  if (token) headers['x-access-token'] = token
+
   let respuesta
   try {
     respuesta = await fetch(`${API_URL}${ruta}`, {
       method: metodo,
-      headers: cuerpo ? { 'Content-Type': 'application/json' } : undefined,
+      headers,
       body: cuerpo ? JSON.stringify(cuerpo) : undefined
     })
   } catch {
@@ -80,5 +87,42 @@ export function simularRed(datos, demora = 400) {
 export function simularFallo(mensaje, status, demora = 400) {
   return new Promise((resolver, rechazar) => {
     setTimeout(() => rechazar(new ErrorApi(mensaje, status)), demora)
+  })
+}
+
+// ============================================================
+//  Pedidos del panel admin (con token)
+// ============================================================
+
+// Qué hacer cuando el backend dice 401 (token vencido o inválido).
+// No lo decide este archivo: lo configura el SesionProvider, que es el
+// que sabe cerrar la sesión y avisarle a React.
+let alPerderSesion = () => {}
+
+export function configurarAlPerderSesion(funcion) {
+  alPerderSesion = funcion
+}
+
+// Igual que pedir(), pero para rutas protegidas del panel:
+// - agrega el token de la sesión;
+// - si la respuesta es 401, cierra la sesión (y el panel vuelve al login).
+// mock: función que devuelve la respuesta de prueba. En modo mocks
+// también se controla el token, para que el panel se comporte igual
+// que con el backend real (por ejemplo, cuando la sesión vence).
+//
+// IMPORTANTE: el sitio público usa pedir() SIN token a propósito. Si el
+// catálogo mandara el token del admin, el backend le mostraría también
+// los productos dados de baja (identificarUsuario).
+export function pedirAdmin(ruta, opciones = {}, mock) {
+  const token = leerToken()
+  let promesa
+  if (USAR_MOCKS) {
+    promesa = tokenVigente(token) ? mock() : simularFallo('Token invalido.', 401)
+  } else {
+    promesa = pedir(ruta, { ...opciones, token })
+  }
+  return promesa.catch((error) => {
+    if (error.status === 401) alPerderSesion()
+    throw error
   })
 }

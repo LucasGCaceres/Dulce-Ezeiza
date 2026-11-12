@@ -1,4 +1,4 @@
-import { pedir, simularRed, simularFallo, USAR_MOCKS } from './api'
+import { pedir, pedirAdmin, simularRed, simularFallo, USAR_MOCKS } from './api'
 import { consultas as consultasMock } from '../mocks/consultas'
 import { productos as productosMock } from '../mocks/productos'
 
@@ -42,4 +42,17 @@ export function enviarConsulta(datos) {
   }
 
   return pedir('/consultas', { metodo: 'POST', cuerpo: datos })
+}
+
+// ---------- Panel admin ----------
+
+// GET /api/consultas (admin), de la más nueva a la más vieja.
+// estado (opcional): 'pendiente' | 'respondida' | 'cerrada'.
+export function obtenerConsultas({ estado } = {}) {
+  return pedirAdmin(estado ? `/consultas?estado=${estado}` : '/consultas', {}, () => {
+    const lista = consultasMock
+      .filter((c) => !estado || c.estado === estado)
+      .sort((a, b) => new Date(b.fecha) - new Date(a.fecha))
+    return simularRed(lista)
+  })
 }

@@ -3,17 +3,21 @@ import LayoutPublico from './components/LayoutPublico'
 import Inicio from './pages/Inicio'
 import Catalogo from './pages/Catalogo'
 import DetalleProducto from './pages/DetalleProducto'
-import NoEncontrado from './pages/NoEncontrado'
-import Contacto from './pages/Contacto'
 import Novedades from './pages/Novedades'
 import DetalleNovedad from './pages/DetalleNovedad'
 import Nosotros from './pages/Nosotros'
+import Contacto from './pages/Contacto'
+import NoEncontrado from './pages/NoEncontrado'
+import RutaProtegida from './components/RutaProtegida'
+import LayoutAdmin from './components/admin/LayoutAdmin'
+import AdminLogin from './pages/admin/AdminLogin'
+import AdminInicio from './pages/admin/AdminInicio'
+import PanelEnConstruccion from './pages/admin/PanelEnConstruccion'
 
-// Rutas del sitio. Las páginas se van reemplazando a medida que
-// las armamos; por ahora casi todas muestran "en construcción".
 function App() {
   return (
     <Routes>
+      {/* ---------- Sitio público ---------- */}
       {/* Ruta "padre" sin path: todas las de adentro se dibujan
           dentro del LayoutPublico (Navbar + página + Footer). */}
       <Route element={<LayoutPublico />}>
@@ -26,6 +30,25 @@ function App() {
         <Route path="/contacto" element={<Contacto />} />
         {/* "*" atrapa cualquier URL que no coincida con las de arriba. */}
         <Route path="*" element={<NoEncontrado />} />
+      </Route>
+
+      {/* ---------- Panel admin ---------- */}
+      {/* El login va solo, sin layout: es una pantalla completa. */}
+      <Route path="/admin/login" element={<AdminLogin />} />
+
+      {/* Todo lo demás de /admin pasa primero por RutaProtegida
+          (si no hay sesión, al login) y se dibuja dentro del LayoutAdmin. */}
+      <Route
+        path="/admin"
+        element={
+          <RutaProtegida>
+            <LayoutAdmin />
+          </RutaProtegida>
+        }
+      >
+        {/* index = la ruta exacta del padre: /admin */}
+        <Route index element={<AdminInicio />} />
+        <Route path="*" element={<PanelEnConstruccion />} />
       </Route>
     </Routes>
   )

@@ -3,7 +3,13 @@
 // en "productos", solo con id y nombre.
 // La va a usar el panel admin. Las consultas que se envían desde el
 // formulario (en modo mocks) se agregan a esta misma lista.
-const FECHA = '2026-10-01T12:00:00.000Z'
+//
+// Diferencia con el seed: allá las tres tienen la fecha en que se creó la
+// base. Acá les ponemos fechas relativas para que el panel muestre
+// "hace 3 horas", "hace 2 días", etc.
+function haceHoras(horas) {
+  return new Date(Date.now() - horas * 60 * 60 * 1000).toISOString()
+}
 
 export const consultas = [
   {
@@ -14,7 +20,7 @@ export const consultas = [
     asunto: 'Torta para cumpleaños',
     mensaje: '¿Hacen tortas por encargo para 20 personas?',
     estado: 'pendiente',
-    fecha: FECHA,
+    fecha: haceHoras(3),
     productos: []
   },
   {
@@ -25,7 +31,7 @@ export const consultas = [
     asunto: 'Consulta sin TACC',
     mensaje: '¿El pan y la torta sin gluten se elaboran en un espacio separado?',
     estado: 'respondida',
-    fecha: FECHA,
+    fecha: haceHoras(50),
     productos: [
       { id: 17, nombre: 'Pan Sin Gluten' },
       { id: 18, nombre: 'Torta Sin Gluten de Naranja' }
@@ -39,7 +45,7 @@ export const consultas = [
     asunto: 'Horarios',
     mensaje: '¿Abren los domingos?',
     estado: 'cerrada',
-    fecha: FECHA,
+    fecha: haceHoras(130),
     productos: []
   }
 ]

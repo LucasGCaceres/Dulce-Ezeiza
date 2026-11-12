@@ -1,4 +1,4 @@
-import { pedir, simularRed, simularFallo, USAR_MOCKS } from './api'
+import { pedir, pedirAdmin, simularRed, simularFallo, USAR_MOCKS } from './api'
 import { productos as productosMock } from '../mocks/productos'
 
 // Saca tildes y pasa a minúsculas. SQL Server compara así por defecto
@@ -51,4 +51,12 @@ export function obtenerProducto(id) {
     return simularRed(producto)
   }
   return pedir(`/productos/${id}`)
+}
+
+// ---------- Panel admin ----------
+
+// GET /api/productos con token: el backend reconoce al admin y devuelve
+// TODOS, también los dados de baja (activo = false).
+export function obtenerProductosAdmin() {
+  return pedirAdmin('/productos', {}, () => simularRed(productosMock))
 }
