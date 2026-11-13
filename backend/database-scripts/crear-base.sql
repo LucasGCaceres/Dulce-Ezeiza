@@ -212,14 +212,13 @@ INSERT INTO Categorias (nombre, descripcion, activa) VALUES
 (N'Facturas y Bollería', N'Facturas dulces y saladas para la mañana o la merienda.', 1),
 (N'Tortas y Tartas', N'Tortas enteras y tartas dulces, por porción o para llevar.', 1),
 (N'Pastelería individual', N'Piezas individuales: alfajores, brownies, cupcakes y más.', 1),
-(N'Sin gluten', N'Productos aptos para celíacos.', 1),
 (N'Bebidas', N'Café, té y bebidas para acompañar.', 1);
 GO
  
 -- ------------------------------------------------------------
---  Productos (20 en total, distribuidos en las 6 categorias)
+--  Productos (20 en total, distribuidos en las 5 categorias)
 --  categoriaId se resuelve por subquery sobre el nombre de la
---  categoria, para no depender de que los ids salgan 1..6.
+--  categoria, para no depender de que los ids salgan 1...5.
 -- ------------------------------------------------------------
  
 -- Panaderia
@@ -250,11 +249,11 @@ INSERT INTO Productos (nombre, descripcion, disponible, activo, destacado, sinGl
 (N'Brownie', N'Brownie de chocolate con nueces.',  1, 1, 0, 0, (SELECT id FROM Categorias WHERE nombre = N'Pastelería individual')),
 (N'Cupcake de Vainilla', N'Cupcake de vainilla con frosting de manteca.',  1, 1, 0, 0, (SELECT id FROM Categorias WHERE nombre = N'Pastelería individual'));
  
--- Sin gluten
+-- Aptos celiacos: cada uno en su categoria, con sinGluten = 1.
+-- (Sin TACC es una caracteristica del producto, no una categoria.)
 INSERT INTO Productos (nombre, descripcion, disponible, activo, destacado, sinGluten, categoriaId) VALUES
-(N'Pan Sin Gluten', N'Pan apto celíacos, elaborado en zona libre de contaminación cruzada.',  1, 1, 0, 1, (SELECT id FROM Categorias WHERE nombre = N'Sin gluten')),
-(N'Torta Sin Gluten de Naranja', N'Torta de naranja apta celíacos.',  1, 1, 1, 1, (SELECT id FROM Categorias WHERE nombre = N'Sin gluten'));
- 
+(N'Pan Sin Gluten', N'Pan apto celíacos, elaborado en zona libre de contaminación cruzada.',  1, 1, 0, 1, (SELECT id FROM Categorias WHERE nombre = N'Panadería')),
+(N'Torta Sin Gluten de Naranja', N'Torta de naranja apta celíacos.',  1, 1, 1, 1, (SELECT id FROM Categorias WHERE nombre = N'Tortas y Tartas'));
 -- Bebidas
 INSERT INTO Productos (nombre, descripcion, disponible, activo, destacado, sinGluten, categoriaId) VALUES
 (N'Café en Grano 500g', N'Café de especialidad en grano, bolsa de 500g.',  1, 1, 0, 0, (SELECT id FROM Categorias WHERE nombre = N'Bebidas')),

@@ -7,6 +7,5 @@ export const categorias = [
   { id: 2, nombre: 'Facturas y Bollería', descripcion: 'Facturas dulces y saladas para la mañana o la merienda.', activa: true, fecha: FECHA },
   { id: 3, nombre: 'Tortas y Tartas', descripcion: 'Tortas enteras y tartas dulces, por porción o para llevar.', activa: true, fecha: FECHA },
   { id: 4, nombre: 'Pastelería individual', descripcion: 'Piezas individuales: alfajores, brownies, cupcakes y más.', activa: true, fecha: FECHA },
-  { id: 5, nombre: 'Sin gluten', descripcion: 'Productos aptos para celíacos.', activa: true, fecha: FECHA },
-  { id: 6, nombre: 'Bebidas', descripcion: 'Café, té y bebidas para acompañar.', activa: true, fecha: FECHA }
+  { id: 5, nombre: 'Bebidas', descripcion: 'Café, té y bebidas para acompañar.', activa: true, fecha: FECHA }
 ]

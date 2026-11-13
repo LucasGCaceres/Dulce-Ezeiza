@@ -71,18 +71,19 @@ export const productos = [
   producto(15, 'Brownie', 'Brownie de chocolate con nueces.', 4, { fotos: ['brownie'] }),
   producto(16, 'Cupcake de Vainilla', 'Cupcake de vainilla con frosting de manteca.', 4, { fotos: ['cupcake-de-vainilla'] }),
 
-  // Sin gluten
-  producto(17, 'Pan Sin Gluten', 'Pan apto celíacos, elaborado en zona libre de contaminación cruzada.', 5, {
+  // Aptos celíacos: cada uno en su categoría, con sinGluten: true.
+  // (Sin TACC es una característica del producto, no una categoría.)
+  producto(17, 'Pan Sin Gluten', 'Pan apto celíacos, elaborado en zona libre de contaminación cruzada.', 1, {
     sinGluten: true,
     fotos: ['pan-sin-gluten']
   }),
-  producto(18, 'Torta Sin Gluten de Naranja', 'Torta de naranja apta celíacos.', 5, {
+  producto(18, 'Torta Sin Gluten de Naranja', 'Torta de naranja apta celíacos.', 3, {
     destacado: true,
     sinGluten: true,
     fotos: ['torta-sin-gluten-de-naranja']
   }),
 
   // Bebidas
-  producto(19, 'Café en Grano 500g', 'Café de especialidad en grano, bolsa de 500g.', 6, { fotos: ['cafe-en-grano'] }),
-  producto(20, 'Limonada Casera 1L', 'Limonada casera con menta, botella de 1 litro.', 6, { fotos: ['limonada-casera'] })
+   producto(19, 'Café en Grano 500g', 'Café de especialidad en grano, bolsa de 500g.', 5, { fotos: ['cafe-en-grano'] }),
+  producto(20, 'Limonada Casera 1L', 'Limonada casera con menta, botella de 1 litro.', 5, { fotos: ['limonada-casera'] })
 ]
