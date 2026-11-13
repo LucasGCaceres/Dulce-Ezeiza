@@ -187,27 +187,27 @@ function FormularioNovedad({ novedad, productos, onGuardada }) {
         <div className="admin-caja novedad-form-contenido">
           <h2 className="admin-caja-titulo">Contenido</h2>
 
-          <Campo id="novedad-titulo" id="titulo" etiqueta="Título" error={errores.titulo}>
+          <Campo id="novedad-titulo" etiqueta="Título" error={errores.titulo}>
             <input type="text" maxLength={LARGO.titulo} name="titulo" value={valores.titulo} onChange={cambiar} />
           </Campo>
 
-          <Campo id="novedad-resumen" id="resumen" etiqueta="Resumen" error={errores.resumen}
+          <Campo id="novedad-resumen" etiqueta="Resumen" error={errores.resumen}
             ayuda={`Una o dos líneas: es lo que se ve en las tarjetas. ${valores.resumen.length} / ${LARGO.resumen}`}>
             <textarea rows={2} maxLength={LARGO.resumen} name="resumen" value={valores.resumen} onChange={cambiar} />
           </Campo>
 
-          <Campo id="novedad-contenido" id="contenido" etiqueta="Texto completo" error={errores.contenido}
+          <Campo id="novedad-contenido" etiqueta="Texto completo" error={errores.contenido}
             ayuda="Cada renglón es un párrafo en el sitio.">
             <textarea rows={10} maxLength={LARGO.contenido} name="contenido" value={valores.contenido} onChange={cambiar} />
           </Campo>
 
-          <Campo id="novedad-imagenUrl" id="imagenUrl" etiqueta="Imagen" opcional error={errores.imagenUrl}
+          <Campo id="novedad-imagenUrl" etiqueta="Imagen" opcional error={errores.imagenUrl}
             ayuda="Dirección de la imagen (https://... o /img/...). Sin imagen se muestra un recuadro con el nombre del local.">
             <input type="url" maxLength={LARGO.imagenUrl} name="imagenUrl" value={valores.imagenUrl} onChange={cambiar}
               placeholder="https://..." />
           </Campo>
 
-          <Campo id="novedad-productoId" id="productoId" etiqueta="Producto relacionado" opcional
+          <Campo id="novedad-productoId" etiqueta="Producto relacionado" opcional
             ayuda="Si elegís uno, el detalle de la novedad muestra un botón para verlo.">
             <select name="productoId" value={valores.productoId} onChange={cambiar}>
               <option value="">Ninguno</option>

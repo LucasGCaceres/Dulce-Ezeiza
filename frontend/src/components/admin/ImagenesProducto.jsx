@@ -5,19 +5,6 @@ import './ImagenesProducto.css'
 // Largo de la columna url en la tabla ImagenesProducto.
 const LARGO_URL = 500
 
-// ¿Es una dirección de imagen que podemos guardar?
-// - "https://..." o "http://...": una imagen de internet.
-// - "/img/...": una imagen que está en la carpeta public del propio sitio.
-function urlValida(texto) {
-  if (texto.startsWith('/')) return true
-  try {
-    const url = new URL(texto)   // si no tiene forma de URL, lanza un error
-    return url.protocol === 'https:' || url.protocol === 'http:'
-  } catch {
-    return false
-  }
-}
-
 // ============================================================
 //  Lista de imágenes de un producto: agregar por URL, quitar y ordenar.
 //  No sabe si los cambios van al backend o quedan en memoria: eso lo
