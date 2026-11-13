@@ -1,0 +1,68 @@
+.admin-comercio {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 1200px;
+}
+
+.admin-comercio-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Datos del local | redes, en dos columnas iguales. */
+.admin-comercio-columnas {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.admin-comercio-caja {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.admin-comercio-intro {
+  margin: -12px 0 0;
+}
+
+.admin-comercio-red {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Link de prueba: chico y con la URL cortada si es muy larga. */
+.admin-comercio-probar {
+  overflow: hidden;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-acento);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---------- Barra de guardar ---------- */
+
+/* sticky + bottom: 0 → se queda pegada al borde de abajo de la ventana
+   mientras el formulario siga a la vista. */
+.admin-comercio-barra {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 0;
+  border-top: 1px solid var(--color-borde);
+  background: var(--color-fondo);
+}
+
+.admin-comercio-estado {
+  margin-right: auto;   /* empuja los botones a la derecha */
+  color: var(--color-texto-tenue);
+  font-weight: 600;
+}

@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { usePedido } from '../hooks/usePedido'
 import { obtenerComercio } from '../services/comercio'
+import { REDES } from '../utils/redes'
 import './Footer.css'
 
 const SECCIONES = [
@@ -11,15 +12,6 @@ const SECCIONES = [
   { ruta: '/contacto', texto: 'Contacto' }
 ]
 
-// Las redes son opcionales en la base: solo mostramos las cargadas.
-// El backend guarda el usuario o el número, no la URL completa.
-const REDES = [
-  { campo: 'instagram', nombre: 'Instagram', url: (v) => `https://instagram.com/${v.replace('@', '')}` },
-  { campo: 'facebook', nombre: 'Facebook', url: (v) => `https://facebook.com/${v}` },
-  { campo: 'tiktok', nombre: 'TikTok', url: (v) => `https://tiktok.com/@${v.replace('@', '')}` },
-  { campo: 'whatsapp', nombre: 'WhatsApp', url: (v) => `https://wa.me/${v.replace(/\D/g, '')}` }
-]
-
 function Footer() {
   const { datos: comercio } = usePedido(obtenerComercio)
 
@@ -27,6 +19,7 @@ function Footer() {
   // no depende de los datos (marca y links). No vale la pena alarmar
   // al visitante en todas las páginas por el pie.
   const direccion = comercio?.direccion
+  // Las redes son opcionales en la base: solo mostramos las cargadas.
   const redes = REDES.filter((red) => comercio?.[red.campo])
   const linkMapa = direccion
     ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(direccion)}`

@@ -1,4 +1,4 @@
-import { cloneElement, useState } from 'react'
+import { useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { usePedido } from '../../hooks/usePedido'
 import { obtenerTodasLasNovedades, crearNovedad, editarNovedad, esVisible } from '../../services/novedades'
@@ -7,6 +7,7 @@ import ErrorCarga from '../../components/ErrorCarga'
 import FotoNovedad from '../../components/FotoNovedad'
 import { FechaNovedad } from '../../components/TarjetaNovedad'
 import EstadoNovedad from '../../components/admin/EstadoNovedad'
+import Campo from '../../components/admin/Campo'
 import { fechaParaInput, formatearFechaHora } from '../../utils/formato'
 import { urlImagenValida } from '../../utils/urls'
 import './AdminNovedadForm.css'
@@ -186,27 +187,27 @@ function FormularioNovedad({ novedad, productos, onGuardada }) {
         <div className="admin-caja novedad-form-contenido">
           <h2 className="admin-caja-titulo">Contenido</h2>
 
-          <Campo id="titulo" etiqueta="Título" error={errores.titulo}>
+          <Campo id="novedad-titulo" id="titulo" etiqueta="Título" error={errores.titulo}>
             <input type="text" maxLength={LARGO.titulo} name="titulo" value={valores.titulo} onChange={cambiar} />
           </Campo>
 
-          <Campo id="resumen" etiqueta="Resumen" error={errores.resumen}
+          <Campo id="novedad-resumen" id="resumen" etiqueta="Resumen" error={errores.resumen}
             ayuda={`Una o dos líneas: es lo que se ve en las tarjetas. ${valores.resumen.length} / ${LARGO.resumen}`}>
             <textarea rows={2} maxLength={LARGO.resumen} name="resumen" value={valores.resumen} onChange={cambiar} />
           </Campo>
 
-          <Campo id="contenido" etiqueta="Texto completo" error={errores.contenido}
+          <Campo id="novedad-contenido" id="contenido" etiqueta="Texto completo" error={errores.contenido}
             ayuda="Cada renglón es un párrafo en el sitio.">
             <textarea rows={10} maxLength={LARGO.contenido} name="contenido" value={valores.contenido} onChange={cambiar} />
           </Campo>
 
-          <Campo id="imagenUrl" etiqueta="Imagen" opcional error={errores.imagenUrl}
+          <Campo id="novedad-imagenUrl" id="imagenUrl" etiqueta="Imagen" opcional error={errores.imagenUrl}
             ayuda="Dirección de la imagen (https://... o /img/...). Sin imagen se muestra un recuadro con el nombre del local.">
             <input type="url" maxLength={LARGO.imagenUrl} name="imagenUrl" value={valores.imagenUrl} onChange={cambiar}
               placeholder="https://..." />
           </Campo>
 
-          <Campo id="productoId" etiqueta="Producto relacionado" opcional
+          <Campo id="novedad-productoId" id="productoId" etiqueta="Producto relacionado" opcional
             ayuda="Si elegís uno, el detalle de la novedad muestra un botón para verlo.">
             <select name="productoId" value={valores.productoId} onChange={cambiar}>
               <option value="">Ninguno</option>
@@ -239,7 +240,7 @@ function FormularioNovedad({ novedad, productos, onGuardada }) {
               </span>
             </label>
 
-            <Campo id="fecha" etiqueta="Fecha de publicación" error={errores.fecha}>
+            <Campo id="novedad-fecha" etiqueta="Fecha de publicación" error={errores.fecha}>
               <input type="datetime-local" name="fecha" value={valores.fecha} onChange={cambiar} />
             </Campo>
             <button type="button" className="novedad-form-ahora"
@@ -279,32 +280,6 @@ function FormularioNovedad({ novedad, productos, onGuardada }) {
           {guardando ? 'Guardando...' : esNueva ? 'Crear novedad' : 'Guardar cambios'}
         </button>
       </div>
-    </div>
-  )
-}
-
-// ---------- Un campo del formulario ----------
-// Arma etiqueta + control + ayuda/error, y le agrega al control (el
-// "children") el id, la clase y los atributos de accesibilidad.
-// Así cada campo del formulario se escribe en 3 líneas y no en 10.
-function Campo({ id, etiqueta, opcional = false, ayuda, error, children }) {
-  const idControl = `novedad-${id}`
-  const idDescripcion = error ? `${idControl}-error` : ayuda ? `${idControl}-ayuda` : undefined
-  return (
-    <div className="campo">
-      <label htmlFor={idControl} className="campo-etiqueta">
-        {etiqueta} {opcional && <span className="campo-opcional">(opcional)</span>}
-      </label>
-      {/* cloneElement: copia el control que vino de children y le suma props. */}
-      {cloneElement(children, {
-        id: idControl,
-        className: error ? 'campo-control con-error' : 'campo-control',
-        'aria-invalid': error ? true : undefined,
-        'aria-describedby': idDescripcion
-      })}
-      {error
-        ? <span id={`${idControl}-error`} className="campo-error">{error}</span>
-        : ayuda && <span id={`${idControl}-ayuda`} className="campo-ayuda">{ayuda}</span>}
     </div>
   )
 }

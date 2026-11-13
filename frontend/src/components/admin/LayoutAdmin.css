@@ -145,6 +145,15 @@
   margin: 6px 0 0;
   color: var(--color-texto-tenue);
 }
+
+/* La página de "no existe" del panel. */
+.panel-no-encontrado {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+}
+
 /* ============================================================
    Piezas compartidas por las pantallas del panel
    (productos, categorías, novedades...)

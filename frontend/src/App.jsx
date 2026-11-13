@@ -12,13 +12,14 @@ import RutaProtegida from './components/RutaProtegida'
 import LayoutAdmin from './components/admin/LayoutAdmin'
 import AdminLogin from './pages/admin/AdminLogin'
 import AdminInicio from './pages/admin/AdminInicio'
-import PanelEnConstruccion from './pages/admin/PanelEnConstruccion'
 import AdminConsultas from './pages/admin/AdminConsultas'
 import AdminProductos from './pages/admin/AdminProductos'
 import AdminProductoForm from './pages/admin/AdminProductoForm'
 import AdminCategorias from './pages/admin/AdminCategorias'
 import AdminNovedades from './pages/admin/AdminNovedades'
 import AdminNovedadForm from './pages/admin/AdminNovedadForm'
+import AdminComercio from './pages/admin/AdminComercio'
+import PanelNoEncontrado from './pages/admin/PanelNoEncontrado'
 
 function App() {
   return (
@@ -63,7 +64,8 @@ function App() {
         <Route path="novedades" element={<AdminNovedades />} />
         <Route path="novedades/nueva" element={<AdminNovedadForm />} />
         <Route path="novedades/:id" element={<AdminNovedadForm />} />
-        <Route path="*" element={<PanelEnConstruccion />} />
+        <Route path="configuracion" element={<AdminComercio />} />
+        <Route path="*" element={<PanelNoEncontrado />} />
       </Route>
     </Routes>
   )
