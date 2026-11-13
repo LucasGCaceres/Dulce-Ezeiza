@@ -51,3 +51,17 @@ export function formatearHace(fechaIso) {
 export function formatearHoy() {
   return new Date().toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' })
 }
+
+// Fecha con hora: "12 de noviembre de 2026 a las 15:30".
+// hour12: false fuerza el formato de 24 horas (si no, según el navegador
+// puede salir "03:30 p. m.").
+export function formatearFechaHora(fechaIso) {
+  return new Date(fechaIso).toLocaleString('es-AR', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false
+  })
+}

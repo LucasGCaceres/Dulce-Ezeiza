@@ -13,6 +13,7 @@ import LayoutAdmin from './components/admin/LayoutAdmin'
 import AdminLogin from './pages/admin/AdminLogin'
 import AdminInicio from './pages/admin/AdminInicio'
 import PanelEnConstruccion from './pages/admin/PanelEnConstruccion'
+import AdminConsultas from './pages/admin/AdminConsultas'
 
 function App() {
   return (
@@ -48,6 +49,8 @@ function App() {
       >
         {/* index = la ruta exacta del padre: /admin */}
         <Route index element={<AdminInicio />} />
+        {/* Rutas relativas al padre: "consultas" = /admin/consultas */}
+        <Route path="consultas" element={<AdminConsultas />} />
         <Route path="*" element={<PanelEnConstruccion />} />
       </Route>
     </Routes>

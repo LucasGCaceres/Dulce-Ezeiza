@@ -133,6 +133,11 @@ textarea {
   filter: none;
 }
 
+/* Variante para acciones que no se pueden deshacer (eliminar). */
+.boton-peligro {
+  background: var(--color-error);
+}
+
 /* Bloque gris que late mientras se cargan los datos. */
 .esqueleto {
   background: var(--color-esqueleto);

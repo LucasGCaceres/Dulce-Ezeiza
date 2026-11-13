@@ -56,3 +56,28 @@ export function obtenerConsultas({ estado } = {}) {
     return simularRed(lista)
   })
 }
+
+export const ESTADOS_CONSULTA = ['pendiente', 'respondida', 'cerrada']
+
+// PATCH /api/consultas/:id/estado  { estado }
+// Responde 200 { consulta, mensaje }. 400 si el estado no es válido o la
+// consulta no existe. Las transiciones son libres (se puede reabrir).
+export function cambiarEstadoConsulta(id, estado) {
+  return pedirAdmin(`/consultas/${id}/estado`, { metodo: 'PATCH', cuerpo: { estado } }, () => {
+    const consulta = consultasMock.find((c) => c.id === id)
+    if (!consulta) return simularFallo('Consulta no encontrada', 400)
+    if (!ESTADOS_CONSULTA.includes(estado)) return simularFallo('Estado invalido', 400)
+    consulta.estado = estado
+    return simularRed({ consulta, mensaje: 'Estado actualizado correctamente' })
+  })
+}
+
+// DELETE /api/consultas/:id  →  200 { mensaje }
+export function eliminarConsulta(id) {
+  return pedirAdmin(`/consultas/${id}`, { metodo: 'DELETE' }, () => {
+    const posicion = consultasMock.findIndex((c) => c.id === id)
+    if (posicion === -1) return simularFallo('Consulta no encontrada', 400)
+    consultasMock.splice(posicion, 1)
+    return simularRed({ mensaje: 'Consulta eliminada correctamente' })
+  })
+}

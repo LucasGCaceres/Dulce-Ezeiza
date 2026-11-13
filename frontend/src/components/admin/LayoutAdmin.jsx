@@ -71,7 +71,10 @@ function LayoutAdmin() {
       </aside>
 
       <main className="panel-contenido">
-        <Outlet />
+        {/* context: datos que el layout le pasa a la pantalla que se dibuja
+            en el Outlet. La pantalla los lee con useOutletContext(). Así,
+            Consultas puede pedir que se actualice el numerito del menú. */}
+        <Outlet context={{ refrescarPendientes: pendientes.reintentar }} />
       </main>
     </div>
   )
