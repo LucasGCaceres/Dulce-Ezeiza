@@ -204,9 +204,16 @@ exports.agregarImagenes = async function (productoId, urls) {
     }
 
     try {
-        const cantidadActual = await ImagenProducto.count({ where: { productoId: productoId } });
+        // Las nuevas fotos van a continuacion de la ultima que ya existe.
+        // Se parte del orden MAS ALTO y no de la cantidad de fotos: si se
+        // borro una del medio, la cantidad queda corta y el orden se repetiria.
+        const ultima = await ImagenProducto.findOne({
+            where: { productoId: productoId },
+            order: [['orden', 'DESC']]
+        });
+        const primerOrden = ultima ? ultima.orden + 1 : 0;
         const filas = urls.map(function (url, indice) {
-            return { productoId: productoId, url: url, orden: cantidadActual + indice };
+            return { productoId: productoId, url: url, orden: primerOrden + indice };
         });
         await ImagenProducto.bulkCreate(filas);
         return await ImagenProducto.findAll({
