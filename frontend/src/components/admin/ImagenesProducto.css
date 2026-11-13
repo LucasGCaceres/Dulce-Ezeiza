@@ -1,0 +1,113 @@
+.imagenes-producto {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.imagenes-producto .campo-ayuda {
+  margin: -8px 0 0;
+}
+
+.imagenes-error {
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: var(--color-error-fondo);
+  color: var(--color-error);
+  font-weight: 600;
+}
+
+.imagenes-vacio {
+  margin: 0;
+  padding: 20px;
+  border: 1.5px dashed var(--color-borde-fuerte);
+  border-radius: 10px;
+  color: var(--color-texto-tenue);
+  text-align: center;
+}
+
+/* Lista numerada sin los números del navegador: el orden ya se ve
+   con "Portada", "Foto 2"... pero el <ol> le dice al lector de
+   pantalla que el orden importa. */
+.imagenes-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.imagen-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px;
+  border-radius: 10px;
+  border: 1px solid var(--color-borde);
+  background: var(--color-fondo-campo);
+}
+
+/* La primera (portada) se marca con el color de acento. */
+.imagen-item:first-child {
+  border-color: var(--color-acento);
+}
+
+.imagen-miniatura {
+  width: 72px;
+  height: 54px;
+  flex-shrink: 0;
+  border-radius: 6px;
+  object-fit: cover;
+  background: var(--color-etiqueta);
+}
+
+.imagen-rota {
+  display: grid;
+  place-items: center;
+  font-size: 0.75rem;
+  color: var(--color-error);
+}
+
+.imagen-etiqueta {
+  flex-grow: 1;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.imagen-botones {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.imagen-botones button:not(.admin-enlace-peligro) {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: 1px solid var(--color-borde-fuerte);
+  background: var(--color-fondo-suave);
+  color: var(--color-texto);
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.imagen-botones button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.imagen-botones .admin-enlace-peligro {
+  margin-left: 6px;
+}
+
+/* Input + botón "Agregar" en la misma línea. */
+.imagenes-agregar {
+  display: flex;
+  gap: 8px;
+}
+
+.imagenes-agregar .campo-control {
+  flex-grow: 1;
+  min-width: 0;
+}

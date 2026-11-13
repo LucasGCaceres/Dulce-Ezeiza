@@ -145,3 +145,137 @@
   margin: 6px 0 0;
   color: var(--color-texto-tenue);
 }
+/* ============================================================
+   Piezas compartidas por las pantallas del panel
+   (productos, categorías, novedades...)
+   ============================================================ */
+
+/* Aviso arriba de la pantalla: "Se eliminó X", errores, etc. */
+.admin-aviso {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.admin-aviso-ok {
+  background: var(--color-etiqueta);
+  color: var(--color-texto);
+}
+
+.admin-aviso-error {
+  background: var(--color-error-fondo);
+  color: var(--color-error);
+}
+
+.admin-aviso button {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  background: none;
+  color: inherit;   /* el mismo color que el texto del aviso */
+  font-size: 1.3rem;
+  cursor: pointer;
+}
+
+/* ---------- Cajas ---------- */
+
+.admin-caja {
+  padding: 24px;
+  border-radius: var(--radio);
+  border: 1px solid var(--color-borde);
+  background: var(--color-fondo-suave);
+}
+
+.admin-caja-encabezado {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.admin-caja-titulo {
+  margin: 0;
+  font-family: var(--fuente-titulos);
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+/* ---------- Tablas ---------- */
+
+.admin-tabla-contenedor {
+  border-radius: var(--radio);
+  border: 1px solid var(--color-borde);
+  background: var(--color-fondo-suave);
+  overflow: hidden;   /* para que las esquinas redondeadas recorten la tabla */
+}
+
+.admin-tabla {
+  width: 100%;
+  border-collapse: collapse;   /* bordes simples entre celdas */
+}
+
+.admin-tabla th {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--color-borde);
+  background: var(--color-fondo-campo);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-align: left;
+  text-transform: uppercase;
+  color: var(--color-texto-tenue);
+}
+
+.admin-tabla td {
+  padding: 12px 16px;
+  vertical-align: middle;
+}
+
+.admin-tabla tbody tr + tr td {
+  border-top: 1px solid var(--color-borde);
+}
+
+.admin-tabla tbody tr:hover {
+  background: var(--color-fondo-campo);
+}
+
+/* Fila de algo desactivado: se ve más apagada. */
+.fila-apagada td {
+  color: var(--color-texto-tenue);
+}
+
+.fila-apagada img {
+  opacity: 0.5;
+}
+
+.admin-tabla-vacia {
+  margin: 0;
+  padding: 24px;
+  color: var(--color-texto-tenue);
+}
+
+/* ---------- Botones del panel ---------- */
+
+.boton-chico {
+  min-height: 36px;
+  padding: 0 16px;
+  font-size: 0.9rem;
+}
+
+/* "Eliminar": discreto y rojo, para que no se toque sin querer. */
+.admin-enlace-peligro {
+  padding: 6px 2px;
+  border: none;
+  background: none;
+  color: var(--color-error);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}

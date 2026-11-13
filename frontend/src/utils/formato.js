@@ -65,3 +65,8 @@ export function formatearFechaHora(fechaIso) {
     hour12: false
   })
 }
+// Saca tildes y pasa a minúsculas, para buscar sin que importen:
+// "Pán" y "pan" quedan iguales. (SQL Server compara así por defecto.)
+export function normalizarTexto(texto) {
+  return texto.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
+}

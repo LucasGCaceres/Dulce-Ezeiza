@@ -1,0 +1,61 @@
+.admin-productos {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.admin-productos-encabezado {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.admin-productos-filtros {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 16px;
+}
+
+/* ---------- Celdas de la tabla ---------- */
+
+.admin-producto-celda {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.admin-producto-foto {
+  width: 64px;
+  height: 48px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  font-size: 0.6rem;
+}
+
+.admin-producto-nombre {
+  font-weight: 700;
+  color: var(--color-texto);
+  text-decoration: none;
+}
+
+.admin-producto-nombre:hover {
+  color: var(--color-acento);
+  text-decoration: underline;
+}
+
+.admin-producto-etiqueta {
+  margin-left: 8px;
+}
+
+.admin-estado-activo {
+  font-weight: 600;
+  color: var(--color-texto-medio);
+}
+
+.admin-producto-acciones {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 14px;
+}
