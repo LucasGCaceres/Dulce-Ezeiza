@@ -1,0 +1,89 @@
+.admin-categorias {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 1200px;
+}
+
+/* Tabla (más ancha) | formulario. */
+.admin-categorias-columnas {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 24px;
+  align-items: start;
+}
+
+/* ---------- Tabla ---------- */
+
+.admin-categoria-nombre {
+  display: block;
+  font-weight: 700;
+}
+
+.admin-categoria-descripcion {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.9rem;
+  color: var(--color-texto-tenue);
+}
+
+.admin-categoria-cantidad {
+  font-variant-numeric: tabular-nums;   /* números del mismo ancho */
+}
+
+.admin-categoria-acciones {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 14px;
+}
+
+/* La fila que se está editando, marcada con una barra a la izquierda. */
+.admin-tabla .fila-editando td {
+  background: var(--color-fondo-campo);
+}
+
+.admin-tabla .fila-editando td:first-child {
+  box-shadow: inset 4px 0 0 var(--color-acento);
+}
+
+/* ---------- Formulario ---------- */
+
+/* sticky: el formulario acompaña al scroll si la tabla es larga. */
+.admin-categoria-form {
+  position: sticky;
+  top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.admin-categoria-error {
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: var(--color-error-fondo);
+  color: var(--color-error);
+  font-weight: 600;
+}
+
+.admin-categoria-check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.admin-categoria-check input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--color-acento);
+}
+
+.admin-categoria-botones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}

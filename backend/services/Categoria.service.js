@@ -23,10 +23,10 @@ exports.crear = async function (datos) {
 // ------------------------------------------------------------
 //  LISTAR todas las categorias (READ)
 // ------------------------------------------------------------
-exports.obtenerTodas = async function () {
+exports.obtenerTodas = async function (soloActivas) {
     try {
         const where = soloActivas ? { activa: true } : {};
-        const categorias = await Categoria.findAll({ where: where, order: [['nombre', 'ASC']] });
+        const categorias = await Categoria.findAll({ where, order: [['nombre', 'ASC']] });
         return categorias;
     } catch (e) {
         console.log(e);
