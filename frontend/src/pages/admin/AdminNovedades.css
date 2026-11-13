@@ -1,0 +1,96 @@
+.admin-novedades {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.admin-novedades-encabezado {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+/* ---------- Pestañas de filtro ---------- */
+
+.admin-novedades-filtros {
+  display: flex;
+  gap: 8px;
+}
+
+.filtro-pildora {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 16px;
+  border: 1px solid var(--color-borde-fuerte);
+  border-radius: var(--radio-pildora);
+  background: var(--color-fondo-campo);
+  color: var(--color-texto);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.filtro-pildora.activa {
+  border-color: var(--color-texto);
+  background: var(--color-texto);
+  color: var(--color-fondo);
+}
+
+.filtro-cantidad {
+  font-size: 0.85rem;
+  opacity: 0.7;
+}
+
+/* ---------- Celdas ---------- */
+
+.admin-novedad-celda {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+/* FotoNovedad ocupa el 100% del ancho: acá la achicamos a miniatura. */
+.admin-novedad-foto {
+  width: 96px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  font-size: 0.65rem;
+}
+
+.admin-novedad-titulo {
+  display: block;
+  font-weight: 700;
+  color: var(--color-texto);
+  text-decoration: none;
+}
+
+.admin-novedad-titulo:hover {
+  color: var(--color-acento);
+  text-decoration: underline;
+}
+
+.admin-novedad-resumen {
+  /* Una sola línea con "..." al final: el resumen completo está en el editor. */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+  margin-top: 2px;
+  font-size: 0.9rem;
+  color: var(--color-texto-tenue);
+}
+
+.admin-novedad-fecha {
+  white-space: nowrap;
+  font-size: 0.95rem;
+}
+
+.admin-novedad-acciones {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  white-space: nowrap;
+}

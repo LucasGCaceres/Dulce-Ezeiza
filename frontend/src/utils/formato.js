@@ -70,3 +70,11 @@ export function formatearFechaHora(fechaIso) {
 export function normalizarTexto(texto) {
   return texto.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
 }
+// Fecha → el texto que entiende un <input type="datetime-local">:
+// "2026-11-20T10:00", en hora LOCAL (por eso no sirve toISOString(),
+// que da la hora de Greenwich: 3 horas más que en Argentina).
+export function fechaParaInput(fecha) {
+  const f = new Date(fecha)
+  const dos = (n) => String(n).padStart(2, '0')
+  return `${f.getFullYear()}-${dos(f.getMonth() + 1)}-${dos(f.getDate())}T${dos(f.getHours())}:${dos(f.getMinutes())}`
+}

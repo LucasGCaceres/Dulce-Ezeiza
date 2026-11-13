@@ -17,6 +17,8 @@ import AdminConsultas from './pages/admin/AdminConsultas'
 import AdminProductos from './pages/admin/AdminProductos'
 import AdminProductoForm from './pages/admin/AdminProductoForm'
 import AdminCategorias from './pages/admin/AdminCategorias'
+import AdminNovedades from './pages/admin/AdminNovedades'
+import AdminNovedadForm from './pages/admin/AdminNovedadForm'
 
 function App() {
   return (
@@ -58,6 +60,9 @@ function App() {
         <Route path="productos/nuevo" element={<AdminProductoForm />} />
         <Route path="productos/:id" element={<AdminProductoForm />} />
         <Route path="categorias" element={<AdminCategorias />} />
+        <Route path="novedades" element={<AdminNovedades />} />
+        <Route path="novedades/nueva" element={<AdminNovedadForm />} />
+        <Route path="novedades/:id" element={<AdminNovedadForm />} />
         <Route path="*" element={<PanelEnConstruccion />} />
       </Route>
     </Routes>

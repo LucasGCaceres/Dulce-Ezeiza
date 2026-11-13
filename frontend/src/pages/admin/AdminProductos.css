@@ -48,11 +48,6 @@
   margin-left: 8px;
 }
 
-.admin-estado-activo {
-  font-weight: 600;
-  color: var(--color-texto-medio);
-}
-
 .admin-producto-acciones {
   display: flex;
   align-items: center;

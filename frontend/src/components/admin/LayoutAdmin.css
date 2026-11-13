@@ -260,6 +260,12 @@
   color: var(--color-texto-tenue);
 }
 
+/* Estado "Activo" / "Publicada" en las tablas: texto, sin etiqueta. */
+.admin-estado-activo {
+  font-weight: 600;
+  color: var(--color-texto-medio);
+}
+
 /* ---------- Botones del panel ---------- */
 
 .boton-chico {

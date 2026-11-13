@@ -1,0 +1,142 @@
+.novedad-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 1200px;
+}
+
+.novedad-form-migas {
+  display: flex;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: var(--color-texto-tenue);
+}
+
+.novedad-form-migas a {
+  color: var(--color-texto-medio);
+}
+
+.novedad-form-encabezado {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+/* Contenido (ancho) | publicación + vista previa. */
+.novedad-form-columnas {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 24px;
+  align-items: start;
+}
+
+.novedad-form-contenido,
+.novedad-form-lateral {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ---------- Publicación ---------- */
+
+/* Un fieldset con la apariencia de las otras cajas. El <legend> se
+   dibuja "sobre" el borde por defecto: float lo baja adentro de la caja. */
+.novedad-form-publicacion {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+  min-width: 0;
+}
+
+.novedad-form-publicacion legend {
+  float: left;
+  width: 100%;
+  padding: 0;
+  margin-bottom: 4px;
+}
+
+.novedad-form-opcion {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--color-borde);
+  background: var(--color-fondo-campo);
+  cursor: pointer;
+}
+
+/* :has() — la opción elegida se marca con el color de acento. */
+.novedad-form-opcion:has(input:checked) {
+  border-color: var(--color-acento);
+}
+
+.novedad-form-opcion input {
+  width: 18px;
+  height: 18px;
+  margin: 2px 0 0;
+  flex-shrink: 0;
+  accent-color: var(--color-acento);
+}
+
+.novedad-form-opcion > span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.novedad-form-opcion-titulo {
+  font-weight: 600;
+}
+
+.novedad-form-ahora {
+  align-self: flex-start;
+  margin-top: -6px;
+  padding: 4px 0;
+  border: none;
+  background: none;
+  color: var(--color-acento);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.novedad-form-resultado {
+  margin: 4px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--color-borde);
+  color: var(--color-texto-medio);
+}
+
+/* ---------- Vista previa ---------- */
+
+.novedad-form-previa {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* En la vista previa la tarjeta no es un link: sin manito ni hover. */
+.novedad-form-previa .novedad-tarjeta {
+  pointer-events: none;
+}
+
+/* ---------- Pie ---------- */
+
+.novedad-form-botones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 8px;
+  border-top: 1px solid var(--color-borde);
+}
+
+.novedad-form-vacio {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+}

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { urlImagenValida } from '../../utils/urls'
 import './ImagenesProducto.css'
 
 // Largo de la columna url en la tabla ImagenesProducto.
@@ -44,7 +45,7 @@ function ImagenesProducto({ imagenes, acciones, seGuardanAlInstante }) {
 
   function agregar() {
     const url = nuevaUrl.trim()
-    if (!urlValida(url)) {
+    if (!urlImagenValida(url)) {
       setErrorUrl('Pegá una dirección que empiece con https:// (o /img/... si está en el sitio).')
       return
     }
