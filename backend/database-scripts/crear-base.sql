@@ -7,8 +7,6 @@
 --   2. Abrir una New Query sobre esa base.
 --   3. Pegar este script y ejecutar (F5).
 --
---  Este script se ira completando con el resto de las tablas
---  (Categorias, Productos, etc.) a medida que avance el proyecto.
 -- ============================================================
 
 -- Crea la base solo si no existe todavia.
@@ -34,7 +32,7 @@ CREATE TABLE Usuarios (
     email NVARCHAR(150) NOT NULL UNIQUE,   -- no se permiten emails duplicados
     telefono NVARCHAR(50),                 -- opcional
     password NVARCHAR(255) NOT NULL,       -- se guarda el hash de bcrypt
-    fecha DATETIME DEFAULT GETDATE(),
+    fecha DATETIME DEFAULT GETUTCDATE(),
     rol NVARCHAR(20) NOT NULL,
     resetPasswordToken NVARCHAR(255),      -- token temporal para recuperar la contraseña
     resetPasswordExpira DATETIME2           -- vencimiento del token (15 min despues de generarlo)
@@ -50,7 +48,7 @@ CREATE TABLE Categorias (
     nombre NVARCHAR(100) NOT NULL UNIQUE,      -- no se permiten nombres repetidos
     descripcion NVARCHAR(500),                 -- opcional
     activa BIT NOT NULL DEFAULT 1,             -- 1 = activa, 0 = inactiva
-    fecha DATETIME DEFAULT GETDATE()
+    fecha DATETIME DEFAULT GETUTCDATE()
 );
 GO
 
@@ -66,7 +64,7 @@ CREATE TABLE Productos (
     destacado BIT NOT NULL DEFAULT 0,
     sinGluten BIT NOT NULL DEFAULT 0,
     categoriaId INT NOT NULL,
-    fecha DATETIME DEFAULT GETDATE(),
+    fecha DATETIME DEFAULT GETUTCDATE(),
     CONSTRAINT FK_Productos_Categorias FOREIGN KEY (categoriaId)
         REFERENCES Categorias(id)
 );
@@ -83,7 +81,7 @@ CREATE TABLE Consultas (
     asunto NVARCHAR(200) NOT NULL,
     mensaje NVARCHAR(2000) NOT NULL,
     estado NVARCHAR(20) NOT NULL DEFAULT 'pendiente',
-    fecha DATETIME DEFAULT GETDATE()
+    fecha DATETIME DEFAULT GETUTCDATE()
 );
 
 GO
@@ -138,8 +136,6 @@ VALUES (
 );
 GO
 
-GO
-
 -- ------------------------------------------------------------
 --  Tabla: ImagenesProducto (fotos de cada producto, en el orden que se muestran)
 -- ------------------------------------------------------------
@@ -166,7 +162,7 @@ CREATE TABLE Novedades (
     resumen NVARCHAR(300) NOT NULL,            -- lo que se ve en las tarjetas
     contenido NVARCHAR(MAX) NOT NULL,          -- texto completo del detalle
     imagenUrl NVARCHAR(500) NULL,              -- una sola imagen, como URL
-    fechaPublicacion DATETIME2 NOT NULL DEFAULT SYSDATETIME(),
+    fechaPublicacion DATETIME2 NOT NULL DEFAULT SYSUTCDATETIME(),
     publicada BIT NOT NULL DEFAULT 0,
     productoId INT NULL,                       -- producto relacionado, opcional
     CONSTRAINT FK_Novedades_Productos FOREIGN KEY (productoId)
@@ -190,7 +186,7 @@ END CATCH
 GO
 
 -- ============================================================
---  SEED: categorias + 20 productos + 3 usuarios ficticios
+--  SEED: categorias + 20 productos + el usuario admin
 --  Pegar y ejecutar esto en SSMS, sobre la base DulceEzeiza ya
 --  existente. Ejecutar UNA sola vez (no es idempotente: si lo
 --  corres dos veces, vas a tener categorias y productos duplicados).
@@ -283,7 +279,7 @@ GO
 
 -- ------------------------------------------------------------
 --  Novedades de ejemplo (las 5 del diseño, todas publicadas).
---  Las fechas son relativas a HOY (DATEADD sobre SYSDATETIME), asi
+--  Las fechas son relativas a HOY (DATEADD sobre SYSUTCDATETIME), asi
 --  siempre quedan en el pasado y se ven, corras el script cuando corras.
 --  productoId por subquery sobre el nombre, igual que en Productos.
 -- ------------------------------------------------------------
@@ -291,42 +287,21 @@ INSERT INTO Novedades (titulo, resumen, contenido, imagenUrl, fechaPublicacion, 
 (N'¡Cumplimos 10 años!',
  N'Una década horneando para Ezeiza. Lo festejamos con descuentos toda la semana.',
  N'Hace diez años abrimos las puertas de Dulce Ezeiza con un horno y muchas ganas. Para agradecerles, esta semana tenemos sorpresas en el local: pasá a conocerlas.',
- NULL, DATEADD(DAY, -2, SYSDATETIME()), 1, NULL),
+ NULL, DATEADD(DAY, -2, SYSUTCDATETIME()), 1, NULL),
 (N'Día de la Madre',
  N'Tortas y cajas de regalo por encargo para el día de mamá.',
  N'Se acerca el Día de la Madre y preparamos tortas, cajas de regalo y desayunos para sorprender a mamá. Hacé tu pedido con anticipación desde el formulario de contacto.',
- NULL, DATEADD(DAY, -6, SYSDATETIME()), 1, NULL),
+ NULL, DATEADD(DAY, -6, SYSUTCDATETIME()), 1, NULL),
 (N'Nueva torta sin TACC',
  N'Sumamos la torta de naranja apta celíacos, elaborada en zona separada.',
  N'Nuestra torta de naranja sin TACC se elabora en un espacio libre de contaminación cruzada. Pensada para que nadie se quede sin postre.',
- NULL, DATEADD(DAY, -12, SYSDATETIME()), 1, (SELECT id FROM Productos WHERE nombre = N'Torta Sin Gluten de Naranja')),
+ NULL, DATEADD(DAY, -12, SYSUTCDATETIME()), 1, (SELECT id FROM Productos WHERE nombre = N'Torta Sin Gluten de Naranja')),
 (N'Ahora abrimos los domingos',
  N'Domingos y feriados de 7:30 a 13, con facturas recién hechas.',
  N'A pedido de ustedes, ahora abrimos domingos y feriados de 7:30 a 13. Medialunas, facturas y pan recién salidos del horno para el desayuno del fin de semana.',
- NULL, DATEADD(DAY, -20, SYSDATETIME()), 1, NULL),
+ NULL, DATEADD(DAY, -20, SYSUTCDATETIME()), 1, NULL),
 (N'Café de especialidad',
  N'Llegó nuestro café en grano de especialidad, para llevar a casa.',
  N'Ahora podés llevarte a casa el mismo café que servimos en el local: café de especialidad en grano, en bolsa de 500g.',
- NULL, DATEADD(DAY, -30, SYSDATETIME()), 1, (SELECT id FROM Productos WHERE nombre = N'Café en Grano 500g'));
+ NULL, DATEADD(DAY, -30, SYSUTCDATETIME()), 1, (SELECT id FROM Productos WHERE nombre = N'Café en Grano 500g'));
 GO
-
-
-/* Para hacer los cambios en la bd sin borrarla 
-USE DulceEzeiza;
-GO
-CREATE TABLE ConsultaProductos (
-    consultaId INT NOT NULL,
-    productoId INT NOT NULL,
-    CONSTRAINT PK_ConsultaProductos PRIMARY KEY (consultaId, productoId),
-    CONSTRAINT FK_ConsultaProductos_Consultas FOREIGN KEY (consultaId) REFERENCES Consultas(id),
-    CONSTRAINT FK_ConsultaProductos_Productos FOREIGN KEY (productoId) REFERENCES Productos(id)
-);
-GO
-INSERT INTO ConsultaProductos (consultaId, productoId)
-SELECT id, productoId FROM Consultas WHERE productoId IS NOT NULL;
-GO
-ALTER TABLE Consultas DROP CONSTRAINT FK_Consultas_Productos;
-ALTER TABLE Consultas DROP COLUMN productoId;
-GO
-
-*/

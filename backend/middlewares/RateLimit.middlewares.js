@@ -35,8 +35,22 @@ const limiteConsultas = rateLimit({
     message: { mensaje: 'Enviaste demasiadas consultas. Probá de nuevo más tarde.' }
 });
 
+// RESETEAR PASSWORD: el codigo tiene 6 digitos (un millon de combinaciones).
+// Sin limite, un programa las prueba todas en minutos. Con 5 intentos
+// fallidos por IP cada 15 minutos (lo que dura el codigo), adivinarlo
+// deja de ser viable.
+const limiteReseteo = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    limit: 5,
+    skipSuccessfulRequests: true,
+    standardHeaders: 'draft-8',
+    legacyHeaders: false,
+    message: { mensaje: 'Demasiados intentos. Pedí un código nuevo y probá más tarde.' }
+});
+
 module.exports = {
     limiteLogin: limiteLogin,
     limiteRecuperacion: limiteRecuperacion,
-    limiteConsultas: limiteConsultas
+    limiteConsultas: limiteConsultas,
+    limiteReseteo: limiteReseteo
 };

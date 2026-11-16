@@ -158,11 +158,11 @@ exports.solicitarRecuperacion = async function (email) {
 // ------------------------------------------------------------
 //  RESETEAR PASSWORD: valida el token y cambia la contraseña
 // ------------------------------------------------------------
-exports.resetearPassword = async function (token, passwordNueva) {
+exports.resetearPassword = async function (email, token, passwordNueva) {
     let usuario;
 
     try {
-        usuario = await Usuario.findOne({ where: { resetPasswordToken: token } });
+        usuario = await Usuario.findOne({ where: { email: email, resetPasswordToken: token } });
     } catch (e) {
         console.log(e);
         throw new Error('Error al buscar el usuario');

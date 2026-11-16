@@ -7,7 +7,6 @@ exports.crear = async function (req, res) {
     const datos = {
         nombre: req.body.nombre,
         descripcion: req.body.descripcion,
-        precio: req.body.precio,
         categoriaId: req.body.categoriaId,
         disponible: req.body.disponible,
         activo: req.body.activo,
@@ -67,7 +66,8 @@ exports.obtenerPorId = async function (req, res) {
     const soloActivos = req.rol !== 'admin';
 
     try {
-        const producto = await productoService.obtenerPorId(id, soloActivos);        if (!producto) {
+        const producto = await productoService.obtenerPorId(id, soloActivos);        
+        if (!producto) {
             return res.status(404).json({ mensaje: 'Producto no encontrado' });
         }
         return res.status(200).json(producto);
@@ -84,7 +84,6 @@ exports.editar = async function (req, res) {
     const datos = {
         nombre: req.body.nombre,
         descripcion: req.body.descripcion,
-        precio: req.body.precio,
         categoriaId: req.body.categoriaId,
         disponible: req.body.disponible,
         activo: req.body.activo,

@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../databases/database');
 
-// Categoría a la que pertenecen los productos (cafetería, tortas, bebidas, sin TACC...).
+// Categoría a la que pertenecen los productos (cafetería, tortas, bebidas...).
 const Categoria = sequelize.define(
     'Categoria',
     {

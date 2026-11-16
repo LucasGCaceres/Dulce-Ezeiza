@@ -3,7 +3,7 @@ const Novedad = require('../models/Novedad.model');
 const Producto = require('../models/Producto.model');
 const ImagenProducto = require('../models/ImagenProducto.model');
 
-// Producto relacionado, para el sitio publico: nombre, precio y sus fotos
+// Producto relacionado, para el sitio publico: nombre y sus fotos
 // (la de orden 0 es la portada). Con where + required: false, si el
 // producto esta dado de baja la novedad se muestra igual, pero SIN el
 // producto (Producto queda null): asi el front no linkea a un detalle que

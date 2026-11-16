@@ -125,14 +125,14 @@ exports.solicitarRecuperacion = async function (req, res) {
 //  RESETEAR PASSWORD: PUT /api/usuarios/resetear-password
 // ------------------------------------------------------------
 exports.resetearPassword = async function (req, res) {
-    const { token, passwordNueva } = req.body;
+    const { email, token, passwordNueva } = req.body || {};
 
-    if (!token || !passwordNueva) {
+    if (!email || !token || !passwordNueva) {
         return res.status(400).json({ mensaje: 'Faltan datos obligatorios' });
     }
 
     try {
-        await usuarioService.resetearPassword(token, passwordNueva);
+        await usuarioService.resetearPassword(email, token, passwordNueva);
         return res.status(200).json({ mensaje: 'Contraseña actualizada correctamente' });
     } catch (e) {
         console.log(e);

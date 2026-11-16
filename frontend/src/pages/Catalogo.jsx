@@ -105,6 +105,7 @@ function Catalogo() {
 
   return (
     <div className="contenedor catalogo">
+      <title>Catálogo - Dulce Ezeiza</title>
       <h1 className="catalogo-titulo">Catálogo</h1>
       <p className="catalogo-bajada">
         Todo lo que horneamos en el local. Para encargos o si buscás algo que no está, hacenos una consulta.

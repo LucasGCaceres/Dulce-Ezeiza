@@ -6,7 +6,7 @@
 // devuelve datos de prueba (mocks) o le pega al backend real.
 // Para pasar de uno a otro se cambia VITE_USAR_MOCKS en .env.local.
 
-import { leerToken, tokenVigente } from './sesion'
+import { leerToken } from './sesion'
 
 const API_URL = import.meta.env.VITE_API_URL
 
@@ -103,24 +103,19 @@ export function configurarAlPerderSesion(funcion) {
   alPerderSesion = funcion
 }
 
-// Igual que pedir(), pero para rutas protegidas del panel:
-// - agrega el token de la sesión;
-// - si la respuesta es 401, cierra la sesión (y el panel vuelve al login).
-// mock: función que devuelve la respuesta de prueba. En modo mocks
-// también se controla el token, para que el panel se comporte igual
-// que con el backend real (por ejemplo, cuando la sesión vence).
-//
-// IMPORTANTE: el sitio público usa pedir() SIN token a propósito. Si el
-// catálogo mandara el token del admin, el backend le mostraría también
-// los productos dados de baja (identificarUsuario).
 export function pedirAdmin(ruta, opciones = {}, mock) {
+  // leerToken() devuelve null si no hay sesión o si el token ya venció.
   const token = leerToken()
-  let promesa
-  if (USAR_MOCKS) {
-    promesa = tokenVigente(token) ? mock() : simularFallo('Token invalido.', 401)
-  } else {
-    promesa = pedir(ruta, { ...opciones, token })
+
+  // Sin token vigente NO se hace el pedido. Si se hiciera, las rutas que
+  // usan identificarUsuario (/productos, /categorias) responderían 200 con
+  // la vista del visitante, y el panel mostraría datos incompletos sin avisar.
+  if (!token) {
+    alPerderSesion()
+    return Promise.reject(new ErrorApi('Tu sesión venció. Volvé a ingresar.', 401))
   }
+
+  const promesa = USAR_MOCKS ? mock() : pedir(ruta, { ...opciones, token })
   return promesa.catch((error) => {
     if (error.status === 401) alPerderSesion()
     throw error

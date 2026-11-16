@@ -5,7 +5,7 @@ require('dotenv').config();
 // 2. Importar dependencias
 const express = require('express');
 const cors = require('cors');
-const rateLimit = require('express-rate-limit');
+
 // Lista de origenes del frontend (FRONTEND_URL) + middleware que rechaza el resto
 const { origenesPermitidos, verificarOrigen } = require('./middlewares/Origen.middlewares');
 

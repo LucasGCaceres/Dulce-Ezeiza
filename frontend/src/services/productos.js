@@ -150,7 +150,9 @@ export function agregarImagenes(productoId, urls) {
     const producto = buscarEnMock(productoId)
     if (!producto) return simularFallo('El producto no existe', 400)
     let idImagen = siguienteIdImagen()
-    const desde = producto.imagenes.length
+    // Como el backend: se parte del orden MÁS ALTO, no de la cantidad
+    // (si se borró una del medio, la cantidad queda corta y el orden se repite).
+    const desde = Math.max(-1, ...producto.imagenes.map((i) => i.orden)) + 1
     urls.forEach((url, i) => producto.imagenes.push({ id: idImagen++, productoId: producto.id, url, orden: desde + i }))
     return simularRed({ imagenes: producto.imagenes, mensaje: 'Imagen(es) agregada(s) correctamente' })
   })

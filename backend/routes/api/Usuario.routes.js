@@ -4,8 +4,7 @@ const router = express.Router();
 // Traemos el controller: cada ruta va a apuntar a una de sus funciones.
 const usuarioController = require('../../controllers/Usuario.controller');
 const  { verificarToken } = require('../../middlewares/Autorizacion.middlewares');
-const { limiteLogin, limiteRecuperacion } = require('../../middlewares/RateLimit.middlewares');
-
+const { limiteLogin, limiteRecuperacion, limiteReseteo } = require('../../middlewares/RateLimit.middlewares');
 // POST /api/usuarios/login     -> valida credenciales y devuelve token
 router.post('/login', limiteLogin, usuarioController.login);
 
@@ -22,7 +21,7 @@ router.put('/cambiar-password', verificarToken, usuarioController.cambiarPasswor
 router.post('/recuperar-password', limiteRecuperacion, usuarioController.solicitarRecuperacion);
 
 // PUT  /api/usuarios/resetear-password  -> cambia la contraseña usando el codigo (sin login)
-router.put('/resetear-password', usuarioController.resetearPassword);
+router.put('/resetear-password', limiteReseteo, usuarioController.resetearPassword);
 
 // Exportamos el router para que api.js lo pueda montar.
 module.exports = router;
