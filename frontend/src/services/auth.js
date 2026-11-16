@@ -38,3 +38,36 @@ export function iniciarSesion(email, password) {
   }
   return pedir('/usuarios/login', { metodo: 'POST', cuerpo: { email: email.trim(), password } })
 }
+
+
+// ---------- Recuperar contraseña ----------
+// El código de recuperación es de 6 dígitos y llega por mail. En modo mocks
+// no sale ningún mail: el código válido es siempre este.
+const CODIGO_MOCK = '123456'
+
+// POST /api/usuarios/recuperar-password   { email }
+// Responde SIEMPRE 200 con el mismo mensaje, exista o no el email (así nadie
+// puede averiguar qué emails tienen cuenta). Error posible: 429 si se pide
+// más de 3 veces por hora.
+export function solicitarRecuperacion(email) {
+  if (USAR_MOCKS) {
+    return simularRed({ mensaje: 'Si el email está registrado, te enviamos instrucciones para recuperar tu contraseña' })
+  }
+  return pedir('/usuarios/recuperar-password', { metodo: 'POST', cuerpo: { email: email.trim() } })
+}
+
+// PUT /api/usuarios/resetear-password   { token, passwordNueva }
+// "token" es el código de 6 dígitos del mail. Responde 200 { mensaje }.
+// Error: 400 'El código de recuperación es inválido o venció'.
+export function resetearPassword(codigo, passwordNueva) {
+  if (USAR_MOCKS) {
+    if (codigo.trim() !== CODIGO_MOCK) {
+      return simularFallo('El código de recuperación es inválido o venció', 400)
+    }
+    return simularRed({ mensaje: 'Contraseña actualizada correctamente' })
+  }
+  return pedir('/usuarios/resetear-password', {
+    metodo: 'PUT',
+    cuerpo: { token: codigo.trim(), passwordNueva }
+  })
+}

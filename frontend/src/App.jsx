@@ -11,6 +11,7 @@ import NoEncontrado from './pages/NoEncontrado'
 import RutaProtegida from './components/RutaProtegida'
 import LayoutAdmin from './components/admin/LayoutAdmin'
 import AdminLogin from './pages/admin/AdminLogin'
+import AdminRecuperar from './pages/admin/AdminRecuperar'
 import AdminInicio from './pages/admin/AdminInicio'
 import AdminConsultas from './pages/admin/AdminConsultas'
 import AdminProductos from './pages/admin/AdminProductos'
@@ -42,6 +43,8 @@ function App() {
       {/* ---------- Panel admin ---------- */}
       {/* El login va solo, sin layout: es una pantalla completa. */}
       <Route path="/admin/login" element={<AdminLogin />} />
+      {/* "Olvidé mi contraseña": tampoco necesita sesión ni layout. */}
+      <Route path="/admin/recuperar" element={<AdminRecuperar />} />
 
       {/* Todo lo demás de /admin pasa primero por RutaProtegida
           (si no hay sesión, al login) y se dibuja dentro del LayoutAdmin. */}
