@@ -1,4 +1,4 @@
-import { pedir, simularRed, simularFallo, USAR_MOCKS } from './api'
+import { pedir, pedirAdmin, simularRed, simularFallo, USAR_MOCKS } from './api'
 
 // ---------- Datos del mock ----------
 // El admin del seed de crear-base.sql.
@@ -70,4 +70,41 @@ export function resetearPassword(codigo, passwordNueva) {
     metodo: 'PUT',
     cuerpo: { token: codigo.trim(), passwordNueva }
   })
+}
+
+
+// ---------- Perfil del administrador ----------
+// Datos de prueba del perfil (en modo mocks).
+const PERFIL_MOCK = {
+  id: 1, nombre: 'Admin', apellido: 'Dulce Ezeiza',
+  email: ADMIN_MOCK.email, telefono: '1122334455', rol: 'admin'
+}
+
+// GET /api/usuarios/perfil (admin) → los datos del usuario logueado.
+export function obtenerPerfil() {
+  return pedirAdmin('/usuarios/perfil', {}, () => simularRed(PERFIL_MOCK))
+}
+
+// PUT /api/usuarios/perfil (admin)   { nombre, apellido, telefono, email }
+// Responde 200 { usuario, mensaje }.
+export function editarPerfil(datos) {
+  return pedirAdmin('/usuarios/perfil', { metodo: 'PUT', cuerpo: datos }, () => {
+    Object.assign(PERFIL_MOCK, datos)
+    return simularRed({ usuario: PERFIL_MOCK, mensaje: 'Perfil actualizado correctamente' })
+  })
+}
+
+// PUT /api/usuarios/cambiar-password (admin)   { passwordActual, passwordNueva }
+// Responde 200 { mensaje }. Error: 400 'La contraseña actual es incorrecta'.
+export function cambiarPassword(passwordActual, passwordNueva) {
+  return pedirAdmin(
+    '/usuarios/cambiar-password',
+    { metodo: 'PUT', cuerpo: { passwordActual, passwordNueva } },
+    () => {
+      if (passwordActual !== PASSWORD_MOCK) {
+        return simularFallo('La contraseña actual es incorrecta', 400)
+      }
+      return simularRed({ mensaje: 'Contraseña actualizada correctamente' })
+    }
+  )
 }

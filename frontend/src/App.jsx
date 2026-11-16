@@ -20,6 +20,7 @@ import AdminCategorias from './pages/admin/AdminCategorias'
 import AdminNovedades from './pages/admin/AdminNovedades'
 import AdminNovedadForm from './pages/admin/AdminNovedadForm'
 import AdminComercio from './pages/admin/AdminComercio'
+import AdminPerfil from './pages/admin/AdminPerfil'
 import PanelNoEncontrado from './pages/admin/PanelNoEncontrado'
 
 function App() {
@@ -68,6 +69,7 @@ function App() {
         <Route path="novedades/nueva" element={<AdminNovedadForm />} />
         <Route path="novedades/:id" element={<AdminNovedadForm />} />
         <Route path="configuracion" element={<AdminComercio />} />
+        <Route path="perfil" element={<AdminPerfil />} />
         <Route path="*" element={<PanelNoEncontrado />} />
       </Route>
     </Routes>

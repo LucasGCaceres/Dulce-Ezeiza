@@ -46,10 +46,19 @@ function SesionProvider({ children }) {
     setMotivoSalida('cerrada')
   }
 
+  // Para cuando el admin edita su perfil: actualiza el nombre y el email
+  // que se muestran en el menú del panel, sin tener que volver a ingresar.
+  function actualizarUsuario(datos) {
+    const nueva = { token: sesion.token, usuario: { ...sesion.usuario, ...datos } }
+    guardarSesion(nueva)
+    setSesion(nueva)
+  }
+
   const valor = {
     usuario: sesion?.usuario ?? null,
     iniciarSesion,
     cerrarSesion,
+    actualizarUsuario,
     motivoSalida
   }
 

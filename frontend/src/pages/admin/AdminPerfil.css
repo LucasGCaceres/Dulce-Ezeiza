@@ -1,0 +1,42 @@
+.admin-perfil {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 1100px;
+}
+
+/* Mis datos | Cambiar contraseña, en dos columnas iguales. */
+.admin-perfil-columnas {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+/* Cada caja ordena sus cosas (título, aviso, formulario) en columna,
+   con aire entre ellas. */
+.admin-perfil-columnas .admin-caja {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.admin-perfil-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.admin-perfil-acciones {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+/* En pantallas angostas (celular, tablet), una caja arriba de la otra. */
+@media (max-width: 900px) {
+  .admin-perfil-columnas {
+    grid-template-columns: 1fr;
+  }
+}
