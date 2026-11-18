@@ -1,8 +1,6 @@
 # Dulce Ezeiza
 
-Plataforma web para una cafetería/pastelería artesanal. Es un catálogo administrable — **no es un e-commerce**: no tiene carrito de compras ni pagos online. Cuenta con un sitio público donde cualquier visitante puede ver el catálogo, buscar y filtrar productos y enviar consultas, y un panel de administración privado para gestionar el contenido.
-
-> Este README documenta principalmente el **backend**, que es la parte del proyecto más avanzada al momento de escribir esto. La documentación del frontend se va a ir sumando a medida que esa parte tome más forma.
+Plataforma web para una panadería y pastelería artesanal. Es un catálogo administrable — **no es un e-commerce**: no tiene carrito de compras, pagos online ni precios publicados. Cuenta con un sitio público donde cualquier visitante puede ver el catálogo, buscar y filtrar productos, leer las novedades del local y enviar consultas, y un panel de administración privado para gestionar todo el contenido.
 
 ## Integrantes
 
@@ -14,15 +12,18 @@ Plataforma web para una cafetería/pastelería artesanal. Es un catálogo admini
 
 ## Stack tecnológico
 
+- **Frontend:** React 19 + Vite, con React Router 7. CSS propio (sin frameworks de estilos).
 - **Backend:** Node.js + Express
-- **Frontend:** Proximamente...
 - **Base de datos:** SQL Server (probado con SQL Server Express, instancia `SQLEXPRESS`)
 - **ORM:** Sequelize
 - **Autenticación:** JSON Web Tokens (JWT) + bcrypt para el hash de contraseñas
+- **Mails:** Nodemailer (Gmail con contraseña de aplicación, o Ethereal para pruebas)
 
 ## Estructura del proyecto
 
-Monorepo con el backend en la carpeta `backend/`:
+Monorepo con dos carpetas: `backend/` y `frontend/`. Además, `postman/` tiene la colección de pruebas de la API.
+
+### Backend
 
 ```
 backend/
@@ -45,7 +46,31 @@ backend/
 └── package.json
 ```
 
+### Frontend
+
+```
+frontend/
+├── public/img/               # Fotos de productos y del local (SVG), servidas tal cual
+├── src/
+│   ├── main.jsx               # Punto de entrada: monta <App> dentro del SesionProvider
+│   ├── App.jsx                # Todas las rutas del sitio y del panel
+│   ├── index.css              # Estilos globales: colores, tipografías, botones, formularios
+│   ├── pages/                 # Una pantalla por archivo (sitio público)
+│   │   └── admin/             # Pantallas del panel de administración
+│   ├── components/            # Piezas reutilizables (Navbar, Footer, tarjetas, fotos...)
+│   │   └── admin/             # Piezas del panel (layout, diálogo de confirmación, interruptor...)
+│   ├── services/              # Las ÚNICAS funciones que hablan con la API (una por endpoint)
+│   ├── mocks/                 # Datos de prueba con la misma forma que el JSON del backend
+│   ├── hooks/                 # usePedido (carga de datos) y useSesion
+│   ├── context/               # Sesión del administrador (token y datos del usuario)
+│   └── utils/                 # Formato de fechas, validaciones, armado de links
+├── .env.example               # Plantilla de variables de entorno del frontend
+└── package.json
+```
+
 ## Arquitectura
+
+### Backend
 
 El backend sigue una arquitectura por capas, sin capa de repository:
 
@@ -60,16 +85,90 @@ ruta → controller → service → model → base de datos
 
 Las relaciones entre entidades se definen todas juntas en `models/Associations.js`, no dispersas en cada model.
 
+### Frontend
+
+```
+página → hook usePedido → service → pedir() → API
+```
+
+- **Páginas y componentes** nunca hacen `fetch`: piden los datos a un service y se ocupan solo de mostrarlos.
+- **`usePedido`** es el hook que usan todas las pantallas para cargar datos. Devuelve `{ datos, error, cargando, reintentar }`, así cada pantalla muestra un esqueleto mientras carga, un mensaje con "Reintentar" si falla, y puede volver a pedir los datos después de guardar algo.
+- **Services** (`src/services/`): una función por endpoint (`obtenerProductos`, `crearNovedad`, `cambiarEstadoConsulta`...). Es el único lugar del frontend que conoce las URLs de la API y la forma de sus respuestas.
+- **`pedir()`** (`services/api.js`) es el envoltorio de `fetch`: arma la URL, manda el JSON y, si la API responde con error, lanza un `ErrorApi` con el código HTTP y el mensaje del backend, que las pantallas muestran tal cual. `pedirAdmin()` es lo mismo pero agrega el token del administrador en el header `x-access-token`.
+
+#### Datos de prueba (mocks)
+
+Cada service tiene dos caminos: el pedido real a la API, o devolver datos de prueba de `src/mocks/`. Cuál se usa lo decide la variable `VITE_USAR_MOCKS` del `.env.local`. Con mocks, el frontend funciona completo sin backend ni base de datos (incluido el panel: el login de prueba es el mismo del admin del seed).
+
+Esto permitió construir y probar el frontend en paralelo con el backend, y trabajar desde computadoras sin SQL Server. Los mocks copian exactamente la forma del JSON que devuelve el backend (por ejemplo, la categoría de un producto viene en `producto.Categorium`, como la nombra Sequelize) y reproducen sus reglas (un producto con consultas no se puede borrar, una novedad programada no se ve en el sitio...), para que pasar al backend real no obligue a cambiar ninguna pantalla.
+
+#### Sesión del administrador
+
+Al iniciar sesión, el token y los datos del usuario se guardan en `localStorage` y quedan disponibles para toda la app a través de un Context (`SesionProvider` + `useSesion`). Las rutas del panel están envueltas en `RutaProtegida`, que manda al login a quien no tenga sesión (y después del login lo devuelve a la pantalla que quería ver). El frontend lee la fecha de vencimiento del token y cierra la sesión solo cuando vence; si la API responde 401, también. "Cerrar sesión" borra el token guardado: no hace falta un endpoint, porque el backend no lleva una lista de tokens.
+
+Nada de esto es la seguridad real: cualquiera puede escribir `/admin` en el navegador. Lo que protege los datos es que el backend rechaza todo pedido de administración sin un token válido.
+
 ## Cómo levantar el proyecto
 
-Versión resumida (para el paso a paso completo, con troubleshooting, ver el manual de instalación):
+Versión resumida (para el paso a paso completo, con troubleshooting, ver el manual de instalación). Hacen falta Node.js (versión 20 o superior) y SQL Server.
+
+**Base de datos**
 
 1. Clonar el repositorio.
-2. Crear la base `DulceEzeiza` en SQL Server (SSMS) y correr `backend/database-scripts/crear-base.sql`.
+2. Crear la base `DulceEzeiza` en SQL Server (SSMS) y correr `backend/database-scripts/crear-base.sql`. El script crea las tablas y carga datos de ejemplo: categorías, productos con fotos, novedades, consultas, los datos del local y el usuario administrador.
+
+**Backend** (en una terminal)
+
 3. Copiar `backend/.env.example` a `backend/.env` y completar los valores con los datos de tu instalación local.
 4. Parado en `backend/`, correr `npm install`.
 5. Correr `npm start` (o `npm run dev` para que se reinicie solo con nodemon).
 6. El servidor queda escuchando en `http://localhost:8080` (o el puerto que hayas puesto en `PORT`).
+
+**Frontend** (en otra terminal)
+
+7. Copiar `frontend/.env.example` a `frontend/.env.local`, y poner `VITE_USAR_MOCKS=false` para usar el backend real (con `true` funciona sin backend, con datos de prueba).
+8. Parado en `frontend/`, correr `npm install` y después `npm run dev`.
+9. Abrir `http://localhost:5173`. El panel está en `http://localhost:5173/admin` (usuario `admin@dulceezeiza.com`, contraseña `Admin123!`).
+
+El frontend tiene que correr en el puerto que figura en `FRONTEND_URL` del `.env` del backend (por defecto, 5173): la API rechaza los pedidos de cualquier otro origen. Si Vite avisa que el 5173 está ocupado y levanta en otro, hay que cerrar el proceso que lo ocupa.
+
+Para generar la versión final del frontend (archivos estáticos optimizados en `frontend/dist/`): `npm run build`.
+
+## Pantallas
+
+### Sitio público
+
+| Ruta | Pantalla |
+|---|---|
+| `/` | Inicio: presentación, especialidades destacadas, categorías y últimas novedades |
+| `/catalogo` | Catálogo con buscador y filtros por categoría y sin TACC (los filtros quedan en la URL, así un link se puede compartir con la búsqueda hecha) |
+| `/productos/:id` | Detalle de un producto, con su galería de fotos y productos relacionados |
+| `/novedades` | Listado de novedades publicadas |
+| `/novedades/:id` | Detalle de una novedad |
+| `/nosotros` | Historia del local |
+| `/contacto` | Formulario de consulta (se puede asociar a productos) y datos del local con mapa |
+
+Los datos del local (dirección, teléfono, horarios y redes) salen de la base y se muestran en el pie de todas las páginas.
+
+### Panel de administración
+
+| Ruta | Pantalla |
+|---|---|
+| `/admin/login` | Ingreso del administrador (no está linkeado desde el sitio) |
+| `/admin/recuperar` | Recuperar contraseña con un código enviado por mail |
+| `/admin` | Inicio del panel: resumen con contadores, consultas sin responder y novedades recientes |
+| `/admin/consultas` | Consultas por estado (pendiente, respondida, cerrada), con respuesta por mail |
+| `/admin/productos` | Listado de productos con buscador y filtros; destacar y eliminar |
+| `/admin/productos/nuevo` y `/:id` | Alta y edición de un producto, con sus fotos (agregar, quitar, ordenar) |
+| `/admin/categorias` | Alta, edición, ocultar y eliminar categorías, en una sola pantalla |
+| `/admin/novedades` | Listado de novedades: publicadas, programadas y borradores |
+| `/admin/novedades/nueva` y `/:id` | Editor de novedades, con fecha de publicación y vista previa |
+| `/admin/configuracion` | Datos del local (dirección, teléfono, horarios, redes) |
+| `/admin/perfil` | Datos del administrador y cambio de contraseña |
+
+**Diseño:** el sitio está pensado para verse en pantallas de computadora. El panel se adapta a cualquier ancho desde 1024px (notebooks con la escala de Windows incluida) hasta monitores grandes, con tamaños fluidos en lugar de anchos fijos. La versión para celular queda fuera del alcance de esta entrega; los estilos ya tienen definidos los puntos de corte para sumarla.
+
+**Accesibilidad:** todos los formularios tienen etiquetas asociadas a sus campos, los errores se anuncian a los lectores de pantalla y el foco va al primer campo con problemas. Los diálogos de confirmación usan el elemento `<dialog>` nativo (mantienen el foco adentro y se cierran con Esc).
 
 ## Modelo de roles y autenticación
 
@@ -101,6 +200,7 @@ Los endpoints públicos que se pueden abusar tienen un límite de pedidos por IP
 |---|---|---|
 | `POST /api/usuarios/login` | 5 intentos **fallidos** cada 15 minutos | Es la única puerta al panel: frena a quien intente adivinar la contraseña probando muchas. Los logins exitosos no cuentan. |
 | `POST /api/usuarios/recuperar-password` | 3 pedidos por hora | Cada pedido manda un mail: evita que se use para inundar la casilla del admin. |
+| `PUT /api/usuarios/resetear-password` | 5 intentos **fallidos** cada 15 minutos | El código es de 6 dígitos: sin límite, se podría adivinar probando todos. |
 | `POST /api/consultas` | 5 consultas por hora | El formulario es público: frena el spam. |
 
 Este límite se había evaluado antes y se había descartado por no ser crítico. La decisión cambió al eliminar el login de clientes: el login pasó a proteger solamente el acceso al panel de administración.
@@ -122,9 +222,14 @@ Limitación: el header `Origin` lo pone el navegador, pero alguien que arme el p
 Si el administrador se olvidó la contraseña (y por lo tanto no puede loguearse), puede recuperarla en dos pasos, sin necesitar ningún token:
 
 1. **`POST /api/usuarios/recuperar-password`** con `{ "email": "..." }`. Si ese email existe, se genera un código numérico de 6 dígitos con **15 minutos** de vencimiento y se manda por mail. La respuesta es siempre la misma (200, mensaje genérico) exista o no el email — si dijera explícitamente "ese email no existe", cualquiera podría usar este endpoint para averiguar qué emails están registrados, el mismo motivo por el que el login tampoco distingue "usuario inexistente" de "contraseña incorrecta".
-2. **`PUT /api/usuarios/resetear-password`** con `{ "token": "123456", "passwordNueva": "..." }`. Si el código es válido y no venció, actualiza la contraseña; si no, devuelve un 400 con un mensaje claro.
+2. **`PUT /api/usuarios/resetear-password`** con `{ "email": "...", "token": "123456", "passwordNueva": "..." }`. El código se busca junto con el email, así un código solo sirve para la cuenta que lo pidió. Si es válido y no venció, actualiza la contraseña (mínimo 8 caracteres) y el código deja de servir; si no, devuelve un 400 con un mensaje claro.
 
-**Sobre el envío del mail:** la consigna pide la funcionalidad de "recuperar contraseña", pero el envío de correos reales solo figura como puntaje extra asociado al formulario de contacto — no exige que este flujo mande un mail real. Por eso, y para no depender de una cuenta de correo externa (con los riesgos de que la bloqueen por uso automatizado), el envío usa [Ethereal](https://ethereal.email/), un servicio de mails de prueba: el mail nunca llega a ningún lado, pero se puede "abrir" y ver tal cual quedó armado. Después de pedir la recuperación, la consola del servidor imprime un link a la vista previa del mail (código incluido). Si en algún momento se quiere mandar a una casilla real, hay que reemplazar en `backend/services/Mail.service.js` la cuenta de prueba de Ethereal por los datos de un servidor SMTP real (idealmente leídos desde el `.env`) — el resto del flujo no cambia.
+En el frontend, las dos partes están en la misma pantalla (`/admin/recuperar`, linkeada desde el login): primero se pide el email y después el código y la contraseña nueva.
+
+**Sobre el envío del mail:** `backend/services/Mail.service.js` funciona de dos maneras, según el `.env`:
+
+- **Con `MAIL_USER` y `MAIL_PASS` completos**, manda el mail de verdad desde esa casilla (por defecto, Gmail). Para Gmail hace falta tener la verificación en dos pasos activada y generar una "contraseña de aplicación"; la contraseña normal de la cuenta no funciona. Esos datos van solo en el `.env` local de cada uno, nunca en el repositorio.
+- **Si están vacíos**, usa [Ethereal](https://ethereal.email/), un servicio de mails de prueba: el mail no llega a nadie, pero se puede abrir y ver tal cual quedó armado. Después de pedir la recuperación, la consola del servidor imprime un link a la vista previa del mail (con el código). Así, cualquiera puede probar el flujo completo sin configurar una casilla.
 
 ## Consultas: formulario de contacto y panel
 
@@ -132,7 +237,7 @@ Cualquier visitante puede mandar una consulta desde el formulario de contacto, s
 
 Como el endpoint es público, el backend no confía en lo que llega: limpia los espacios de cada campo, valida que los obligatorios no estén vacíos, que el email tenga un formato válido y que ningún campo supere el largo de su columna en la base. Si algo falla, responde **400** con la lista completa de errores (no solo el primero), para que el frontend pueda marcar todos los campos con problemas de una vez. Además, el endpoint tiene un límite de envíos por IP (ver "Límite de pedidos").
 
-El administrador gestiona las consultas desde el panel con un ciclo de vida inspirado en los sistemas de tickets:
+El administrador gestiona las consultas desde el panel (`/admin/consultas`), con un ciclo de vida inspirado en los sistemas de tickets. El panel abre por defecto en las pendientes y el menú lateral muestra cuántas hay:
 
 | Estado | Significado |
 |---|---|
@@ -160,6 +265,39 @@ El `PUT` normal de un producto (`/api/productos/:id`) no toca las imágenes en a
 
 No hay `ON DELETE CASCADE` en la foreign key de `ImagenesProducto`: al borrar un producto, `Producto.service.js` borra a mano todas sus imágenes antes de borrar el producto.
 
+En el panel, las fotos se cargan pegando su dirección (una URL `https://...` o una ruta del propio sitio como `/img/productos/brownie.svg`) y se ordenan con flechas. Al crear un producto, las fotos viajan junto con el resto de los datos; al editar uno que ya existe, cada cambio en las fotos se guarda en el momento.
+
+## Productos: visibles, disponibles, destacados y sin TACC
+
+Cada producto tiene cuatro marcas, que el administrador cambia desde el panel:
+
+| Campo | Qué hace |
+|---|---|
+| `activo` | Si está apagado, el producto no se ve en el sitio (pero sigue en la base y en el historial de consultas). |
+| `disponible` | Si está apagado, el producto se sigue viendo, con el aviso "No disponible por ahora". |
+| `destacado` | Aparece en "Especialidades de la casa", en el inicio. |
+| `sinGluten` | Lleva la etiqueta "Sin TACC" y aparece en ese filtro del catálogo. |
+
+"Sin TACC" es una característica del producto y no una categoría: un pan sin TACC es un pan, y aparece en Panadería. Por eso se guarda como un campo booleano y el catálogo lo filtra aparte, sin importar la categoría.
+
+Las categorías también se pueden ocultar (`activa`). Si una categoría está oculta, sus productos tampoco se ven en el sitio, ni en el catálogo ni entrando directo al link del producto. El administrador sí los sigue viendo en el panel.
+
+El catálogo **no muestra precios**, a propósito: el sitio es para mostrar los productos, no para venderlos. Un precio publicado obliga a mantenerlo siempre al día, y un precio desactualizado frente al público genera reclamos. Precios y encargos se consultan en el local o por el formulario de contacto.
+
+## Novedades
+
+El local puede publicar novedades (lanzamientos, horarios especiales, fechas festivas), con imagen y, opcionalmente, un producto relacionado. Cada novedad tiene dos datos que, juntos, dan tres estados:
+
+| `publicada` | `fechaPublicacion` | Estado | ¿Se ve en el sitio? |
+|---|---|---|---|
+| `false` | cualquiera | Borrador | Nunca |
+| `true` | futura | Programada | Sola, cuando llega la fecha |
+| `true` | pasada | Publicada | Sí |
+
+"Programada" no se guarda en ningún lado: se calcula comparando la fecha con la hora actual. Eso permite dejar lista una novedad para el Día de la Madre y que aparezca sola ese día. El backend filtra lo que puede ver el visitante, y el panel tiene un endpoint aparte que devuelve todas.
+
+Las fechas se guardan en UTC y el frontend las muestra en la hora local de quien las mira.
+
 ## Documentación de la API
 
 Todas las rutas cuelgan de `/api`. La columna "Acceso" indica qué hace falta para llamar a esa ruta.
@@ -171,15 +309,15 @@ Todas las rutas cuelgan de `/api`. La columna "Acceso" indica qué hace falta pa
 | POST | `/login` | Público (con límite de intentos) | Valida credenciales y devuelve un token |
 | GET | `/perfil` | Logueado | Devuelve los datos del propio perfil |
 | PUT | `/perfil` | Logueado | Edita nombre, apellido, teléfono y/o email propios |
-| PUT | `/cambiar-password` | Logueado | Cambia la contraseña (pide la actual + la nueva) |
+| PUT | `/cambiar-password` | Logueado | Cambia la contraseña (pide la actual + la nueva, de al menos 8 caracteres) |
 | POST | `/recuperar-password` | Público (con límite de pedidos) | Genera un código de recuperación y lo manda por mail |
-| PUT | `/resetear-password` | Público | Cambia la contraseña usando el código recibido por mail |
+| PUT | `/resetear-password` | Público (con límite de intentos) | Cambia la contraseña usando el email y el código recibido por mail |
 
 ### Categoría (`/api/categorias`)
 
 | Método | Ruta | Acceso | Descripción |
 |---|---|---|---|
-| GET | `/` | Público | Lista todas las categorías |
+| GET | `/` | Público | Lista las categorías, ordenadas por nombre (el visitante ve solo las activas; el admin, todas) |
 | GET | `/:id` | Público | Una categoría por id |
 | POST | `/` | Admin | Crea una categoría |
 | PUT | `/:id` | Admin | Edita una categoría |
@@ -189,7 +327,7 @@ Todas las rutas cuelgan de `/api`. La columna "Acceso" indica qué hace falta pa
 
 | Método | Ruta | Acceso | Descripción |
 |---|---|---|---|
-| GET | `/?busqueda=&categoriaId=&sinGluten=&soloActivos=` | Público | Lista productos, con filtros opcionales |
+| GET | `/?busqueda=&categoriaId=&sinGluten=&destacado=&soloActivos=` | Público | Lista productos, con filtros opcionales (el visitante ve solo los activos de categorías activas; el admin, todos, salvo que pida `soloActivos=true`) |
 | GET | `/:id` | Público | Un producto por id, con su categoría y sus imágenes |
 | POST | `/` | Admin | Crea un producto (acepta `imagenes: [...]` opcional, URLs) |
 | PUT | `/:id` | Admin | Edita los datos básicos de un producto (no toca imágenes) |
@@ -208,6 +346,26 @@ Todas las rutas cuelgan de `/api`. La columna "Acceso" indica qué hace falta pa
 | PATCH | `/:id/estado` | Admin | Cambia el estado (`pendiente` / `respondida` / `cerrada`) |
 | DELETE | `/:id` | Admin | Borra una consulta |
 
+### Novedad (`/api/novedades`)
+
+| Método | Ruta | Acceso | Descripción |
+|---|---|---|---|
+| GET | `/?limite=` | Público | Novedades publicadas y con fecha cumplida, de la más nueva a la más vieja |
+| GET | `/:id` | Público | Una novedad publicada (404 si es borrador o está programada) |
+| GET | `/admin/todas` | Admin | Todas las novedades, incluidos borradores y programadas |
+| POST | `/` | Admin | Crea una novedad (sin `publicada`, queda como borrador) |
+| PUT | `/:id` | Admin | Edita una novedad (`imagenUrl` y `productoId` en `null` los quitan) |
+| DELETE | `/:id` | Admin | Borra una novedad |
+
+### Comercio (`/api/comercio`)
+
+| Método | Ruta | Acceso | Descripción |
+|---|---|---|---|
+| GET | `/` | Público | Datos del local: nombre, descripción, dirección, teléfono, horarios y redes |
+| PUT | `/` | Admin | Edita los datos del local (hay una sola fila; un campo en `''` se vacía) |
+
+Las rutas que dicen "Público" y devuelven listados aceptan además el token del administrador: si viene, la respuesta incluye también lo que está desactivado u oculto. Así el panel usa los mismos endpoints que el sitio.
+
 ## Convenciones del proyecto
 
 - `??` para ediciones parciales: un campo que no llega en el body deja el valor que ya tenía.
@@ -219,49 +377,58 @@ Todas las rutas cuelgan de `/api`. La columna "Acceso" indica qué hace falta pa
 
 ## Cómo probar la API
 
-Hay una colección de Postman con casos de prueba (positivos y negativos) para las cuatro entidades, incluyendo los accesos público y de administrador. Para usarla:
+Hay una colección de Postman con casos de prueba (positivos y negativos) para usuarios, categorías, productos, consultas y datos del comercio, incluyendo los accesos público y de administrador. Vive en el repositorio (`postman/`), así que se abre directo desde la extensión de Postman de VS Code. Para usarla:
 
 1. Importarla en Postman.
 2. En las variables de la colección, completar `adminEmail` y `adminPassword` con las credenciales del admin que crea `crear-base.sql`.
-3. Correr las carpetas en orden: Usuario → Categoría → Producto → Consulta. La request de login guarda automáticamente el token, y las demás guardan los ids que necesitan las siguientes.
+3. Correr las carpetas en orden: Usuario → Categoría → Producto → Consulta → Comercio → Límites de pedidos. La request de login guarda automáticamente el token, y las demás guardan los ids que necesitan las siguientes. "Límites de pedidos" agota los límites a propósito, por eso va al final.
 
-**Ojo con el límite de pedidos:** el contador es por IP, y al probar en local todas las requests salen de la misma. Si se corre la colección varias veces seguidas, los tests de login fallido o de creación de consultas pueden terminar en 429 en vez del código esperado. Reiniciar el servidor resetea los contadores.
+**Ojo con el límite de pedidos:** el contador es por IP, y al probar en local todas las requests salen de la misma. Hay que **reiniciar el servidor antes de cada corrida completa**: si no, los tests de login fallido o de creación de consultas pueden terminar en 429 en vez del código esperado.
 
-Dentro de Usuario, las pruebas de recuperar contraseña son la excepción: como el código llega por mail y no en la respuesta de la API, dos de esas requests son manuales (hay que copiar el código de la vista previa de Ethereal y pegarlo en la variable de colección `codigoRecuperacion` antes de correrlas). Cada request tiene su descripción con el paso a paso.
+Dentro de Usuario, las pruebas de recuperar contraseña son la excepción: como el código llega por mail y no en la respuesta de la API, dos de esas requests son manuales (hay que copiar el código del mail, o de la vista previa de Ethereal, y pegarlo en la variable de colección `codigoRecuperacion` antes de correrlas). Cada request tiene su descripción con el paso a paso.
+
+El frontend se probó de punta a punta contra el backend real: cada pantalla del sitio y del panel, incluidos los casos de error (datos inválidos, producto con consultas que no se puede borrar, sesión vencida, límite de intentos).
 
 ## Otros documentos
 
 - **Manual de instalación:** paso a paso detallado para levantar el entorno desde cero (SQL Server Express, SSMS, variables de entorno, troubleshooting).
-- **Modelo de datos:** diagrama entidad-relación de las cuatro tablas y sus relaciones.
-- **Diagrama de navegación:** flujo de pantallas para visitante y administrador.
+- **Modelo de datos:** diagrama entidad-relación de las tablas y sus relaciones.
+- **Diagrama de navegación:** flujo de pantallas del sitio público y del panel de administración.
 
 ## Estado del proyecto
 
 ### Requisitos de la consigna, cumplidos
 
-- Catálogo de productos administrable por categoría (CRUD completo de Categoría y Producto).
-- Búsqueda y filtros en el catálogo (por texto, categoría, sin TACC, solo activos).
+- Catálogo de productos administrable por categoría (CRUD completo de Categoría y Producto), desde el panel.
+- Búsqueda y filtros en el catálogo (por texto, categoría y sin TACC).
 - Sistema de consultas/contacto abierto a visitantes, con gestión de estado (crear, listar, cambiar estado).
 - Sitio público de solo lectura + panel de administración protegido por login.
 - Recuperar contraseña (código temporal enviado por mail).
 - Validación de datos obligatorios tanto en el front como en el back.
-- Seed de productos de ejemplo.
+- Seed de datos de ejemplo.
 - Documentación completa del proyecto.
 
 ### Extras, más allá de lo pedido
 
+- Novedades con borradores y publicación programada, con imagen y producto relacionado.
+- Datos del local (dirección, horarios, redes) editables desde el panel.
+- Envío de mails reales (Gmail), con Ethereal como alternativa de prueba.
+- Varias fotos por producto, ordenables, y productos destacados en el inicio.
+- Frontend que funciona también sin backend (datos de prueba), para desarrollar y demostrar sin depender de la base.
+- Panel que se adapta a distintos tamaños de pantalla de computadora.
 - Middleware de autorización que valida no solo autenticación sino también el rol correspondiente a cada ruta.
 - Límite de pedidos por IP en login, recuperación de contraseña y formulario de consultas.
+- Restricción de origen: la API solo acepta pedidos del frontend.
 - Validación estricta del formulario público (tipos, espacios, formato de email, largos máximos), con todos los errores devueltos juntos.
 - Ciclo de vida de consultas tipo ticket (pendiente / respondida / cerrada), con respuesta por mail desde el panel.
-- Endurecimiento de seguridad más allá de lo básico: el hash de contraseña nunca viaja en ninguna respuesta HTTP, los errores internos nunca se exponen crudos al cliente.
+- Endurecimiento de seguridad más allá de lo básico: el hash de contraseña y el código de recuperación nunca viajan en ninguna respuesta HTTP, los errores internos nunca se exponen crudos al cliente.
 - Reglas de integridad de datos: no se puede borrar una categoría o un producto que todavía tiene historial asociado.
 - Múltiples imágenes por producto (URLs, sin subida de archivos), con endpoints para agregar, borrar y reordenar de a una o en lote.
 - Colección de pruebas de Postman con casos positivos y negativos para toda la API.
 
-### Pendiente
+### Mejoras a futuro
 
-- Logout (no requiere endpoint propio: sin lista negra de tokens, alcanza con que el frontend borre el token guardado).
-- Dashboard de métricas para el panel de administración.
+- Versión del sitio para celulares y tablets (los puntos de corte ya están definidos en los estilos).
+- Subida real de archivos para las fotos, en lugar de URLs.
 - Segundo factor para el login del administrador (código por mail), reutilizando el mecanismo de recuperar contraseña.
-- Extras opcionales: envío de mails reales (hoy se usa Ethereal), buscador avanzado, promociones.
+- Extras opcionales: dashboard de métricas, buscador avanzado, promociones.
