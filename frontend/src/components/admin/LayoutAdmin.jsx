@@ -10,7 +10,8 @@ const SECCIONES = [
   { ruta: '/admin/productos', texto: 'Productos' },
   { ruta: '/admin/categorias', texto: 'Categorías' },
   { ruta: '/admin/novedades', texto: 'Novedades' },
-  { ruta: '/admin/configuracion', texto: 'Datos del local' }
+  { ruta: '/admin/configuracion', texto: 'Datos del local' },
+  { ruta: '/admin/perfil', texto: 'Mi perfil' }
 ]
 
 // ============================================================

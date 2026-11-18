@@ -116,6 +116,8 @@ function AdminLogin() {
             {enviando ? 'Ingresando...' : 'Ingresar'}
           </button>
 
+          <Link to="/admin/recuperar" className="login-volver">¿Olvidaste tu contraseña?</Link>
+
           <Link to="/" className="login-volver">Volver al sitio</Link>
         </form>
       </main>
