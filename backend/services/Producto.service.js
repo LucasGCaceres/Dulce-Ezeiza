@@ -89,7 +89,8 @@ exports.obtenerTodos = async function (filtros = {}) {
         
         const productos = await Producto.findAll({
             where: where,
-            include: include
+            include: include,
+            order: [['nombre', 'ASC']]
         });
 
         return productos;
@@ -107,10 +108,14 @@ exports.obtenerTodos = async function (filtros = {}) {
 exports.obtenerPorId = async function (id, soloActivos = false) {
     try {
         const where = { id: id };
+        let include = includeCompleto;
+
         if (soloActivos) {
             where.activo = true;
+            include = [{ model: Categoria, where: { activa: true } }, includeCompleto[1]];
         }
-        const producto = await Producto.findOne({ where: where, include: includeCompleto });
+
+        const producto = await Producto.findOne({ where: where, include: include });
         return producto;
     } catch (e) {
         console.log(e);

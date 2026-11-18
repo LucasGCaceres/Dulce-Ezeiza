@@ -2,6 +2,13 @@
 // NO tiene logica de negocio (esa vive en el service) ni SQL.
 const usuarioService = require('../services/Usuario.service');
 
+// Mínimo de caracteres para una contraseña nueva.
+const LARGO_MINIMO_PASSWORD = 8;
+
+function passwordValida(password) {
+    return typeof password === 'string' && password.length >= LARGO_MINIMO_PASSWORD;
+}
+
 // ------------------------------------------------------------
 //  LOGIN: POST /api/usuarios/login
 // ------------------------------------------------------------
@@ -73,6 +80,10 @@ exports.cambiarPassword = async function (req, res) {
     if (!passwordActual || !passwordNueva) {
         return res.status(400).json({ mensaje: 'Faltan la contraseña actual y la nueva' });
     }
+    
+    if (!passwordValida(passwordNueva)) {
+        return res.status(400).json({ mensaje: `La contraseña nueva tiene que tener al menos ${LARGO_MINIMO_PASSWORD} caracteres` });
+    }
 
     try {
         await usuarioService.cambiarPassword(req.usuarioId, passwordActual, passwordNueva);
@@ -129,6 +140,14 @@ exports.resetearPassword = async function (req, res) {
 
     if (!email || !token || !passwordNueva) {
         return res.status(400).json({ mensaje: 'Faltan datos obligatorios' });
+    }
+
+    if (!passwordValida(passwordNueva)) {
+        return res.status(400).json({ mensaje: `La contraseña nueva tiene que tener al menos ${LARGO_MINIMO_PASSWORD} caracteres` });
+    }
+
+    if (!passwordValida(passwordNueva)) {
+        return res.status(400).json({ mensaje: `La contraseña nueva tiene que tener al menos ${LARGO_MINIMO_PASSWORD} caracteres` });
     }
 
     try {

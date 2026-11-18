@@ -6,7 +6,8 @@ import ErrorCarga from '../../components/ErrorCarga'
 import FotoNovedad from '../../components/FotoNovedad'
 import DialogoConfirmar from '../../components/admin/DialogoConfirmar'
 import EstadoNovedad from '../../components/admin/EstadoNovedad'
-import { formatearFechaHora } from '../../utils/formato'
+import Interruptor from '../../components/admin/Interruptor'
+import { formatearFechaHora, formatearFechaHoraCorta } from '../../utils/formato'
 import './AdminNovedades.css'
 
 const FILTROS = [
@@ -119,8 +120,8 @@ function AdminNovedades() {
             <thead>
               <tr>
                 <th scope="col">Novedad</th>
-                <th scope="col">Estado</th>
-                <th scope="col">Fecha de publicación</th>
+                <th scope="col">Publicada</th>
+                <th scope="col">Fecha</th>
                 <th scope="col"><span className="solo-lector">Acciones</span></th>
               </tr>
             </thead>
@@ -136,14 +137,28 @@ function AdminNovedades() {
                       </span>
                     </div>
                   </td>
-                  <td><EstadoNovedad novedad={novedad} /></td>
-                  <td className="admin-novedad-fecha">{formatearFechaHora(novedad.fechaPublicacion)}</td>
+                  <td>
+                    {/* Encendido = publicada; apagado = borrador. Como el
+                        "Destacado" de Productos y el "Visible" de Categorías. */}
+                    <Interruptor
+                      encendido={novedad.publicada}
+                      onCambiar={() => alternarPublicada(novedad)}
+                      etiqueta={`Publicar ${novedad.titulo}`}
+                      deshabilitado={cambiando === novedad.id}
+                    />
+                  </td>
+                  {/* Fecha corta en la tabla; la larga, al pasar el mouse (title).
+                      No hace falta una columna "Estado": publicada o borrador ya
+                      lo dice el interruptor. Lo único que agrega info es
+                      "Programada", y va acá, debajo de la fecha. */}
+                  <td className="admin-novedad-fecha" title={formatearFechaHora(novedad.fechaPublicacion)}>
+                    <div className="admin-novedad-fecha-contenido">
+                      {formatearFechaHoraCorta(novedad.fechaPublicacion)}
+                      {estadoNovedad(novedad) === 'programada' && <EstadoNovedad novedad={novedad} />}
+                    </div>
+                  </td>
                   <td>
                     <div className="admin-novedad-acciones">
-                      <button type="button" className="boton boton-secundario boton-chico"
-                        onClick={() => alternarPublicada(novedad)} disabled={cambiando === novedad.id}>
-                        {novedad.publicada ? 'Pasar a borrador' : 'Publicar'}
-                      </button>
                       <Link to={`/admin/novedades/${novedad.id}`} className="boton boton-secundario boton-chico">Editar</Link>
                       <button type="button" className="admin-enlace-peligro" onClick={() => { setABorrar(novedad); setAviso(null) }}>
                         Eliminar

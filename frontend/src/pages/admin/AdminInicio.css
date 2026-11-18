@@ -34,7 +34,9 @@
   padding: 0;
   list-style: none;
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  /* auto-fit: entran tantas tarjetas por fila como quepan, de 190px
+     como mínimo cada una (4 en una pantalla grande, 2 en una chica). */
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
   gap: 16px;
 }
 
@@ -84,14 +86,6 @@
 }
 
 /* ---------- Cajas de abajo ---------- */
-
-.admin-inicio-columnas {
-  display: grid;
-  grid-template-columns: 1.6fr 1fr;
-  align-items: start;
-  gap: 24px;
-}
-
 .admin-vacio {
   margin: 16px 0 0;
   color: var(--color-texto-tenue);

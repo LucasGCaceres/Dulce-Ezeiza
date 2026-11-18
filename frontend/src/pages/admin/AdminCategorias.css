@@ -2,15 +2,13 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
-  max-width: 1200px;
 }
 
-/* Tabla (más ancha) | formulario. */
-.admin-categorias-columnas {
-  display: grid;
-  grid-template-columns: 1fr 360px;
-  gap: 24px;
-  align-items: start;
+/* La tabla necesita más lugar que el principal de otras pantallas
+   (tiene la descripción y los botones): base de 560px en vez de 480.
+   Si no hay 560 + 300 de ancho, el formulario baja abajo de la tabla. */
+.admin-categorias .admin-dos-columnas > :first-child {
+  flex-basis: 560px;
 }
 
 /* ---------- Tabla ---------- */

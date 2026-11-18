@@ -169,7 +169,7 @@ function AdminCategorias() {
         </div>
       )}
 
-      <div className="admin-categorias-columnas">
+      <div className="admin-dos-columnas">
         {!lista ? (
           <div className="esqueleto" style={{ height: 360 }} aria-label="Cargando" />
         ) : (

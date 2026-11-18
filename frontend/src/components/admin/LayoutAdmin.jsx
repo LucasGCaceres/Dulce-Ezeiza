@@ -63,10 +63,14 @@ function LayoutAdmin() {
 
         <div className="panel-usuario">
           <span className="panel-usuario-nombre">{usuario.nombre}</span>
-          <span className="panel-usuario-email">{usuario.email}</span>
+          <span className="panel-usuario-email" title={usuario.email}>
+            {usuario.email}
+          </span>
           <div className="panel-usuario-acciones">
             <Link to="/">Ver el sitio</Link>
-            <button type="button" onClick={salir}>Cerrar sesión</button>
+            <button type="button" onClick={salir}>
+              Cerrar sesión
+            </button>
           </div>
         </div>
       </aside>

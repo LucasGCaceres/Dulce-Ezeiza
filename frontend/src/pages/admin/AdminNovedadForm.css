@@ -2,7 +2,6 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
-  max-width: 1200px;
 }
 
 .novedad-form-migas {
@@ -21,14 +20,6 @@
   align-items: baseline;
   justify-content: space-between;
   gap: 16px;
-}
-
-/* Contenido (ancho) | publicación + vista previa. */
-.novedad-form-columnas {
-  display: grid;
-  grid-template-columns: 1fr 380px;
-  gap: 24px;
-  align-items: start;
 }
 
 .novedad-form-contenido,

@@ -80,7 +80,7 @@ function AdminRecuperar() {
     setEnviando(true)
     setErrorServidor(null)
     try {
-      await resetearPassword(codigo, passwordNueva)
+      await resetearPassword(email, codigo, passwordNueva)
       setPaso('listo')
     } catch (error) {
       setErrorServidor(error)

@@ -44,6 +44,8 @@ exports.login = async function (datos) {
 
     const usuarioSeguro = usuario.toJSON();
     delete usuarioSeguro.password;
+    delete usuarioSeguro.resetPasswordToken;
+    delete usuarioSeguro.resetPasswordExpira;
 
     return { token: token, usuario: usuarioSeguro };
 };
@@ -69,6 +71,8 @@ exports.editarPerfil = async function (usuarioId, datos) {
 
         const usuarioSeguro = usuario.toJSON();
         delete usuarioSeguro.password;
+        delete usuarioSeguro.resetPasswordToken;
+        delete usuarioSeguro.resetPasswordExpira;
 
         return usuarioSeguro;
     } catch (e) {
@@ -125,6 +129,8 @@ exports.obtenerPorId = async function (usuarioId) {
 
         const usuarioSeguro = usuario.toJSON();
         delete usuarioSeguro.password;
+        delete usuarioSeguro.resetPasswordToken;
+        delete usuarioSeguro.resetPasswordExpira;
         return usuarioSeguro;
     } catch (e) {
         console.log(e);

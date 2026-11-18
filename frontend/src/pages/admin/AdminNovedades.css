@@ -6,6 +6,7 @@
 
 .admin-novedades-encabezado {
   display: flex;
+  flex-wrap: wrap;
   align-items: flex-end;
   justify-content: space-between;
   gap: 16px;
@@ -15,6 +16,7 @@
 
 .admin-novedades-filtros {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
 }
 
@@ -46,6 +48,8 @@
 /* ---------- Celdas ---------- */
 
 .admin-novedad-celda {
+  /* La columna del título es la que más importa: que no se aplaste. */
+  min-width: 220px;
   display: flex;
   align-items: center;
   gap: 14px;
@@ -53,7 +57,7 @@
 
 /* FotoNovedad ocupa el 100% del ancho: acá la achicamos a miniatura. */
 .admin-novedad-foto {
-  width: 96px;
+  width: clamp(64px, 6vw, 96px);
   flex-shrink: 0;
   border-radius: 8px;
   font-size: 0.65rem;
@@ -85,6 +89,15 @@
 .admin-novedad-fecha {
   white-space: nowrap;
   font-size: 0.95rem;
+}
+
+/* Fecha arriba, "Programada" abajo. (El flex va en un div de adentro:
+   si se lo ponemos al <td>, deja de comportarse como celda de tabla.) */
+.admin-novedad-fecha-contenido {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
 }
 
 .admin-novedad-acciones {

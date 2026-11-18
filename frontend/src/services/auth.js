@@ -56,19 +56,21 @@ export function solicitarRecuperacion(email) {
   return pedir('/usuarios/recuperar-password', { metodo: 'POST', cuerpo: { email: email.trim() } })
 }
 
-// PUT /api/usuarios/resetear-password   { token, passwordNueva }
-// "token" es el código de 6 dígitos del mail. Responde 200 { mensaje }.
-// Error: 400 'El código de recuperación es inválido o venció'.
-export function resetearPassword(codigo, passwordNueva) {
+// PUT /api/usuarios/resetear-password   { email, token, passwordNueva }
+// "token" es el código de 6 dígitos del mail. El backend busca el código
+// JUNTO con el email: así un código solo sirve para la cuenta que lo pidió.
+// Responde 200 { mensaje }. Errores: 400 'El código de recuperación es
+// inválido o venció'; 429 si se erra el código 5 veces en 15 minutos.
+export function resetearPassword(email, codigo, passwordNueva) {
   if (USAR_MOCKS) {
-    if (codigo.trim() !== CODIGO_MOCK) {
+    if (email.trim().toLowerCase() !== ADMIN_MOCK.email || codigo.trim() !== CODIGO_MOCK) {
       return simularFallo('El código de recuperación es inválido o venció', 400)
     }
     return simularRed({ mensaje: 'Contraseña actualizada correctamente' })
   }
   return pedir('/usuarios/resetear-password', {
     metodo: 'PUT',
-    cuerpo: { token: codigo.trim(), passwordNueva }
+    cuerpo: { email: email.trim(), token: codigo.trim(), passwordNueva }
   })
 }
 

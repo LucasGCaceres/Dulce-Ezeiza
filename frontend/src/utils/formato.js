@@ -65,11 +65,25 @@ export function formatearFechaHora(fechaIso) {
     hour12: false
   })
 }
+
+// "18/11/2026 20:10": versión corta, para tablas donde no sobra lugar.
+export function formatearFechaHoraCorta(fechaIso) {
+  return new Date(fechaIso).toLocaleString('es-AR', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false
+  })
+}
+
 // Saca tildes y pasa a minúsculas, para buscar sin que importen:
 // "Pán" y "pan" quedan iguales. (SQL Server compara así por defecto.)
 export function normalizarTexto(texto) {
   return texto.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
 }
+
 // Fecha → el texto que entiende un <input type="datetime-local">:
 // "2026-11-20T10:00", en hora LOCAL (por eso no sirve toISOString(),
 // que da la hora de Greenwich: 3 horas más que en Argentina).
@@ -78,3 +92,4 @@ export function fechaParaInput(fecha) {
   const dos = (n) => String(n).padStart(2, '0')
   return `${f.getFullYear()}-${dos(f.getMonth() + 1)}-${dos(f.getDate())}T${dos(f.getHours())}:${dos(f.getMinutes())}`
 }
+

@@ -88,7 +88,7 @@ function AdminInicio() {
         <Tarjeta ruta="/admin/categorias" numero={categoriasActivas} texto="Categorías activas" />
       </ul>
 
-      <div className="admin-inicio-columnas">
+      <div className="admin-dos-columnas">
         <section aria-labelledby="titulo-pendientes" className="admin-caja">
           <div className="admin-caja-encabezado">
             <h2 id="titulo-pendientes" className="admin-caja-titulo">Consultas sin responder</h2>

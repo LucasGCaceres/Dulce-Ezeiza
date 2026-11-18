@@ -182,7 +182,7 @@ function FormularioNovedad({ novedad, productos, onGuardada }) {
         </div>
       )}
 
-      <form id="form-novedad" onSubmit={guardar} noValidate className="novedad-form-columnas">
+      <form id="form-novedad" onSubmit={guardar} noValidate className="admin-dos-columnas">
         {/* ---------- Columna izquierda: el contenido ---------- */}
         <div className="admin-caja novedad-form-contenido">
           <h2 className="admin-caja-titulo">Contenido</h2>

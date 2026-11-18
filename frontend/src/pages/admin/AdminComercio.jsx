@@ -131,7 +131,7 @@ function FormularioComercio({ comercio }) {
       )}
 
       <form onSubmit={guardar} noValidate className="admin-comercio-form">
-        <div className="admin-comercio-columnas">
+        <div className="admin-dos-columnas">
           <section aria-labelledby="titulo-local" className="admin-caja admin-comercio-caja">
             <h2 id="titulo-local" className="admin-caja-titulo">El local</h2>
 

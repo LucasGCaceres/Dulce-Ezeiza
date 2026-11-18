@@ -39,7 +39,7 @@ function AdminPerfil() {
         <p className="panel-bajada">Tus datos personales y tu contraseña.</p>
       </div>
 
-      <div className="admin-perfil-columnas">
+      <div className="admin-dos-columnas">
         <FormularioDatos perfil={perfil.datos} />
         <FormularioPassword />
       </div>
@@ -81,8 +81,8 @@ function FormularioDatos({ perfil }) {
     if (!valores.apellido.trim()) errores.apellido = 'Escribí tu apellido.'
     if (!valores.email.trim()) errores.email = 'Escribí tu email.'
     else if (!emailValido(valores.email)) errores.email = 'Ese email no parece válido.'
-    if (!valores.telefono.trim()) errores.telefono = 'Escribí tu teléfono.'
-    else if (!telefonoValido(valores.telefono)) {
+    // Opcional: solo se revisa si escribiste algo.
+    if (valores.telefono.trim() && !telefonoValido(valores.telefono)) {
       errores.telefono = 'Escribí un teléfono válido, con al menos 8 números.'
     }
   }
@@ -96,8 +96,9 @@ function FormularioDatos({ perfil }) {
       nombre: !valores.nombre.trim(),
       apellido: !valores.apellido.trim(),
       email: !emailValido(valores.email),
-      telefono: !telefonoValido(valores.telefono)
+      telefono: valores.telefono.trim() !== '' && !telefonoValido(valores.telefono)
     }
+
     const primero = CAMPOS.find((campo) => faltan[campo])
     if (primero) {
       document.getElementById(`perfil-${primero}`)?.focus()
@@ -154,7 +155,7 @@ function FormularioDatos({ perfil }) {
           <input type="email" name="email" maxLength={150} autoComplete="email"
             value={valores.email} onChange={cambiar} />
         </Campo>
-        <Campo id="perfil-telefono" etiqueta="Teléfono" error={errores.telefono}>
+        <Campo id="perfil-telefono" etiqueta="Teléfono" opcional error={errores.telefono}>
           <input type="tel" name="telefono" maxLength={50} autoComplete="tel"
             value={valores.telefono} onChange={cambiar} />
         </Campo>

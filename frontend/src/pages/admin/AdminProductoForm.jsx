@@ -216,7 +216,7 @@ function FormularioProducto({ producto, categorias, onImagenesCambiaron }) {
         </div>
       )}
 
-      <div className="producto-form-columnas">
+      <div className="admin-dos-columnas">
         <form id="form-producto" onSubmit={guardar} noValidate className="admin-caja producto-form-datos">
           <h2 className="admin-caja-titulo">Datos</h2>
 
