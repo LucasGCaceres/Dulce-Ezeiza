@@ -290,10 +290,17 @@ function DetalleConsulta({ consulta, onCambio, onEliminada }) {
         </div>
       ) : (
         <div className="consulta-acciones">
-          {/* mailto: abre el programa de mail de la compu con el mensaje
-              armado. La respuesta NO se guarda en el sistema: por eso
-              después hay que marcar la consulta a mano. */}
-          <a href={armarMailto(consulta)} className="boton">Responder por mail</a>
+          {/* Abre Gmail en una pestaña nueva, con la cuenta del local y el
+              mensaje armado. La respuesta NO se guarda en el sistema: por
+              eso después hay que marcar la consulta a mano. */}
+          <a
+            href={armarLinkGmail(consulta)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="boton"
+          >
+            Responder por mail
+          </a>
           {acciones.map((accion) => (
             <button
               key={accion.estado}
@@ -314,11 +321,16 @@ function DetalleConsulta({ consulta, onCambio, onEliminada }) {
   )
 }
 
-// Arma el link mailto: con destinatario, asunto "Re: ..." y el mensaje
-// original citado abajo, como hacen los programas de mail al responder.
+// Cuenta de Gmail del local: es la que se abre para responder.
+const CUENTA_DEL_LOCAL = 'ezeizadulce@gmail.com'
+
+// Arma el link que abre la pantalla de "redactar" de Gmail con el
+// destinatario, el asunto "Re: ..." y el mensaje original citado abajo.
+// authuser le pide a Gmail que use la cuenta del local; si no tenés esa
+// sesión abierta en el navegador, Google te pide iniciarla.
 // encodeURIComponent: espacios, tildes y saltos de línea no pueden ir
 // "crudos" en un link.
-function armarMailto(consulta) {
+function armarLinkGmail(consulta) {
   const primerNombre = consulta.nombre.split(' ')[0]
   const citado = consulta.mensaje.split('\n').map((linea) => `> ${linea}`).join('\n')
   const cuerpo =
@@ -326,7 +338,15 @@ function armarMailto(consulta) {
     `Saludos,\nDulce Ezeiza\n\n` +
     `---\nEl ${formatearFechaHora(consulta.fecha)} escribiste:\n${citado}`
   const asunto = `Re: ${consulta.asunto}`
-  return `mailto:${consulta.email}?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(cuerpo)}`
+  const parametros = [
+    'view=cm',
+    'fs=1',
+    `authuser=${encodeURIComponent(CUENTA_DEL_LOCAL)}`,
+    `to=${encodeURIComponent(consulta.email)}`,
+    `su=${encodeURIComponent(asunto)}`,
+    `body=${encodeURIComponent(cuerpo)}`
+  ]
+  return `https://mail.google.com/mail/?${parametros.join('&')}`
 }
 
 export default AdminConsultas
