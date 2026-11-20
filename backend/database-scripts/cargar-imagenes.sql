@@ -1,9 +1,10 @@
 -- ============================================================
---  CARGAR IMAGENES DE LOS PRODUCTOS - DULCE EZEIZA
+--  CARGAR IMAGENES (PRODUCTOS Y NOVEDADES) - DULCE EZEIZA
 -- ============================================================
 --  Correr DESPUES de crear-base.sql. Le pone a cada uno de los 20
 --  productos las imagenes que estan en frontend/public/img/productos
---  (el sitio las sirve como /img/productos/<archivo>.svg).
+--  (el sitio las sirve como /img/productos/<archivo>.svg) y a cada una
+--  de las 5 novedades de ejemplo su imagen (/img/productos o /img/sitio).
 --
 --  Se puede correr mas de una vez: primero deja la tabla limpia.
 -- ============================================================
@@ -38,6 +39,20 @@ INSERT INTO ImagenesProducto (productoId, url, orden) SELECT id, N'/img/producto
 INSERT INTO ImagenesProducto (productoId, url, orden) SELECT id, N'/img/productos/limonada-casera.svg', 0 FROM Productos WHERE nombre = N'Limonada Casera 1L';
 GO
 
+-- ------------------------------------------------------------
+--  Imagenes de las novedades de ejemplo (se buscan por titulo).
+-- ------------------------------------------------------------
+UPDATE Novedades SET imagenUrl = N'/img/sitio/torta-de-cumple.svg' WHERE titulo = N'¡Cumplimos 10 años!';
+UPDATE Novedades SET imagenUrl = N'/img/productos/torta-de-chocolate.svg' WHERE titulo = N'Día de la Madre';
+UPDATE Novedades SET imagenUrl = N'/img/productos/torta-sin-gluten-de-naranja.svg' WHERE titulo = N'Nueva torta sin TACC';
+UPDATE Novedades SET imagenUrl = N'/img/productos/medialunas-de-manteca.svg' WHERE titulo = N'Ahora abrimos los domingos';
+UPDATE Novedades SET imagenUrl = N'/img/productos/cafe-en-grano.svg' WHERE titulo = N'Café de especialidad';
+GO
+
 -- Chequeo: tiene que dar 21 imagenes repartidas en 20 productos.
 SELECT COUNT(*) AS imagenes, COUNT(DISTINCT productoId) AS productos FROM ImagenesProducto;
+GO
+
+-- Chequeo: tiene que dar 5 novedades con imagen.
+SELECT COUNT(*) AS novedades_con_imagen FROM Novedades WHERE imagenUrl IS NOT NULL;
 GO
